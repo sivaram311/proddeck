@@ -6,8 +6,8 @@ import type { PortReservation, PortRow, PortsSnapshot } from "./types";
 export type { PortReservation, PortRow, PortsSnapshot } from "./types";
 
 const execFileAsync = promisify(execFile);
-
 const REGISTRY_PATH = "E:\\MyAgent\\workflow\\ports\\registry.json";
+const LISTEN_TIMEOUT_MS = 2500;
 
 type RegistryFile = {
   shared?: PortReservation[];
@@ -19,36 +19,25 @@ async function loadRegistry(): Promise<PortReservation[]> {
   return [...(raw.shared ?? []), ...(raw.reservations ?? [])];
 }
 
+/** Fast netstat parse — avoids Get-NetTCPConnection hangs on some Windows hosts. */
 async function listeningPorts(): Promise<Set<number>> {
   const set = new Set<number>();
   try {
-    const { stdout } = await execFileAsync(
-      "powershell.exe",
-      [
-        "-NoProfile",
-        "-Command",
-        "(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue).LocalPort | Sort-Object -Unique",
-      ],
-      { timeout: 8000, windowsHide: true },
-    );
+    const { stdout } = await execFileAsync("netstat", ["-ano"], {
+      timeout: LISTEN_TIMEOUT_MS,
+      windowsHide: true,
+      maxBuffer: 4 * 1024 * 1024,
+    });
     for (const line of stdout.split(/\r?\n/)) {
-      const n = Number(line.trim());
-      if (Number.isFinite(n) && n > 0) set.add(n);
+      if (!/\sLISTEN/i.test(line) && !/\sLISTENING/i.test(line)) continue;
+      const m = line.match(/:(\d+)\s/);
+      if (m) {
+        const n = Number(m[1]);
+        if (Number.isFinite(n) && n > 0) set.add(n);
+      }
     }
   } catch {
-    try {
-      const { stdout } = await execFileAsync("netstat", ["-ano"], {
-        timeout: 8000,
-        windowsHide: true,
-      });
-      for (const line of stdout.split(/\r?\n/)) {
-        if (!/\sLISTEN/i.test(line)) continue;
-        const m = line.match(/:(\d+)\s/);
-        if (m) set.add(Number(m[1]));
-      }
-    } catch {
-      /* best-effort */
-    }
+    /* best-effort — empty set still returns registry rows */
   }
   return set;
 }
