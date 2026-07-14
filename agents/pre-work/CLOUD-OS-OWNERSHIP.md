@@ -1,44 +1,33 @@
 # Cloud OS Wave ownership map
 
-**Base:** `cloud-os/scaffold` → tag after Wave 0  
-**Plan:** `docs/PARALLEL-EXECUTION-PLAN.md`
+**Plan:** [docs/WAVE-2-PLAN.md](../../docs/WAVE-2-PLAN.md) · [docs/PARALLEL-EXECUTION-PLAN.md](../../docs/PARALLEL-EXECUTION-PLAN.md)
 
-## Wave 0 (Lead / Integrator) — DONE
+## Wave 0 / 1 — DONE (live 0.5.0)
 
-| Path | Owner |
-|------|--------|
-| `src/os/**` shell, places, registry stubs | Lead |
-| `packs/proddeck/app.json` `os` block · `0.5.0-scaffold` | Lead |
-| `DeckHome` PlacesNav + DriveGuard + PlacePanel | Lead |
-| `agents/pre-work/CLOUD-OS-OWNERSHIP.md` | Lead |
-| Tag | `cloud-os/scaffold-v1` |
+Scaffold + Pulse / Ports / Identity / Yard / Activity Log / Archive / Dispatch / Promote.
 
-## Wave 1 (parallel) — write ONLY your module
+## Wave 2A (parallel stubs) — write ONLY your module
 
 | Branch | Owns |
 |--------|------|
-| `feat/os-pulse` | `src/os/modules/pulse/**`, `src/app/api/os/pulse/**` |
-| `feat/os-ports` | `src/os/modules/ports/**`, `src/app/api/os/ports/**` |
-| `feat/os-identity` | `src/os/modules/identity/**` |
-| `feat/os-activity-log` | `src/os/modules/activity-log/**`, `src/app/api/os/activity-log/**` |
-| `feat/os-archive` | `src/os/modules/archive/**` |
-| `feat/os-dispatch` | `src/os/modules/dispatch/**` |
-| `feat/os-promote` | `src/os/modules/promote/**`, `src/app/api/os/promote/**` |
-| `feat/os-yard` | `src/os/modules/yard/**` |
-| `feat/os-runbooks` | `src/os/modules/runbooks/**` |
-| `feat/os-appliances` | `src/os/modules/appliances/**` |
-| `feat/os-beacon` | `src/os/modules/beacon/**`, `src/app/api/os/beacon/**` |
-| `feat/os-drive-guard` | `src/os/modules/drive-guard/**` (chip already stubbed in shell) |
-| `feat/os-filebridge` | `src/os/modules/filebridge/**` |
+| `feat/os-beacon` | `src/os/modules/beacon/**`, `src/app/api/os/beacon/**`, `docs/os/beacon.md` |
+| `feat/os-appliances` | `src/os/modules/appliances/**`, `docs/os/appliances.md` |
+| `feat/os-runbooks` | `src/os/modules/runbooks/**`, `docs/os/runbooks.md` |
+| `feat/os-filebridge` | `src/os/modules/filebridge/**`, `docs/os/filebridge.md` |
+| `feat/os-drive-guard` | `src/os/modules/drive-guard/**`, `docs/os/drive-guard.md` (may export confirm helper) |
 
-## Forbidden for Wave 1
+## Wave 2B (deepen) — same module ownership as Wave 1
+
+Pulse / Ports / Identity / Activity Log / Archive / Dispatch / Promote / Yard — “Next” slices only inside owned paths.
+
+## Wave 2C — Lead
+
+`src/os/events/**`, `src/app/api/os/events/**`, `docs/os/portal-events.md`
+
+## Forbidden for parallel lanes
 
 - `src/components/DeckHome.tsx` (Lead only)
-- `src/os/shell/**`, `src/os/places.ts`, `src/os/registry.tsx` (Lead only after Wave 0)
+- `src/os/shell/**`, `src/os/places.ts`, `src/os/registry.tsx` (Lead only; Drive Guard chip wiring = Lead)
 - `src/scene/**`
 - `E:\MyAgent\workflow\activity\ACTIVITY-LOG.md` (Lead serial)
-- F:/G: deploys
-
-## Docs per lane
-
-Add `docs/os/<module-id>.md` only. Docs-Keeper consolidates Wave 3.
+- F:/G: deploys until Wave 2D EM GO
