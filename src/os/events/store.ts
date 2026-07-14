@@ -10,9 +10,17 @@ export async function appendOsEvent(event: OsEventEnvelope): Promise<void> {
   await appendFile(LOG_FILE, `${JSON.stringify(event)}\n`, "utf8");
 }
 
-/** Soft forward to Portal platform URL when OS_EVENTS_FORWARD=1. */
+/**
+ * Soft forward to Portal `POST /api/os-events`.
+ * On when `OS_EVENTS_FORWARD=1`, or DEV (`NODE_ENV=development`) unless explicitly `0`.
+ * Base URL from `PLATFORM_APPS_URL` (strip `/api/platform/apps`).
+ */
 export async function maybeForwardOsEvent(event: OsEventEnvelope): Promise<void> {
-  if (process.env.OS_EVENTS_FORWARD !== "1") return;
+  const forwardFlag = process.env.OS_EVENTS_FORWARD;
+  const forwardOn =
+    forwardFlag === "1" ||
+    (process.env.NODE_ENV === "development" && forwardFlag !== "0");
+  if (!forwardOn) return;
   const base = (process.env.PLATFORM_APPS_URL || "").replace(/\/api\/platform\/apps\/?$/, "");
   if (!base) return;
   try {
