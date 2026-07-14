@@ -1,29 +1,56 @@
-import { readdir } from "fs/promises";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { withOpenCors } from "@/lib/cors";
+import { corsPreflight, withOpenCors } from "@/lib/cors";
+import { listReleasesPath } from "@/os/modules/filebridge/list";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
-const ROOT = "H:\\";
+const DELETE_BLOCKED = {
+  error: "blocked" as const,
+  code: "conscious_no_delete" as const,
+  message:
+    "Deletes are blocked (CONSCIOUS #1). ProdDeck FileBridge never performs H: delete IO. Use Open H-Drive / FileBridge app only after explicit user confirmation of the exact target.",
+};
+
+export async function OPTIONS(req: NextRequest) {
+  return corsPreflight(req);
+}
 
 export async function GET(req: NextRequest) {
-  const rel = (req.nextUrl.searchParams.get("path") || "releases").replace(/\.\./g, "");
-  const abs = path.join(ROOT, rel);
-  if (!abs.toLowerCase().startsWith("h:\\")) {
-    return withOpenCors(NextResponse.json({ error: "path_denied" }, { status: 403 }));
+  const raw = req.nextUrl.searchParams.get("path");
+  const result = await listReleasesPath(raw);
+  if (!result.ok) {
+    return withOpenCors(
+      NextResponse.json(
+        { ok: false, error: result.error, message: result.message },
+        { status: result.status },
+      ),
+    );
   }
-  try {
-    const names = await readdir(abs, { withFileTypes: true });
-    const entries = names.slice(0, 100).map((d) => ({
-      name: d.name,
-      path: path.join(abs, d.name),
-      kind: d.isDirectory() ? "dir" : "file",
-    }));
-    return withOpenCors(NextResponse.json({ root: abs, entries }));
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "readdir failed";
-    return withOpenCors(NextResponse.json({ error: "list_failed", message }, { status: 500 }));
-  }
+  return withOpenCors(
+    NextResponse.json({
+      ok: true,
+      root: result.root,
+      rel: result.rel,
+      entries: result.entries,
+    }),
+  );
+}
+
+/** Hard-fail — no H: delete IO (CONSCIOUS). */
+export async function DELETE() {
+  return withOpenCors(NextResponse.json(DELETE_BLOCKED, { status: 403 }));
+}
+
+/** Hard-fail mutations — list API is read-only. */
+export async function POST() {
+  return withOpenCors(NextResponse.json(DELETE_BLOCKED, { status: 403 }));
+}
+
+export async function PUT() {
+  return withOpenCors(NextResponse.json(DELETE_BLOCKED, { status: 403 }));
+}
+
+export async function PATCH() {
+  return withOpenCors(NextResponse.json(DELETE_BLOCKED, { status: 403 }));
 }
