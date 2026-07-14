@@ -7,7 +7,7 @@ import { beginCssOAuthLogin, loginWithCss, verifySession } from "@/lib/auth";
 function isLocalDevHost() {
   if (typeof window === "undefined") return true;
   const h = window.location.hostname;
-  return h === "localhost" || h === "127.0.0.1";
+  return h === "localhost" || h === "127.0.0.1" || h === "home-dev.delena.buzz";
 }
 
 type Props = {
@@ -15,10 +15,10 @@ type Props = {
 };
 
 export function LoginForm({ onSuccess }: Props) {
-  const oauth = AUTH_CONFIG.authMode === "oauth";
+  const ssoLane = AUTH_CONFIG.authMode === "hybrid" || AUTH_CONFIG.authMode === "oauth";
   const localDev = isLocalDevHost();
   const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState(localDev ? "admin123" : "");
+  const [password, setPassword] = useState(localDev ? "" : "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,10 +35,6 @@ export function LoginForm({ onSuccess }: Props) {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
-    if (oauth) {
-      await onOauth();
-      return;
-    }
     setBusy(true);
     setError(null);
     try {
@@ -68,40 +64,34 @@ export function LoginForm({ onSuccess }: Props) {
             ProdDeck
           </h1>
           <p className="mt-3 text-[0.95rem] leading-snug text-[var(--pd-mist)]">
-            {oauth
-              ? "Sign in with CSS (css-next OAuth pilot)."
-              : "Launch production apps after CSS sign-in."}
+            Launch production apps after CSS sign-in.
           </p>
         </header>
 
-        {!oauth ? (
-          <>
-            <label className="grid gap-1.5 text-sm text-[var(--pd-mist)]">
-              Username
-              <input
-                name="username"
-                autoComplete="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                className="min-h-11 rounded-md border border-white/10 bg-[var(--pd-steel)] px-3 text-[var(--pd-paper)] outline-none focus:border-[var(--pd-lime)]"
-              />
-            </label>
+        <label className="grid gap-1.5 text-sm text-[var(--pd-mist)]">
+          Username
+          <input
+            name="username"
+            autoComplete="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            className="min-h-11 rounded-md border border-white/10 bg-[var(--pd-steel)] px-3 text-[var(--pd-paper)] outline-none focus:border-[var(--pd-lime)]"
+          />
+        </label>
 
-            <label className="grid gap-1.5 text-sm text-[var(--pd-mist)]">
-              Password
-              <input
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="min-h-11 rounded-md border border-white/10 bg-[var(--pd-steel)] px-3 text-[var(--pd-paper)] outline-none focus:border-[var(--pd-lime)]"
-              />
-            </label>
-          </>
-        ) : null}
+        <label className="grid gap-1.5 text-sm text-[var(--pd-mist)]">
+          Password
+          <input
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="min-h-11 rounded-md border border-white/10 bg-[var(--pd-steel)] px-3 text-[var(--pd-paper)] outline-none focus:border-[var(--pd-lime)]"
+          />
+        </label>
 
         {error ? (
           <p className="m-0 text-sm text-[var(--pd-danger)]" role="alert">
@@ -110,27 +100,28 @@ export function LoginForm({ onSuccess }: Props) {
         ) : null}
 
         <button
-          type={oauth ? "button" : "submit"}
-          onClick={oauth ? onOauth : undefined}
+          type="submit"
           disabled={busy}
           className="min-h-11 rounded-md bg-[var(--pd-lime)] px-4 text-base font-semibold text-[var(--pd-ink)] disabled:opacity-60"
         >
-          {busy
-            ? oauth
-              ? "Redirecting…"
-              : "Signing in…"
-            : oauth
-              ? "Sign in with CSS"
-              : "Sign in"}
+          {busy ? "Signing in…" : "Sign in"}
         </button>
+
+        {ssoLane ? (
+          <button
+            type="button"
+            onClick={onOauth}
+            disabled={busy}
+            className="min-h-11 rounded-md border border-white/15 bg-transparent px-4 text-sm font-medium text-[var(--pd-mist)] disabled:opacity-60"
+          >
+            {busy ? "…" : "Continue with CSS SSO (redirect)"}
+          </button>
+        ) : null}
 
         <p className="m-0 text-xs text-[var(--pd-mist)]">
           clientId <code>proddeck</code>
-          {oauth
-            ? ` — oauth → ${AUTH_CONFIG.authUrl}`
-            : localDev
-              ? " — DEV: admin / admin123"
-              : ""}
+          {ssoLane ? ` · IdP ${AUTH_CONFIG.authUrl}` : ""}
+          {localDev && !ssoLane ? " — DEV: admin / admin123" : ""}
         </p>
       </form>
     </main>

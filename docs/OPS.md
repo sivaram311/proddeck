@@ -45,13 +45,14 @@ Branch `feature/css-next-oauth-pilot`. Local `.env.local` (gitignored):
 ```env
 CSS_AUTH_URL=https://css-next.delena.buzz
 NEXT_PUBLIC_CSS_ISSUER=https://css-next.delena.buzz
-NEXT_PUBLIC_CSS_AUTH_MODE=oauth
+NEXT_PUBLIC_CSS_AUTH_MODE=hybrid
 NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI=https://home-dev.delena.buzz/auth/callback
 ```
 
-Also valid for laptop-only: `http://127.0.0.1:3320/auth/callback` (css-next allow-list). Public DEV host is **home-dev.delena.buzz**.
+Primary UX: **styled ProdDeck username/password** ? css-next `POST /auth/login` (no redirect).  
+Optional: **Continue with CSS SSO** ? oauth redirect. Use live CSS admin password (not README `admin123` on css-next prod).
 
-Default without flag: **password** (classic `/auth/login`). Do **not** bake oauth into F/G. Spec: CSS `docs/proddeck-css-next-oauth-pilot.md`.
+Default without flag: **password** only. Do **not** bake hybrid into F/G. Spec: CSS `docs/proddeck-css-next-oauth-pilot.md`.
 
 ## Dependent peers (minimum)
 

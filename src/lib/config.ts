@@ -9,13 +9,18 @@ const authModeEnv = (
   "password"
 ).toLowerCase();
 
+const authMode: AuthConfig["authMode"] =
+  authModeEnv === "oauth" || authModeEnv === "hybrid"
+    ? "hybrid"
+    : "password";
+
 export const AUTH_CONFIG: AuthConfig = {
   cssEnabled: true,
   authUrl: issuer,
   clientId: "proddeck",
   loginPath: "/auth/login",
   refreshPath: "/auth/refresh",
-  authMode: authModeEnv === "oauth" ? "oauth" : "password",
+  authMode,
   oauthRedirectUri:
     (typeof process !== "undefined" &&
       process.env.NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI) ||
