@@ -19,5 +19,5 @@ export const AUTH_CONFIG: AuthConfig = {
   oauthRedirectUri:
     (typeof process !== "undefined" &&
       process.env.NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI) ||
-    "http://127.0.0.1:3320/auth/callback",
+    "https://home-dev.delena.buzz/auth/callback",
 };

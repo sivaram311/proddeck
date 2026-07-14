@@ -193,6 +193,19 @@ export async function verifySession(config: AuthConfig): Promise<boolean> {
 
 const OAUTH_STATE_KEY = "prodDeckOauthState";
 const OAUTH_VERIFIER_KEY = "prodDeckOauthVerifier";
+const OAUTH_REDIRECT_KEY = "prodDeckOauthRedirect";
+
+function resolveOAuthRedirectUri(config: AuthConfig): string {
+  if (typeof window !== "undefined" && window.location?.origin) {
+    const origin = window.location.origin.replace(/\/$/, "");
+    // Always match the page the user opened (home-dev vs localhost)
+    return `${origin}/auth/callback`;
+  }
+  return (
+    config.oauthRedirectUri ||
+    "https://home-dev.delena.buzz/auth/callback"
+  );
+}
 
 function base64Url(bytes: ArrayBuffer | Uint8Array): string {
   const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
@@ -222,13 +235,13 @@ export async function beginCssOAuthLogin(config: AuthConfig): Promise<void> {
   }
   const issuer = expectedIssuer(config);
   if (!issuer) throw new Error("NEXT_PUBLIC_CSS_ISSUER / authUrl missing");
-  const redirectUri =
-    config.oauthRedirectUri || `${window.location.origin}/auth/callback`;
+  const redirectUri = resolveOAuthRedirectUri(config);
   const state = randomUrlSafe(32);
   const verifier = randomUrlSafe(64);
   const challenge = await pkceChallengeS256(verifier);
   sessionStorage.setItem(OAUTH_STATE_KEY, state);
   sessionStorage.setItem(OAUTH_VERIFIER_KEY, verifier);
+  sessionStorage.setItem(OAUTH_REDIRECT_KEY, redirectUri);
 
   const url = new URL(`${issuer}/oauth/authorize`);
   url.searchParams.set("response_type", "code");
@@ -254,16 +267,17 @@ export async function completeCssOAuthCallback(
   if (!code) throw new Error("Missing authorization code");
   const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
   const verifier = sessionStorage.getItem(OAUTH_VERIFIER_KEY);
+  const redirectUri =
+    sessionStorage.getItem(OAUTH_REDIRECT_KEY) || resolveOAuthRedirectUri(config);
   sessionStorage.removeItem(OAUTH_STATE_KEY);
   sessionStorage.removeItem(OAUTH_VERIFIER_KEY);
+  sessionStorage.removeItem(OAUTH_REDIRECT_KEY);
   if (!expectedState || params.state !== expectedState) {
     throw new Error("OAuth state mismatch");
   }
   if (!verifier) throw new Error("Missing PKCE verifier");
 
   const issuer = expectedIssuer(config);
-  const redirectUri =
-    config.oauthRedirectUri || `${window.location.origin}/auth/callback`;
   const tokenUrl = `${issuer}/oauth/token`;
   const res = await fetch(tokenUrl, {
     method: "POST",
