@@ -1,15 +1,14 @@
-# Cloud OS 0.8 — deferred hard outs (plan only)
+# Cloud OS 0.8.0 — Wave A LIVE
 
-**Status:** Wave A **IN DEV** (user `proceed` 2026-07-15) — **not** F/G until pack + EM GO  
-**Baseline live F/G:** ProdDeck **0.7.0** · AV classic **0.3.17** · Portal **0.1.8** · CSS `v0.1.0`  
+**Status:** Wave A **LIVE on F/G** (user promote GO 2026-07-15)  
+**ProdDeck:** **0.8.0** · tag `v0.8.0` · `H:\releases\proddeck-0.8.0`  
+**Peers:** AV classic **0.3.17** · Portal **0.1.8** · CSS `v0.1.0`  
 **Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
 **Session:** `proddeck-keepers-quay-2026-07-14`
 
-These items were **explicitly out** of the 0.7 safe subset. Each needs its own confirmation gate because it breaks CONSCIOUS standing limits or can disturb other fleets.
-
 ---
 
-## Wave A landed on DEV (`cloud-os/integrate`) — no kill / no unconfirmed write
+## Wave A shipped (no kill / confirm-gated write)
 
 | Cap | Behavior |
 |-----|----------|
@@ -35,22 +34,3 @@ These items were **explicitly out** of the 0.7 safe subset. Each needs its own c
 - Robocopy `feature/upgradation-functionality` over densify F/G (`4310`/`5310`)
 - Touching AV v2 `4311`/`5311` during classic/ProdDeck work
 - EM waiver of CSS issuer bake or promote evidence folders
-
----
-
-## Suggested execution shape (after GO)
-
-```text
-Wave A (safety rails only, still no irreversible IO)
-  → confirm UX templates + allowlists + dry-run APIs
-Wave B (one hard out at a time, separate packs)
-  → promote each with evidence + field-ops
-```
-
-Default first GO candidate after UX review: **Pri 6 queue drain tooling** (lowest blast radius) or **Pri 3 stop allowlist dry-run** — EM picks; do not auto-start Wave B.
-
----
-
-## Exit when this plan is approved
-
-Update this file Status → GO + hire list; bump target version (likely **0.8.0**); freeze peer mins in SUPPORTED-VERSIONS before packing.

@@ -4,7 +4,7 @@
  * Usage: node scripts/smoke.mjs [baseUrl]
  */
 const base = (process.argv[2] || "http://127.0.0.1:3320").replace(/\/$/, "");
-const EXPECT_VERSION = "0.7.0";
+const EXPECT_VERSION = "0.8.0";
 
 async function expectStatus(path, status, init) {
   const res = await fetch(`${base}${path}`, { redirect: "manual", ...init });

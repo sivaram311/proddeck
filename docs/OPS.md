@@ -1,8 +1,8 @@
 # Ops — ProdDeck
 
-**Versions:** DEV / F / G LIVE **0.7.0** · pack `H:\releases\proddeck-0.7.0` · tag `v0.7.0`  
+**Versions:** DEV / F / G LIVE **0.8.0** Wave A · pack `H:\releases\proddeck-0.8.0` · tag `v0.8.0`  
 **Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
-**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.7-PLAN.md](./CLOUD-OS-0.7-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Ports / hosts
 
