@@ -6,7 +6,7 @@
 
 **Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
 **Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
-**Wave A / deferred:** [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md)
+**Wave A / next backlog:** [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) · roadmap §10 [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md)
 
 ## Wave A (this release)
 
