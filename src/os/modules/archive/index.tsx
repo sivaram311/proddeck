@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { fetchArchiveReleases } from "./actions";
-import type { ArchiveListResult, ArchiveReleaseEntry } from "./types";
+import { fetchArchiveReleases, fetchEnvVersionPins } from "./actions";
+import type { ArchiveListResult, ArchiveReleaseEntry, EnvVersionPin } from "./types";
 
 const HDRIVE_HOME = "https://hdrive.delena.buzz/releases/";
 
@@ -31,6 +31,35 @@ function CopyPathButton({ value, label }: { value: string; label: string }) {
   );
 }
 
+function VersionPinStrip({ pins }: { pins: EnvVersionPin[] }) {
+  return (
+    <div
+      className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-md border border-white/10 bg-black/35 px-3 py-2"
+      aria-label="Live PREPROD and PROD VERSION pins"
+    >
+      {pins.map((pin, i) => {
+        const display = pin.version ?? "unpinned / unavailable";
+        return (
+          <span key={pin.path} className="inline-flex min-h-11 flex-wrap items-center gap-x-2 gap-y-0.5">
+            {i > 0 ? (
+              <span className="text-[var(--pd-mist)]" aria-hidden>
+                ·
+              </span>
+            ) : null}
+            <span className="text-sm text-[var(--pd-paper)]">
+              {pin.env} {pin.drive}{" "}
+              <span className={pin.version ? "text-[var(--pd-lime)]" : "text-[var(--pd-mist)]"}>
+                {display}
+              </span>
+            </span>
+            <span className="font-mono text-[10px] text-[var(--pd-mist)]">{pin.path}</span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
 function ReleaseCard({ release }: { release: ArchiveReleaseEntry }) {
   return (
     <article className="rounded-md border border-white/10 bg-black/40 p-3">
@@ -48,7 +77,7 @@ function ReleaseCard({ release }: { release: ArchiveReleaseEntry }) {
           rel="noopener noreferrer"
           className="inline-flex min-h-11 items-center rounded-md bg-[var(--pd-lime)] px-3 text-sm font-semibold text-[var(--pd-ink)] no-underline"
         >
-          Open H-Drive
+          Open in H-Drive (SSO)
         </a>
         <CopyPathButton value={release.rootPath} label="Copy path" />
       </div>
@@ -81,15 +110,17 @@ function ReleaseCard({ release }: { release: ArchiveReleaseEntry }) {
 
 export function ArchiveView() {
   const [result, setResult] = useState<ArchiveListResult | null>(null);
+  const [pins, setPins] = useState<EnvVersionPin[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const data = await fetchArchiveReleases();
+      const [data, pinResult] = await Promise.all([fetchArchiveReleases(), fetchEnvVersionPins()]);
       if (!cancelled) {
         setResult(data);
+        setPins(pinResult.pins);
         setLoading(false);
       }
     })();
@@ -117,10 +148,12 @@ export function ArchiveView() {
           rel="noopener noreferrer"
           className="text-[var(--pd-paper)] underline"
         >
-          hdrive.delena.buzz
+          H-Drive (SSO)
         </a>
-        . Read-only — no deletes from this module.
+        . <span className="text-[var(--pd-paper)]">Read-only</span> — no deletes from this module.
       </p>
+
+      {!loading && pins.length > 0 ? <VersionPinStrip pins={pins} /> : null}
 
       {loading ? (
         <p className="mt-4 m-0 text-sm text-[var(--pd-mist)]">Scanning H:\releases…</p>
