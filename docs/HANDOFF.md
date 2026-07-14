@@ -1,25 +1,18 @@
 ﻿# Handoff — ProdDeck
 
-**PROD LIVE:** **0.5.0** · `https://home.delena.buzz` · `G:\apps\proddeck` · `:5320`  
-**PREPROD LIVE:** **0.5.0** · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
-**DEV:** `E:\wt\proddeck-integrate` · `:3320` · branch `cloud-os/integrate`  
+**PROD LIVE:** preparing **0.6.0** (was 0.5.0 until Wave 2D cutover) · `G:\apps\proddeck` · `:5320`  
+**PREPROD LIVE:** preparing **0.6.0** · `F:\apps\proddeck` · `:4320`  
+**DEV:** `E:\wt\proddeck-integrate` · `:3320` · `cloud-os/integrate` · pack **0.6.0**  
 **Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
-**Release:** `H:\releases\proddeck-0.5.0` (Q1 + Q2 evidence + JWT issuer hotfix note)
+**Release (pending):** `H:\releases\proddeck-0.6.0`
 
 ## Wave status
 
 | Wave | Status |
 |------|--------|
-| 0 scaffold | done · `cloud-os/scaffold-v1` |
-| 1a / 1b Cloud OS modules | **LIVE** on F + G as **0.5.0** |
-| Hotfix | Client `NEXT_PUBLIC_CSS_ISSUER=https://css.delena.buzz` baked (see OPS) |
-
-## Isolation
-
-Never stop AgentVerse (`4310/4311/5310/5311`) or portal (`5080`).
-
-## Next
-
-Remaining stubs optional: beacon · appliances · drive-guard · filebridge · runbooks · merge `cloud-os/integrate` → `main` when ready.
+| 0–1 | live as 0.5.0 historically |
+| 2A stubs | merged (beacon, appliances, runbooks, filebridge, drive-guard) |
+| 2B/2C | deepen + os/events on integrate |
+| 2D | SemVer 0.6.0 promote |
 
 Session: `proddeck-keepers-quay-2026-07-14`.
