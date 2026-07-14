@@ -3,7 +3,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { FabricEventsTail } from "./FabricEventsTail";
 import { MISSION_TEMPLATES, initialLaneState } from "./mission-templates";
-import { PROMOTE_SKILL_IDS, PROMOTE_SKILL_LABEL, SKILL_PACKS } from "./skill-packs";
+import { SKILL_PACKS } from "./skill-packs";
+import { SkillRegistry } from "./SkillRegistry";
 import {
   LANE_STATUS_LABEL,
   LANE_STATUS_ORDER,
@@ -243,19 +244,7 @@ export function YardView() {
 
       <FabricEventsTail refreshToken={eventsRefreshToken} />
 
-      <section aria-label="Promote skills legend">
-        <p className="m-0 text-xs font-semibold uppercase tracking-wide text-[var(--pd-mist)]">
-          Promote skills
-        </p>
-        <ul className="mt-2 m-0 list-none space-y-1 p-0">
-          {PROMOTE_SKILL_IDS.map((id) => (
-            <li key={id} className="min-h-11 rounded-md border border-white/10 bg-black/40 px-3 py-2">
-              <p className="m-0 font-mono text-xs text-[var(--pd-lime)]">{id}</p>
-              <p className="mt-0.5 m-0 text-xs text-[var(--pd-mist)]">{PROMOTE_SKILL_LABEL[id]}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <SkillRegistry />
     </section>
   );
 }
