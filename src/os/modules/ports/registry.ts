@@ -15,7 +15,8 @@ type RegistryFile = {
 };
 
 async function loadRegistry(): Promise<PortReservation[]> {
-  const raw = JSON.parse(await readFile(REGISTRY_PATH, "utf8")) as RegistryFile;
+  const text = await readFile(REGISTRY_PATH, "utf8");
+  const raw = JSON.parse(text.replace(/^\uFEFF/, "")) as RegistryFile;
   return [...(raw.shared ?? []), ...(raw.reservations ?? [])];
 }
 
