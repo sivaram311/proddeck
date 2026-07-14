@@ -1,6 +1,6 @@
 # Ops — ProdDeck
 
-**Versions:** DEV **0.7.0** · F/G LIVE **0.6.2** · pack ready **0.7.0**  
+**Versions:** DEV / F / G LIVE **0.7.0** · pack `H:\releases\proddeck-0.7.0` · tag `v0.7.0`  
 **Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
 **SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.7-PLAN.md](./CLOUD-OS-0.7-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 

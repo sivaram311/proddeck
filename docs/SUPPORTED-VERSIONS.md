@@ -10,52 +10,39 @@ Update this file whenever F/G pins or peer minimums change.
 | Env | Version | Path / host | Port |
 |-----|---------|-------------|------|
 | DEV | **0.7.0** | `E:\wt\proddeck-integrate` · `cloud-os/integrate` | 3320 |
-| PREPROD | **0.6.2** (live) | `F:\apps\proddeck` · home-staging.delena.buzz | 4320 |
-| PROD | **0.6.2** (live) | `G:\apps\proddeck` · home.delena.buzz | 5320 |
-| Pack ready | **0.7.0** | `H:\releases\proddeck-0.7.0` · tag `v0.7.0` | — |
+| PREPROD | **0.7.0** (live) | `F:\apps\proddeck` · home-staging.delena.buzz | 4320 |
+| PROD | **0.7.0** (live) | `G:\apps\proddeck` · home.delena.buzz | 5320 |
+| Pack | **0.7.0** | `H:\releases\proddeck-0.7.0` · tag `v0.7.0` | — |
 
 ## Peer apps (live F/G)
 
 | App | PREPROD | PROD | Ports | Notes |
 |-----|---------|------|-------|-------|
 | **Agent Portal** | **0.1.8** | **0.1.8** | 4080 / 5080 | `POST /api/os-events` required for OS event forward |
-| **AgentVerse classic** | **0.3.16** | **0.3.16** | 4310 / 5310 | Densify + `/desk` deep-link (URI brief) |
-| **AgentVerse classic (packaged)** | **0.3.17** awaiting EM | same pack | — | Desk search/filter/cancel · `H:\releases\agentverse-0.3.17` · tag `v0.3.17` |
+| **AgentVerse classic** | **0.3.17** | **0.3.17** | 4310 / 5310 | Densify + `/desk` + Desk upgradation UX |
 | **AgentVerse v2** | side fleet | side fleet | 4311 / 5311 | Independent; do not disturb on classic/ProdDeck promote |
-| **CSS (prod IdP)** | shared | shared | 5900 · css.delena.buzz | Issuer bake mandatory on Next builds |
+| **CSS (prod IdP)** | shared | shared | 5900 · css.delena.buzz | Issuer bake mandatory on Next builds · `v0.1.0` |
 
 ## Dependency matrix
 
-### ProdDeck **0.6.2** (current F/G live)
+### ProdDeck **0.7.0** (current F/G live)
 
 | Depends on | Minimum | Why |
 |------------|---------|-----|
-| CSS | prod issuer `https://css.delena.buzz` · `clientId=proddeck` | Login + catalog JWT |
+| CSS | prod issuer `https://css.delena.buzz` · `clientId=proddeck` · tag `v0.1.0` | Login + catalog JWT |
 | Agent Portal | **≥ 0.1.8** | `OS_EVENTS_FORWARD=1` → `POST /api/os-events` |
-| AgentVerse classic | **≥ 0.3.16** | Dispatch `/desk` URI brief + ProdDeck strip |
+| AgentVerse classic | **≥ 0.3.16** (live **0.3.17**) | Dispatch `/desk` URI brief + Desk UX |
 | `PLATFORM_APPS_URL` | F→`:4080` / G→`:5080` platform apps base | Event forward base strip |
 
-### ProdDeck **0.7.0** (DEV + pack; promote pending)
+0.7 safe-subset features (local activity queue, Drive Guard CSS gate, ports request-stop events, Yard skill registry, FileBridge list jail / delete blocked) — see [CLOUD-OS-0.7-PLAN.md](./CLOUD-OS-0.7-PLAN.md).
 
-Everything in **0.6.2**, plus:
-
-| Feature | Peer / note |
-|---------|-------------|
-| Activity-log queue | Local `.data/activity-queue.jsonl` only — Lead drains to MyAgent |
-| Drive Guard CSS gate | Same CSS freshness as Promote GO |
-| Ports request-stop | Event-only; Portal still four event types |
-| Yard skill registry | Read-only local catalog |
-| FileBridge list | Jail under `H:\releases`; delete blocked |
-
-**Recommended peers when promoting 0.7.0:** Portal **≥ 0.1.8**, AV classic **≥ 0.3.17** (Desk UX), CSS issuer bake unchanged.
-
-### AgentVerse **0.3.16** (live) / **0.3.17** (packaged)
+### AgentVerse **0.3.17** (live)
 
 | Depends on | Minimum | Why |
 |------------|---------|-----|
-| CSS | `https://css.delena.buzz` baked | Session auth |
-| Agent Portal | running PREPROD/PROD API | Session Desk / cancel / quests |
-| ProdDeck Dispatch | **≥ 0.6.2** URI brief (not base64url-primary) | Deep-link land |
+| CSS | `https://css.delena.buzz` baked · `v0.1.0` | Session auth |
+| Agent Portal | **≥ 0.1.8** | Session Desk / cancel / quests |
+| ProdDeck Dispatch | **≥ 0.6.2** URI `brief` (live **0.7.0**) | Deep-link land |
 
 Do **not** deploy `feature/upgradation-functionality` over densify F/G (diverged history / side ports 4312/5312).
 
@@ -79,8 +66,9 @@ Do **not** deploy `feature/upgradation-functionality` over densify F/G (diverged
 
 | Pack | Role |
 |------|------|
-| `H:\releases\proddeck-0.6.2` | Live F/G |
-| `H:\releases\proddeck-0.7.0` | Next promote |
-| `H:\releases\agentverse-0.3.16` | Live classic baseline |
-| `H:\releases\agentverse-0.3.17` | Next AV Desk promote |
+| `H:\releases\proddeck-0.7.0` | Live F/G |
+| `H:\releases\proddeck-0.6.2` | Previous |
+| `H:\releases\agentverse-0.3.17` | Live classic |
+| `H:\releases\agentverse-0.3.16` | Previous classic |
 | `H:\releases\agent-portal-0.1.8` | Live Portal + os-events |
+| `H:\releases\css-0.1.0` | Shared IdP |
