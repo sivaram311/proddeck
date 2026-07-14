@@ -1,16 +1,16 @@
 ﻿# ProdDeck
 
-CSS-gated production launcher — **Keepers’ Quay**: call apps, leave memory, see the watch.
+CSS-gated production launcher — **Keepers' Quay**: call apps, leave memory, see the watch.
 
 | Env | URL / path | Port |
 |-----|------------|------|
 | DEV | `E:\MyWorkspace\sandbox\proddeck` | `3320` |
-| PREPROD | `https://home-staging.delena.buzz` | `4320` (promote 0.4.0 next) |
+| PREPROD | `https://home-staging.delena.buzz` | `4320` **LIVE 0.4.0** |
 | PROD | `https://home.delena.buzz` | `5320` (not Q2 yet) |
 
-- **Version:** **0.4.0** — Keeper humanoid + berth/ticket/watch animations  
-- **clientId:** `proddeck`  
-- **Repo:** https://github.com/sivaram311/proddeck  
+- **Version:** **0.4.0** — Keeper humanoid + berth/ticket/watch animations
+- **clientId:** `proddeck`
+- **Repo:** https://github.com/sivaram311/proddeck
 - **World:** [docs/WORLD.md](docs/WORLD.md) · [docs/OPS.md](docs/OPS.md) · [docs/HANDOFF.md](docs/HANDOFF.md)
 
 ## Run
