@@ -38,6 +38,19 @@ Commit `.env.production` holds the public issuer for release builds. After cutov
 
 Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
 
+### css-next OAuth pilot (DEV only)
+
+Branch `feature/css-next-oauth-pilot`. Local `.env.local` (gitignored):
+
+```env
+CSS_AUTH_URL=https://css-next.delena.buzz
+NEXT_PUBLIC_CSS_ISSUER=https://css-next.delena.buzz
+NEXT_PUBLIC_CSS_AUTH_MODE=oauth
+NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI=http://127.0.0.1:3320/auth/callback
+```
+
+Default without flag: **password** (classic `/auth/login`). Do **not** bake oauth into F/G. Spec: CSS `docs/proddeck-css-next-oauth-pilot.md`.
+
 ## Dependent peers (minimum)
 
 | Feature in ProdDeck | Requires |

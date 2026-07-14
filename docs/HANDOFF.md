@@ -15,6 +15,7 @@
 | Agent Portal | **0.1.8** | os-events |
 | agentverse-upgrade | **0.3.1** | Dispatch SoT `:4312/:5312` |
 | AgentVerse classic | **0.3.17** | rollback only |
-| CSS | `v0.1.0` · css.delena.buzz | classic IdP |
+| CSS | `v0.1.0` · css.delena.buzz | classic IdP (F/G) |
+| CSS (DEV OAuth pilot) | css-next `v0.2.0` | `feature/css-next-oauth-pilot` · `.env.local` oauth only |
 
-Session: `proddeck-keepers-quay-2026-07-14`.
+Session: `css-api-migrate-wave-2026-07-15` (ProdDeck-only oauth pilot).

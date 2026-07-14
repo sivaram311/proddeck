@@ -4,6 +4,9 @@ export type AuthConfig = {
   clientId: string;
   loginPath?: string;
   refreshPath?: string;
+  /** password = legacy /auth/login on ProdDeck; oauth = redirect to css-next */
+  authMode?: "password" | "oauth";
+  oauthRedirectUri?: string;
 };
 
 export type DeckApp = {

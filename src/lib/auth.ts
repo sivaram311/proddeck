@@ -188,3 +188,112 @@ export async function verifySession(config: AuthConfig): Promise<boolean> {
   const token = await ensureFreshToken(config);
   return Boolean(token);
 }
+
+/* --- css-next OAuth (Authorization Code + PKCE) --- */
+
+const OAUTH_STATE_KEY = "prodDeckOauthState";
+const OAUTH_VERIFIER_KEY = "prodDeckOauthVerifier";
+
+function base64Url(bytes: ArrayBuffer | Uint8Array): string {
+  const u8 = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
+  let bin = "";
+  u8.forEach((b) => {
+    bin += String.fromCharCode(b);
+  });
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function randomUrlSafe(length = 64): string {
+  const bytes = new Uint8Array(length);
+  crypto.getRandomValues(bytes);
+  return base64Url(bytes).slice(0, length);
+}
+
+async function pkceChallengeS256(verifier: string): Promise<string> {
+  const data = new TextEncoder().encode(verifier);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return base64Url(digest);
+}
+
+/** Full-page navigate to css-next /oauth/authorize (do not use /api/css proxy). */
+export async function beginCssOAuthLogin(config: AuthConfig): Promise<void> {
+  if (typeof window === "undefined") {
+    throw new Error("OAuth login is browser-only");
+  }
+  const issuer = expectedIssuer(config);
+  if (!issuer) throw new Error("NEXT_PUBLIC_CSS_ISSUER / authUrl missing");
+  const redirectUri =
+    config.oauthRedirectUri || `${window.location.origin}/auth/callback`;
+  const state = randomUrlSafe(32);
+  const verifier = randomUrlSafe(64);
+  const challenge = await pkceChallengeS256(verifier);
+  sessionStorage.setItem(OAUTH_STATE_KEY, state);
+  sessionStorage.setItem(OAUTH_VERIFIER_KEY, verifier);
+
+  const url = new URL(`${issuer}/oauth/authorize`);
+  url.searchParams.set("response_type", "code");
+  url.searchParams.set("client_id", config.clientId || "proddeck");
+  url.searchParams.set("redirect_uri", redirectUri);
+  url.searchParams.set("code_challenge", challenge);
+  url.searchParams.set("code_challenge_method", "S256");
+  url.searchParams.set("state", state);
+  window.location.assign(url.toString());
+}
+
+export async function completeCssOAuthCallback(
+  config: AuthConfig,
+  params: { code?: string | null; state?: string | null; error?: string | null },
+): Promise<void> {
+  if (typeof window === "undefined") {
+    throw new Error("OAuth callback is browser-only");
+  }
+  if (params.error) {
+    throw new Error(`OAuth error: ${params.error}`);
+  }
+  const code = params.code;
+  if (!code) throw new Error("Missing authorization code");
+  const expectedState = sessionStorage.getItem(OAUTH_STATE_KEY);
+  const verifier = sessionStorage.getItem(OAUTH_VERIFIER_KEY);
+  sessionStorage.removeItem(OAUTH_STATE_KEY);
+  sessionStorage.removeItem(OAUTH_VERIFIER_KEY);
+  if (!expectedState || params.state !== expectedState) {
+    throw new Error("OAuth state mismatch");
+  }
+  if (!verifier) throw new Error("Missing PKCE verifier");
+
+  const issuer = expectedIssuer(config);
+  const redirectUri =
+    config.oauthRedirectUri || `${window.location.origin}/auth/callback`;
+  const tokenUrl = `${issuer}/oauth/token`;
+  const res = await fetch(tokenUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: redirectUri,
+      client_id: config.clientId || "proddeck",
+      code_verifier: verifier,
+    }),
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || `Token exchange failed (${res.status})`);
+  }
+  const data = (await res.json()) as {
+    accessToken?: string;
+    token?: string;
+    refreshToken?: string;
+    username?: string;
+    user?: unknown;
+  };
+  const access = data.accessToken || data.token;
+  if (!access) throw new Error("No access token in OAuth token response");
+  if (!isTokenAcceptable(access, config)) {
+    throw new Error(
+      `CSS issued an incompatible JWT (iss=${decodeJwtPayload(access)?.iss}). Expected ${issuer}.`,
+    );
+  }
+  clearTokens();
+  setTokens(access, data.refreshToken, data.user ?? { username: data.username });
+}
