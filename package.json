@@ -1,7 +1,7 @@
 {
   "name": "proddeck",
-  "version": "0.8.0",
-  "description": "CSS-gated production launcher - Keepers Quay + Cloud OS 0.8.0 Wave A",
+  "version": "0.8.1",
+  "description": "CSS-gated production launcher - Keepers Quay + Cloud OS 0.8.1 Wave A + Device Lab",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3320",
