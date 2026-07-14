@@ -18,6 +18,18 @@ export type SkillPack = {
   skills: string[];
 };
 
+/** Read-only catalog row — skill, persona, or pack id (no spawn from registry). */
+export type SkillRegistryKind = "promote" | "persona" | "pack" | "lane";
+
+export type SkillRegistryEntry = {
+  id: string;
+  kind: SkillRegistryKind;
+  label: string;
+  blurb: string;
+  /** Path note pointing at MyAgent workflow or machine-docs personas. */
+  pathNote: string;
+};
+
 export type MissionLane = {
   id: string;
   skillId: string;
