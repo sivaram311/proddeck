@@ -1,6 +1,6 @@
-import { appendFile, mkdir } from "fs/promises";
+import { appendFile, mkdir, readFile } from "fs/promises";
 import path from "path";
-import type { OsEventEnvelope } from "./types";
+import type { OsEventEnvelope, OsEventType } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), ".data");
 const LOG_FILE = path.join(DATA_DIR, "os-events.jsonl");
@@ -8,6 +8,39 @@ const LOG_FILE = path.join(DATA_DIR, "os-events.jsonl");
 export async function appendOsEvent(event: OsEventEnvelope): Promise<void> {
   await mkdir(DATA_DIR, { recursive: true });
   await appendFile(LOG_FILE, `${JSON.stringify(event)}\n`, "utf8");
+}
+
+/** Read-only tail of local OS events jsonl (newest last). */
+export async function tailOsEvents(opts?: {
+  limit?: number;
+  type?: OsEventType | string;
+}): Promise<OsEventEnvelope[]> {
+  const limit = Math.min(Math.max(opts?.limit ?? 40, 1), 200);
+  let raw = "";
+  try {
+    raw = await readFile(LOG_FILE, "utf8");
+  } catch {
+    return [];
+  }
+  const lines = raw.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  const events: OsEventEnvelope[] = [];
+  for (const line of lines) {
+    try {
+      const parsed = JSON.parse(line) as OsEventEnvelope;
+      if (!parsed?.type || !parsed?.at) continue;
+      if (opts?.type && parsed.type !== opts.type) continue;
+      events.push({
+        type: parsed.type,
+        at: parsed.at,
+        env: parsed.env,
+        actor: parsed.actor,
+        payload: parsed.payload && typeof parsed.payload === "object" ? parsed.payload : {},
+      });
+    } catch {
+      /* skip bad line */
+    }
+  }
+  return events.slice(-limit);
 }
 
 /**

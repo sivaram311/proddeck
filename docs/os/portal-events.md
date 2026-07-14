@@ -16,6 +16,8 @@
 
 ProdDeck stamps `at`, appends `.data/os-events.jsonl` (gitignored), then soft-forwards to Agent Portal when enabled.
 
+**Local read:** `GET /api/os/events?limit=40&type=crew.fabric.spawned` → `{ ok, events, count }` (read-only jsonl tail).
+
 ## Portal consumer (DEV)
 
 Agent Portal (E: only for this leftover): `POST /api/os-events`
