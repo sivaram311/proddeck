@@ -1,6 +1,6 @@
 {
   "name": "proddeck",
-  "version": "0.5.0-scaffold",
+  "version": "0.5.0",
   "description": "CSS-gated production app launcher — Keepers Quay + Cloud OS Places",
   "private": true,
   "scripts": {
