@@ -14,11 +14,18 @@
 
 ## Commands
 
-```bash
+**Machine rule (CONSCIOUS #15):** claim the Playwright slot before any run; release after — see `E:\MyAgent\workflow\testing\PLAYWRIGHT-SLOT.md`. Do not start a second Playwright while the slot is held.
+
+```powershell
+# claim
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\claim-playwright-slot.ps1 -SessionId "proddeck-keepers-quay-2026-07-14" -AppId proddeck -Project all -AgentRole e2e-lead
+# run
 npm run test:e2e
 npm run test:e2e:realme
 npm run test:e2e:desktop
 npm run test:e2e:tablet
+# release / confirm
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\release-playwright-slot.ps1 -SessionId "proddeck-keepers-quay-2026-07-14" -Result pass
 ```
 
 Override URL: `PRODDECK_URL=http://127.0.0.1:3320 npm run test:e2e`
