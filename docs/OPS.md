@@ -1,13 +1,13 @@
 ﻿# Ops — ProdDeck
 
 **Version:** **0.5.0** **PROD + PREPROD LIVE** (Cloud OS Wave 1)  
-**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md)
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Ports / hosts
 
 | Env | Port | Path | Host |
 |-----|------|------|------|
-| DEV | 3320 | `E:\MyWorkspace\sandbox\proddeck` | local |
+| DEV | 3320 | `E:\wt\proddeck-integrate` | local |
 | PREPROD | 4320 | `F:\apps\proddeck` | https://home-staging.delena.buzz |
 | PROD | 5320 | `G:\apps\proddeck` | https://home.delena.buzz |
 
@@ -18,16 +18,23 @@ Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for Pr
 | Item | Value |
 |------|--------|
 | CSS `clientId` | `proddeck` |
-| Pack | `packs/proddeck/app.json` → `keepers-quay` |
-| Modules | catalog · helpdesk · scene · crewsDesk |
+| Pack | `packs/proddeck/app.json` → `keepers-quay` + `os.enabled` |
+| Quay modules | catalog · helpdesk · scene · crewsDesk |
+| OS modules (Wave 1) | pulse · ports · identity · yard · activity-log · archive · dispatch · promote |
 
-## Env vars
+### CSS JWT bake (mandatory for F/G builds)
 
-| Variable | Purpose |
-|----------|---------|
-| `CSS_AUTH_URL` | DEV `:9000` · F/G often `:5900` |
-| `NEXT_PUBLIC_CSS_ISSUER` | JWT `iss` (prod `https://css.delena.buzz`) |
-| `PLATFORM_APPS_URL` | Optional Agent Portal platform apps |
+`NEXT_PUBLIC_*` is inlined at **`npm run build`**. If `NEXT_PUBLIC_CSS_ISSUER` is missing, the client falls back to `http://localhost:9000` and rejects live tokens (`iss=https://css.delena.buzz`) after login.
+
+| Variable | DEV | PREPROD/PROD |
+|----------|-----|----------------|
+| `CSS_AUTH_URL` | `:9000` | `http://127.0.0.1:5900` |
+| `NEXT_PUBLIC_CSS_ISSUER` | match DEV CSS | **`https://css.delena.buzz`** (also in `.env.production`) |
+| `PLATFORM_APPS_URL` | optional | `:4080` / `:5080` platform apps |
+
+Commit `.env.production` holds the public issuer for release builds. After cutover: hard-refresh clients if an old chunk is cached.
+
+Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
 
 ## Health
 
@@ -36,9 +43,13 @@ npm run smoke
 npm run smoke -- http://127.0.0.1:4320
 npm run smoke -- https://home-staging.delena.buzz
 npm run smoke -- https://home.delena.buzz
+# optional module smokes (when server up):
+node scripts/smoke-pulse.mjs
+node scripts/smoke-ports.mjs
+node scripts/smoke-activity-log.mjs
 ```
 
-Expect pack `0.5.0` / `keepers-quay` + `os.enabled` on F/G/DEV. Catalog + helpdesk **401** without Bearer.
+Expect pack `0.5.0` / `keepers-quay` + `os.enabled`. Catalog + helpdesk **401** without Bearer; **200 + apps** with a valid `proddeck` JWT.
 
 ## Promote
 
@@ -46,5 +57,6 @@ Expect pack `0.5.0` / `keepers-quay` + `os.enabled` on F/G/DEV. Catalog + helpde
 |------|----------|
 | Q1 | `H:\releases\proddeck-0.5.0\evidence\q1\` |
 | Q2 | `H:\releases\proddeck-0.5.0\evidence\q2\` |
+| JWT hotfix | `evidence/q2/qa/jwt-issuer-hotfix.md` |
 
-Always hire **promote-field-ops** with promote crew. Next product direction (Pulse, Promote phone GO, Crew Fabric): [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
+Always hire **promote-field-ops** with promote crew. Roadmap: [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).

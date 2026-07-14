@@ -381,4 +381,5 @@ Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports re
 
 | Date | Note |
 |------|------|
+| 2026-07-14 | **0.5.0 LIVE** PREPROD+PROD — Places shell + Wave 1 modules; JWT issuer bake required on build |
 | 2026-07-14 | Grok strategy captured; Crew Fabric / Yard deep idea added from MyAgent promote + personas workflow |

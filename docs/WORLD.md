@@ -1,7 +1,7 @@
 # Keepers' Quay — World & Story
 
 **Product:** ProdDeck  
-**Version:** **0.4.0** characters/animations · 0.3.0 was walkable Quay shell  
+**Version:** **0.5.0** live (Cloud OS Places) · Quay characters/anims from **0.4.0** · 0.3.0 walkable shell  
 **Session:** `proddeck-keepers-quay-2026-07-14`
 
 ## Purpose (why this world exists)
@@ -47,12 +47,13 @@ The 3D world exists to make those three verbs **legible and memorable**. If a me
 |-----|---------|
 | 0.2.0 | Pack + helpdesk + CSS stub |
 | 0.3.0 | Walkable Quay Ch1–3 procedural |
-| 0.4.0 | Characters + animations (this pass) |
+| 0.4.0 | Characters + animations |
+| 0.5.0 | Cloud OS Places + Wave 1 modules (live F/G) |
 
 ## Config
 
-`packs/proddeck/app.json` — `scene.pack=keepers-quay`. Catalog `/api/catalog` remains SoT for apps. WebGL fail → flat catalog.
+`packs/proddeck/app.json` — `scene.pack=keepers-quay` + `os.enabled`. Catalog `/api/catalog` remains SoT for apps. WebGL fail → flat catalog.
 
 ## Next direction
 
-Phone-first **cloud OS** for this VPS + **Crew Fabric** (parallel skill-hired subagents): see [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
+Further Cloud OS epics (Beacon, Appliances, FileBridge, live Yard hire): [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).

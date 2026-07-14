@@ -12,16 +12,24 @@ Layout on F:/G:: wrapper (`start.ps1`, `VERSION`) + `app\` (Next.js + `.next` + 
 
 ## Build
 
+**Always bake production CSS issuer** (or copy `.env.production`):
+
 ```bash
+# .env.production (committed) should include:
+# NEXT_PUBLIC_CSS_ISSUER=https://css.delena.buzz
+# CSS_AUTH_URL=http://127.0.0.1:5900
+
 npm ci
 npm run build
 npm start   # or next start -p <env port>
 ```
 
-Set `CSS_AUTH_URL` and `NEXT_PUBLIC_CSS_ISSUER` for target CSS. PREPROD/PROD typically:
+Runtime on F/G also uses `app\.env.production.local`:
 
 - `CSS_AUTH_URL=http://127.0.0.1:5900`
 - `NEXT_PUBLIC_CSS_ISSUER=https://css.delena.buzz`
+
+Skipping the public issuer at build time causes post-login JWT rejection (client expects `localhost:9000`).
 
 ## Promote
 
@@ -44,7 +52,8 @@ See [OPS.md](./OPS.md), `agents/pre-work/CUTOVER-ROLLBACK.md`, `E:\MyAgent\workf
 1. Port reserved / active in MyAgent ports registry  
 2. Env files for target CSS  
 3. `npm run build` green  
-4. Smoke `/` 200 · catalog/helpdesk 401 without Bearer · pack version match  
+4. Smoke `/` 200 · catalog/helpdesk 401 without Bearer · **login + catalog with real proddeck JWT** · pack version match  
 5. Public host smoke after nginx/DNS  
 6. Non-regression: AgentVerse / portal still up  
 7. Docs + ACTIVITY-LOG updated (rule #12)
+8. Confirm client bundle contains `css.delena.buzz` (not only localhost issuer fallback)

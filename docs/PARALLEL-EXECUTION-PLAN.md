@@ -269,11 +269,12 @@ Exit: integrate green smoke → docs → stop (promote separate GO)
 
 - [x] Freeze this ownership map in `agents/pre-work/CLOUD-OS-OWNERSHIP.md`  
 - [x] Cut `cloud-os/scaffold` and ship scaffold-v1  
-- [ ] Create worktrees for chosen Wave 1a set  
-- [ ] Hire N agents with pasted skill briefs  
-- [ ] Open `cloud-os/integrate`  
-- [ ] One ACTIVITY-LOG row for swarm start (Lead)  
-- [ ] After lanes done → merge → smoke → docs → SemVer 0.5.0  
+- [x] Create worktrees for chosen Wave 1a set  
+- [x] Hire N agents with pasted skill briefs  
+- [x] Open `cloud-os/integrate`  
+- [x] One ACTIVITY-LOG row for swarm start (Lead)  
+- [x] After lanes done → merge → smoke → docs → SemVer 0.5.0  
+- [x] Q1 + Q2 promote 0.5.0 (+ JWT issuer bake hotfix)
 
 ---
 
@@ -288,5 +289,6 @@ Exit: integrate green smoke → docs → stop (promote separate GO)
 
 | Date | Note |
 |------|------|
+| 2026-07-14 | **0.5.0 LIVE** F/G; Wave 1a+1b merged; JWT issuer bake hotfix documented |
 | 2026-07-14 | Wave 0 scaffold done: Places shell + stubs + DeckHome wire; pack `0.5.0-scaffold`; tag `cloud-os/scaffold-v1` |
 | 2026-07-14 | Parallel singleshot plan written for roadmap Wave 0→3 + N worktrees |
