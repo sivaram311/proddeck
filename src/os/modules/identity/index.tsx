@@ -1,13 +1,9 @@
 "use client";
 
-import { ModuleStub } from "../_shared/ModuleStub";
+import { VaultSessionStrip, type VaultSessionStripProps } from "./VaultSessionStrip";
 
-export function IdentityView() {
-  return (
-    <ModuleStub
-      id="identity"
-      title="Identity"
-      blurb="CSS session strip: subject, clientId proddeck, expiry, sign-out, re-auth hook."
-    />
-  );
+export function IdentityView(props: VaultSessionStripProps = {}) {
+  return <VaultSessionStrip {...props} />;
 }
+
+export { VaultSessionStrip, type VaultSessionStripProps } from "./VaultSessionStrip";
