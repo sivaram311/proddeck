@@ -14,6 +14,22 @@ const CrewSchema = z.object({
   watch: z.string().min(1),
 });
 
+const OsModuleFlagsSchema = z.object({
+  pulse: z.boolean(),
+  ports: z.boolean(),
+  beacon: z.boolean(),
+  identity: z.boolean(),
+  "activity-log": z.boolean(),
+  archive: z.boolean(),
+  dispatch: z.boolean(),
+  promote: z.boolean(),
+  yard: z.boolean(),
+  runbooks: z.boolean(),
+  appliances: z.boolean(),
+  "drive-guard": z.boolean(),
+  filebridge: z.boolean(),
+});
+
 export const ProdDeckPackSchema = z.object({
   appId: z.literal("proddeck"),
   displayName: z.string().min(1),
@@ -24,6 +40,22 @@ export const ProdDeckPackSchema = z.object({
     scene: z.boolean(),
     crewsDesk: z.boolean(),
   }),
+  os: z
+    .object({
+      enabled: z.boolean(),
+      defaultPlace: z.enum([
+        "quay",
+        "control-tower",
+        "forge",
+        "yard",
+        "archive",
+        "watch",
+        "remember",
+        "vault",
+      ]),
+      modules: OsModuleFlagsSchema,
+    })
+    .optional(),
   scene: z.object({
     pack: z.string().min(1),
     defaultView: z.enum(["catalog", "helpdesk", "scene"]),
@@ -51,7 +83,7 @@ export type ProdDeckPack = z.infer<typeof ProdDeckPackSchema>;
 
 export type PackPublic = Pick<
   ProdDeckPack,
-  "appId" | "displayName" | "version" | "modules" | "scene" | "helpdesk" | "crews"
+  "appId" | "displayName" | "version" | "modules" | "scene" | "helpdesk" | "crews" | "os"
 >;
 
 let cached: ProdDeckPack | null = null;
@@ -82,5 +114,6 @@ export function toPackPublic(pack: ProdDeckPack): PackPublic {
     scene: pack.scene,
     helpdesk: pack.helpdesk,
     crews: pack.crews || [],
+    os: pack.os,
   };
 }

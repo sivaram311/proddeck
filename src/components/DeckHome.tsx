@@ -9,6 +9,10 @@ import { HelpdeskPanel } from "@/components/HelpdeskPanel";
 import { KeepersQuayScene } from "@/scene/keepers-quay/KeepersQuayScene";
 import type { KeeperAction } from "@/scene/keepers-quay/Characters";
 import type { QuayPlace } from "@/scene/keepers-quay/types";
+import { DriveGuardChip } from "@/os/shell/DriveGuardChip";
+import { PlacePanel } from "@/os/shell/PlacePanel";
+import { PlacesNav } from "@/os/shell/PlacesNav";
+import type { OsEnv, OsModuleFlags, OsPlaceId } from "@/os/types";
 
 type Props = {
   username?: string;
@@ -21,6 +25,11 @@ type PackPublic = {
   helpdesk: { categories: { id: string; label: string; crewRole: string }[] };
   crews?: { id: string; label: string; watch: string }[];
   version: string;
+  os?: {
+    enabled: boolean;
+    defaultPlace: OsPlaceId;
+    modules: OsModuleFlags;
+  };
 };
 
 type Panel = "none" | "catalog" | "helpdesk" | "crews";
@@ -41,6 +50,26 @@ export function DeckHome({ username, onLogout }: Props) {
   const [actionToken, setActionToken] = useState(0);
   const [loftAck, setLoftAck] = useState(false);
   const [gateAck, setGateAck] = useState(false);
+  const [osPlace, setOsPlace] = useState<OsPlaceId>("quay");
+  const [osEnv, setOsEnv] = useState<OsEnv>("dev");
+
+  const osEnabled = pack?.os?.enabled !== false;
+  const osFlags: OsModuleFlags = pack?.os?.modules ?? {
+    pulse: true,
+    ports: true,
+    beacon: true,
+    identity: true,
+    "activity-log": true,
+    archive: true,
+    dispatch: true,
+    promote: true,
+    yard: true,
+    runbooks: true,
+    appliances: true,
+    "drive-guard": true,
+    filebridge: true,
+  };
+  const showQuayUi = !osEnabled || osPlace === "quay";
 
   useEffect(() => {
     setGateAck(true);
@@ -62,6 +91,7 @@ export function DeckHome({ username, onLogout }: Props) {
         const data = (await res.json()) as PackPublic;
         if (cancelled) return;
         setPack(data);
+        if (data.os?.defaultPlace) setOsPlace(data.os.defaultPlace);
         if (data.scene.defaultView === "catalog" || !data.modules.scene) {
           setFlatMode(true);
           setPanel("catalog");
@@ -108,10 +138,19 @@ export function DeckHome({ username, onLogout }: Props) {
   }, []);
 
   const useQuay =
+    showQuayUi &&
     Boolean(pack?.modules.scene) &&
     pack?.scene.pack === "keepers-quay" &&
     !flatMode &&
     !webglFailed;
+
+  function onOsPlace(id: OsPlaceId) {
+    setOsPlace(id);
+    if (id !== "quay") {
+      setPanel("none");
+      setPendingLaunch(null);
+    }
+  }
 
   const onWebglFail = useCallback(() => {
     setWebglFailed(true);
@@ -202,80 +241,95 @@ export function DeckHome({ username, onLogout }: Props) {
               className="mt-3 max-w-[22rem] text-[0.95rem] leading-snug text-[var(--pd-mist)]"
               style={{ textShadow: useQuay ? "0 1px 10px rgba(0,0,0,0.9)" : undefined }}
             >
-              {useQuay
-                ? "Keepers' Quay — call production from the Manifest"
-                : "Your production apps, one tap away"}
+              {osEnabled && !showQuayUi
+                ? "Cloud OS — Places beyond the Quay"
+                : useQuay
+                  ? "Keepers' Quay — call production from the Manifest"
+                  : "Your production apps, one tap away"}
               {username ? ` — ${username}` : ""}
               {pack?.version ? ` · v${pack.version}` : ""}.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onLogout}
-            className="min-h-11 shrink-0 rounded-md border border-[var(--pd-danger)]/40 bg-black/40 px-3 text-sm text-[var(--pd-danger)] backdrop-blur-sm"
-          >
-            Log out
-          </button>
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            {osEnabled ? <DriveGuardChip env={osEnv} onChange={setOsEnv} /> : null}
+            <button
+              type="button"
+              onClick={onLogout}
+              className="min-h-11 rounded-md border border-[var(--pd-danger)]/40 bg-black/40 px-3 text-sm text-[var(--pd-danger)] backdrop-blur-sm"
+            >
+              Log out
+            </button>
+          </div>
         </header>
 
-        <nav
-          className="pointer-events-auto mt-5 flex flex-wrap gap-2"
-          aria-label="ProdDeck modules"
-        >
-          {useQuay ? (
-            <>
-              <NavBtn active={place === "pier" && panel === "none"} onClick={() => onPlace("pier")}>
-                Pier
-              </NavBtn>
-              <NavBtn active={place === "manifest"} onClick={() => onPlace("manifest")}>
-                Manifest
-              </NavBtn>
-              {pack?.modules.helpdesk ? (
-                <NavBtn active={place === "shed"} onClick={() => onPlace("shed")}>
-                  Memory Shed
+        {osEnabled ? (
+          <div className="pointer-events-auto mt-5">
+            <PlacesNav active={osPlace} onSelect={onOsPlace} />
+          </div>
+        ) : null}
+
+        {showQuayUi ? (
+          <nav
+            className="pointer-events-auto mt-3 flex flex-wrap gap-2"
+            aria-label="ProdDeck Quay modules"
+          >
+            {useQuay ? (
+              <>
+                <NavBtn active={place === "pier" && panel === "none"} onClick={() => onPlace("pier")}>
+                  Pier
                 </NavBtn>
-              ) : null}
-              {pack?.modules.crewsDesk ? (
-                <NavBtn active={place === "loft"} onClick={() => onPlace("loft")}>
-                  Watch Loft
+                <NavBtn active={place === "manifest"} onClick={() => onPlace("manifest")}>
+                  Manifest
                 </NavBtn>
-              ) : null}
-              <NavBtn
-                active={false}
-                onClick={() => {
-                  setFlatMode(true);
-                  setPanel("catalog");
-                }}
-              >
-                Flat catalog
-              </NavBtn>
-            </>
-          ) : (
-            <>
-              <NavBtn active={panel === "catalog"} onClick={() => setPanel("catalog")}>
-                Catalog
-              </NavBtn>
-              {pack?.modules.helpdesk ? (
-                <NavBtn active={panel === "helpdesk"} onClick={() => setPanel("helpdesk")}>
-                  Helpdesk
-                </NavBtn>
-              ) : null}
-              {pack?.modules.scene ? (
+                {pack?.modules.helpdesk ? (
+                  <NavBtn active={place === "shed"} onClick={() => onPlace("shed")}>
+                    Memory Shed
+                  </NavBtn>
+                ) : null}
+                {pack?.modules.crewsDesk ? (
+                  <NavBtn active={place === "loft"} onClick={() => onPlace("loft")}>
+                    Watch Loft
+                  </NavBtn>
+                ) : null}
                 <NavBtn
                   active={false}
                   onClick={() => {
-                    setWebglFailed(false);
-                    setFlatMode(false);
-                    setPanel("none");
-                    setPlace("pier");
+                    setFlatMode(true);
+                    setPanel("catalog");
                   }}
                 >
-                  Enter Quay
+                  Flat catalog
                 </NavBtn>
-              ) : null}
-            </>
-          )}
-        </nav>
+              </>
+            ) : (
+              <>
+                <NavBtn active={panel === "catalog"} onClick={() => setPanel("catalog")}>
+                  Catalog
+                </NavBtn>
+                {pack?.modules.helpdesk ? (
+                  <NavBtn active={panel === "helpdesk"} onClick={() => setPanel("helpdesk")}>
+                    Helpdesk
+                  </NavBtn>
+                ) : null}
+                {pack?.modules.scene ? (
+                  <NavBtn
+                    active={false}
+                    onClick={() => {
+                      setWebglFailed(false);
+                      setFlatMode(false);
+                      setPanel("none");
+                      setPlace("pier");
+                    }}
+                  >
+                    Enter Quay
+                  </NavBtn>
+                ) : null}
+              </>
+            )}
+          </nav>
+        ) : null}
+
+        {osEnabled && !showQuayUi ? <PlacePanel place={osPlace} flags={osFlags} /> : null}
 
         {useQuay && place === "pier" && panel === "none" ? (
           <div className="pointer-events-auto mt-8 max-w-md rounded-lg border border-white/10 bg-black/55 p-4 backdrop-blur-md">
@@ -295,7 +349,8 @@ export function DeckHome({ username, onLogout }: Props) {
           </div>
         ) : null}
 
-        {(panel === "catalog" || (!useQuay && pack?.modules.catalog !== false)) &&
+        {showQuayUi &&
+        (panel === "catalog" || (!useQuay && pack?.modules.catalog !== false)) &&
         (panel === "catalog" || flatMode) ? (
           <section
             className={`pointer-events-auto mt-6 flex-1 ${
@@ -328,7 +383,7 @@ export function DeckHome({ username, onLogout }: Props) {
           </section>
         ) : null}
 
-        {panel === "helpdesk" && pack ? (
+        {showQuayUi && panel === "helpdesk" && pack ? (
           <div
             className={`pointer-events-auto mt-6 flex-1 ${
               useQuay
@@ -345,7 +400,7 @@ export function DeckHome({ username, onLogout }: Props) {
           </div>
         ) : null}
 
-        {panel === "crews" && pack?.modules.crewsDesk ? (
+        {showQuayUi && panel === "crews" && pack?.modules.crewsDesk ? (
           <section
             className={`pointer-events-auto mt-6 ${
               useQuay

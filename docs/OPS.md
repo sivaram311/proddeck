@@ -1,7 +1,7 @@
 ﻿# Ops — ProdDeck
 
-**Version:** 0.4.0 **PROD + PREPROD LIVE**  
-**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md)
+**Version:** 0.4.0 **PROD + PREPROD LIVE** · DEV scaffold **`0.5.0-scaffold`** (`cloud-os/scaffold`)  
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md)
 
 ## Ports / hosts
 
@@ -38,7 +38,7 @@ npm run smoke -- https://home-staging.delena.buzz
 npm run smoke -- https://home.delena.buzz
 ```
 
-Expect pack `0.4.0` / `keepers-quay`; catalog + helpdesk **401** without Bearer.
+Expect pack `0.4.0` on F/G / `keepers-quay`; DEV scaffold pack `0.5.0-scaffold` with `os.enabled`. Catalog + helpdesk **401** without Bearer.
 
 ## Promote
 

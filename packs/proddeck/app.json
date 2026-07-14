@@ -1,12 +1,31 @@
 {
   "appId": "proddeck",
   "displayName": "ProdDeck",
-  "version": "0.4.0",
+  "version": "0.5.0-scaffold",
   "modules": {
     "catalog": true,
     "helpdesk": true,
     "scene": true,
     "crewsDesk": true
+  },
+  "os": {
+    "enabled": true,
+    "defaultPlace": "quay",
+    "modules": {
+      "pulse": true,
+      "ports": true,
+      "beacon": true,
+      "identity": true,
+      "activity-log": true,
+      "archive": true,
+      "dispatch": true,
+      "promote": true,
+      "yard": true,
+      "runbooks": true,
+      "appliances": true,
+      "drive-guard": true,
+      "filebridge": true
+    }
   },
   "scene": {
     "pack": "keepers-quay",

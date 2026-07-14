@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * Smoke: GET / → 200; catalog/helpdesk auth; pack keepers-quay 0.3.0
+ * Smoke: GET / → 200; catalog/helpdesk auth; pack keepers-quay + os scaffold
  * Usage: node scripts/smoke.mjs [baseUrl]
  */
 const base = (process.argv[2] || "http://127.0.0.1:3320").replace(/\/$/, "");
+const EXPECT_VERSION = "0.5.0-scaffold";
 
 async function expectStatus(path, status, init) {
   const res = await fetch(`${base}${path}`, { redirect: "manual", ...init });
@@ -32,12 +33,16 @@ async function main() {
   const packRes = await expectStatus("/api/pack", 200);
   const pack = await packRes.json();
   if (pack.appId !== "proddeck") throw new Error(`appId ${pack.appId}`);
-  if (pack.version !== "0.4.0") throw new Error(`version ${pack.version} (expected 0.4.0)`);
+  if (pack.version !== EXPECT_VERSION) {
+    throw new Error(`version ${pack.version} (expected ${EXPECT_VERSION})`);
+  }
   if (pack.scene?.pack !== "keepers-quay") throw new Error(`scene.pack ${pack.scene?.pack}`);
   if (!pack.modules?.scene || !pack.modules?.catalog || !pack.modules?.crewsDesk) {
     throw new Error("modules scene/catalog/crewsDesk expected true");
   }
-  console.log(`OK: pack keepers-quay 0.4.0`);
+  if (!pack.os?.enabled) throw new Error("os.enabled expected true");
+  if (!pack.os?.modules?.pulse) throw new Error("os.modules.pulse expected true");
+  console.log(`OK: pack keepers-quay ${EXPECT_VERSION} + os`);
 
   console.log("SMOKE_PASS");
 }

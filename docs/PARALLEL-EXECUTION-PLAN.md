@@ -267,8 +267,8 @@ Exit: integrate green smoke → docs → stop (promote separate GO)
 
 ## 12. Immediate Lead checklist to start
 
-- [ ] Freeze this ownership map in `agents/pre-work/CLOUD-OS-OWNERSHIP.md`  
-- [ ] Cut `cloud-os/scaffold` and ship scaffold-v1  
+- [x] Freeze this ownership map in `agents/pre-work/CLOUD-OS-OWNERSHIP.md`  
+- [x] Cut `cloud-os/scaffold` and ship scaffold-v1  
 - [ ] Create worktrees for chosen Wave 1a set  
 - [ ] Hire N agents with pasted skill briefs  
 - [ ] Open `cloud-os/integrate`  
@@ -288,4 +288,5 @@ Exit: integrate green smoke → docs → stop (promote separate GO)
 
 | Date | Note |
 |------|------|
+| 2026-07-14 | Wave 0 scaffold done: Places shell + stubs + DeckHome wire; pack `0.5.0-scaffold`; tag `cloud-os/scaffold-v1` |
 | 2026-07-14 | Parallel singleshot plan written for roadmap Wave 0→3 + N worktrees |
