@@ -9,7 +9,9 @@
 ## Shipped in 0.6.1 (leftovers)
 
 Promote GO ↔ CSS freshness probe · Yard Hire → `crew.fabric.spawned` · Portal DEV `POST /api/os-events` + DEV forward · Ports request-reserve event · Archive H-Drive SSO + F/G VERSION pins · AV deeplink contract + Dispatch params stub  
-**Deferred:** FileBridge H: delete · AV Desk land · live Yard runners
+
+**Still pending:** AV Desk param land · Portal os-events on F/G · FileBridge H: safe delete · Cloud OS 1.0 backlog (see [LEFTOVER-SPRINT.md](./LEFTOVER-SPRINT.md))  
+**Deferred from 0.6.1:** FileBridge H: delete · AV Desk land · live Yard runners
 
 ## Prior 0.6.0
 

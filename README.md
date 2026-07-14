@@ -5,13 +5,13 @@ CSS-gated **home** for this machine — Keepers' Quay (call apps · leave memory
 | Env | URL / path | Port |
 |-----|------------|------|
 | DEV | `E:\wt\proddeck-integrate` · branch `cloud-os/integrate` | `3320` |
-| PREPROD | `https://home-staging.delena.buzz` | `4320` **LIVE 0.5.0** |
-| PROD | `https://home.delena.buzz` | `5320` **LIVE 0.5.0** |
+| PREPROD | `https://home-staging.delena.buzz` | `4320` **LIVE 0.6.1** |
+| PROD | `https://home.delena.buzz` | `5320` **LIVE 0.6.1** |
 
-- **Version:** **0.5.0** (Cloud OS Wave 1)
+- **Version:** **0.6.1** (Cloud OS Wave 2 + leftovers)
 - **clientId:** `proddeck`
 - **Repo:** https://github.com/sivaram311/proddeck
-- **Release:** `H:\releases\proddeck-0.5.0`
+- **Release:** `H:\releases\proddeck-0.6.1`
 
 ## Docs
 
@@ -19,6 +19,7 @@ CSS-gated **home** for this machine — Keepers' Quay (call apps · leave memory
 |-----|--------|
 | [docs/WORLD.md](docs/WORLD.md) | Quay mythos + cast |
 | [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) | Cloud OS features + Crew Fabric |
+| [docs/LEFTOVER-SPRINT.md](docs/LEFTOVER-SPRINT.md) | 0.6.1 leftovers — shipped + still pending |
 | [docs/PARALLEL-EXECUTION-PLAN.md](docs/PARALLEL-EXECUTION-PLAN.md) | Parallel git lanes / N subagents |
 | [docs/OPS.md](docs/OPS.md) | Ports / smoke / promote / CSS bake |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Build + F/G cutover |
