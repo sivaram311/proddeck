@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { MISSION_TEMPLATES, initialLaneState } from "./mission-templates";
 import { PROMOTE_SKILL_IDS, PROMOTE_SKILL_LABEL, SKILL_PACKS } from "./skill-packs";
 import {
@@ -8,7 +8,11 @@ import {
   LANE_STATUS_ORDER,
   type LaneStatus,
   type MissionTemplate,
+  type SkillPack,
 } from "./types";
+
+const FIELD_LESSONS_PATH = "E:\\MyAgent\\workflow\\promote\\field-lessons.md";
+const ACTOR = "proddeck-yard";
 
 const STATUS_COLOR: Record<LaneStatus, string> = {
   idle: "var(--pd-mist)",
@@ -17,9 +21,22 @@ const STATUS_COLOR: Record<LaneStatus, string> = {
   blocked: "var(--pd-danger)",
 };
 
+type HireFlash = "ok" | "soft-fail";
+
 function nextStatus(current: LaneStatus): LaneStatus {
   const i = LANE_STATUS_ORDER.indexOf(current);
   return LANE_STATUS_ORDER[(i + 1) % LANE_STATUS_ORDER.length]!;
+}
+
+function buildBriefing(pack: SkillPack, mission: MissionTemplate): string {
+  return [
+    `Yard hire — ${pack.label}`,
+    `Pack: ${pack.id}`,
+    `Skills: ${pack.skills.join(", ")}`,
+    `Mission: ${mission.title} (${mission.id})`,
+    "Lane status stays manual until Portal runners exist — do not auto-start.",
+    "Promote crews must hire promote-field-ops — see field-lessons.md.",
+  ].join("\n");
 }
 
 export function YardView() {
@@ -31,6 +48,8 @@ export function YardView() {
   const [laneState, setLaneState] = useState<Record<string, LaneStatus>>(() =>
     initialLaneState(mission),
   );
+  const [hireBusyId, setHireBusyId] = useState<string | null>(null);
+  const [hireFlash, setHireFlash] = useState<{ packId: string; state: HireFlash } | null>(null);
 
   function selectMission(m: MissionTemplate) {
     setMissionId(m.id);
@@ -43,6 +62,47 @@ export function YardView() {
       [laneId]: nextStatus(prev[laneId] ?? "idle"),
     }));
   }
+
+  const hirePack = useCallback(
+    async (pack: SkillPack) => {
+      const briefing = buildBriefing(pack, mission);
+      try {
+        await navigator.clipboard.writeText(briefing);
+      } catch {
+        /* clipboard may be denied; still emit event */
+      }
+
+      setHireBusyId(pack.id);
+      let eventOk = false;
+      try {
+        const res = await fetch("/api/os/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "crew.fabric.spawned",
+            env: "dev",
+            actor: ACTOR,
+            payload: {
+              packId: pack.id,
+              skills: pack.skills,
+              missionId: mission.id,
+              briefing,
+              source: "yard",
+            },
+          }),
+        });
+        eventOk = res.ok;
+      } catch {
+        eventOk = false;
+      } finally {
+        setHireBusyId(null);
+      }
+
+      setHireFlash({ packId: pack.id, state: eventOk ? "ok" : "soft-fail" });
+      window.setTimeout(() => setHireFlash(null), 2200);
+    },
+    [mission],
+  );
 
   return (
     <section className="flex flex-col gap-4" aria-label="Yard · Crew Fabric">
@@ -57,6 +117,17 @@ export function YardView() {
           Hire skill packs from the phone — Wave 1 board is manual status only.
         </p>
       </header>
+
+      <div
+        className="rounded-md border border-[var(--pd-lime)]/35 bg-[var(--pd-lime)]/8 px-3 py-2 text-xs text-[var(--pd-mist)]"
+        role="note"
+        aria-label="Field-ops tip"
+      >
+        <span className="text-[var(--pd-lime)]">Field-ops tip:</span> hire{" "}
+        <code className="text-[var(--pd-paper)]">promote-field-ops</code> on every promote crew
+        (bind race, CF cache, PS traps, serial ACTIVITY-LOG) —{" "}
+        <code className="break-all text-[var(--pd-paper)]">{FIELD_LESSONS_PATH}</code>
+      </div>
 
       <div className="flex flex-col gap-2" role="list" aria-label="Mission templates">
         {MISSION_TEMPLATES.map((m) => {
@@ -122,18 +193,48 @@ export function YardView() {
           Skill packs
         </p>
         <ul className="mt-2 m-0 flex list-none flex-col gap-2 p-0">
-          {SKILL_PACKS.map((pack) => (
-            <li
-              key={pack.id}
-              className="rounded-lg border border-white/10 bg-black/55 px-3 py-3 backdrop-blur-md"
-            >
-              <p className="m-0 text-sm font-semibold text-[var(--pd-lime)]">{pack.label}</p>
-              <p className="mt-1 m-0 text-xs text-[var(--pd-mist)]">{pack.blurb}</p>
-              <p className="mt-2 m-0 font-mono text-[10px] leading-relaxed text-[var(--pd-mist)]">
-                {pack.skills.join(" · ")}
-              </p>
-            </li>
-          ))}
+          {SKILL_PACKS.map((pack) => {
+            const flash = hireFlash?.packId === pack.id ? hireFlash.state : null;
+            const isPromote = pack.id === "promote-q1" || pack.id === "promote-q2";
+            return (
+              <li
+                key={pack.id}
+                className="rounded-lg border border-white/10 bg-black/55 px-3 py-3 backdrop-blur-md"
+              >
+                <p className="m-0 text-sm font-semibold text-[var(--pd-lime)]">{pack.label}</p>
+                <p className="mt-1 m-0 text-xs text-[var(--pd-mist)]">{pack.blurb}</p>
+                <p className="mt-2 m-0 font-mono text-[10px] leading-relaxed text-[var(--pd-mist)]">
+                  {pack.skills.join(" · ")}
+                </p>
+                {isPromote ? (
+                  <p className="mt-2 m-0 text-[10px] text-[var(--pd-mist)]">
+                    Includes <code className="text-[var(--pd-paper)]">promote-field-ops</code> — required
+                    on promote crews.
+                  </p>
+                ) : null}
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void hirePack(pack)}
+                    disabled={hireBusyId === pack.id}
+                    className="min-h-11 rounded-md bg-[var(--pd-lime)] px-4 text-sm font-semibold text-[var(--pd-ink)] disabled:opacity-50"
+                  >
+                    {hireBusyId === pack.id ? "Hiring…" : "Hire"}
+                  </button>
+                  {flash === "ok" ? (
+                    <span className="text-xs text-[var(--pd-lime)]" role="status">
+                      Copied · event emitted
+                    </span>
+                  ) : null}
+                  {flash === "soft-fail" ? (
+                    <span className="text-xs text-[var(--pd-danger)]" role="status">
+                      Copied · event soft-fail
+                    </span>
+                  ) : null}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </section>
 
