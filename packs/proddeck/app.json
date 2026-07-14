@@ -1,0 +1,53 @@
+{
+  "appId": "proddeck",
+  "displayName": "ProdDeck",
+  "version": "0.3.0",
+  "modules": {
+    "catalog": true,
+    "helpdesk": true,
+    "scene": true,
+    "crewsDesk": true
+  },
+  "scene": {
+    "pack": "keepers-quay",
+    "defaultView": "scene"
+  },
+  "helpdesk": {
+    "categories": [
+      {
+        "id": "ops",
+        "label": "Operations",
+        "crewRole": "promote-ops"
+      },
+      {
+        "id": "access",
+        "label": "Access / CSS",
+        "crewRole": "security-auditor"
+      },
+      {
+        "id": "apps",
+        "label": "App launch / catalog",
+        "crewRole": "helpdesk"
+      }
+    ]
+  },
+  "crews": [
+    { "id": "promote-ops", "label": "Promote Ops", "watch": "Manifest & cutovers" },
+    { "id": "security-auditor", "label": "Security", "watch": "CSS / JWKS gate" },
+    { "id": "helpdesk", "label": "Helpdesk", "watch": "Memory Shed queue" },
+    { "id": "crew-lead", "label": "Crew Lead", "watch": "Keepers' shift" }
+  ],
+  "auth": {
+    "cssClientId": "proddeck"
+  },
+  "hosts": {
+    "dev": "http://127.0.0.1:3320",
+    "preprod": "https://home-staging.delena.buzz",
+    "prod": "https://home.delena.buzz"
+  },
+  "ports": {
+    "dev": 3320,
+    "preprod": 4320,
+    "prod": 5320
+  }
+}

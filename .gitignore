@@ -1,0 +1,15 @@
+node_modules
+.next
+out
+dist
+.env*.local
+*.log
+.DS_Store
+npm-debug.log*
+tsconfig.tsbuildinfo
+e2e-artifacts
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+!.cursor/skills/
+!.cursor/skills/**

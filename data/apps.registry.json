@@ -1,0 +1,44 @@
+{
+  "apps": [
+    {
+      "slug": "agent-portal",
+      "name": "Agent Portal",
+      "description": "Agent workspace and platform control plane",
+      "baseUrl": "https://agent-portal.delena.buzz",
+      "clientId": "agent-portal",
+      "env": "prod"
+    },
+    {
+      "slug": "css",
+      "name": "Centralized Security",
+      "description": "Identity provider and registered applications",
+      "baseUrl": "https://css.delena.buzz",
+      "clientId": "css",
+      "env": "prod"
+    },
+    {
+      "slug": "h-drive-server",
+      "name": "H-Drive",
+      "description": "Release and artifact drive",
+      "baseUrl": "https://hdrive.delena.buzz",
+      "clientId": "h-drive-server",
+      "env": "prod"
+    },
+    {
+      "slug": "stack-pilot",
+      "name": "Stack Pilot",
+      "description": "Control plane for stack operations",
+      "baseUrl": "https://control.delena.buzz",
+      "clientId": "stack-pilot",
+      "env": "prod"
+    },
+    {
+      "slug": "agentverse",
+      "name": "AgentVerse",
+      "description": "Multi-agent collaboration hub",
+      "baseUrl": "https://agentverse.delena.buzz",
+      "clientId": "agentverse",
+      "env": "prod"
+    }
+  ]
+}
