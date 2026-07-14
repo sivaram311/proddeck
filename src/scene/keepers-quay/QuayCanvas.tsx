@@ -3,13 +3,8 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useRef, useState } from "react";
 import * as THREE from "three";
-import {
-  GateLantern,
-  KeeperPlayer,
-  ManifestHall,
-  MemoryShed,
-  WatchLoft,
-} from "./Buildings";
+import { GateLantern, ManifestHall, MemoryShed, WatchLoft } from "./Buildings";
+import { KeeperHumanoid } from "./Characters";
 import { PierDeck, QuayWater } from "./PierWater";
 import type { QuaySceneProps } from "./types";
 
@@ -37,9 +32,9 @@ function FollowCam({ playerRef }: { playerRef: React.MutableRefObject<THREE.Vect
   const look = useRef(new THREE.Vector3());
   useFrame(() => {
     const p = playerRef.current;
-    desired.current.set(p.x + 4.5, 5.2, p.z + 7.5);
+    desired.current.set(p.x + 4.5, 5.4, p.z + 7.5);
     camera.position.lerp(desired.current, 0.08);
-    look.current.set(p.x, 1.2, p.z - 2);
+    look.current.set(p.x, 1.35, p.z - 2);
     camera.lookAt(look.current);
   });
   return null;
@@ -60,20 +55,33 @@ function QuayWorld(props: QuaySceneProps) {
           props.onPlace("pier");
         }}
       />
-      <GateLantern />
+      <GateLantern acknowledge={props.gateAck} />
       <ManifestHall
         apps={props.apps}
         active={props.place === "manifest"}
+        pendingSlug={props.pendingSlug}
+        wakeToken={props.wakeToken}
         onEnter={() => props.onPlace("manifest")}
         onSelectApp={props.onSelectApp}
       />
-      <MemoryShed active={props.place === "shed"} onEnter={() => props.onPlace("shed")} />
+      <MemoryShed
+        active={props.place === "shed"}
+        ticketToken={props.ticketToken}
+        onEnter={() => props.onPlace("shed")}
+      />
       <WatchLoft
         crews={props.crews}
         active={props.place === "loft"}
+        loftAck={props.loftAck}
         onEnter={() => props.onPlace("loft")}
       />
-      <KeeperPlayer target={walkTarget} playerRef={playerRef} />
+      <KeeperHumanoid
+        target={walkTarget}
+        playerRef={playerRef}
+        place={props.place}
+        action={props.keeperAction}
+        actionToken={props.actionToken}
+      />
       <mesh position={[18, 1.5, -40]}>
         <boxGeometry args={[20, 4, 4]} />
         <meshStandardMaterial color="#0a1016" roughness={1} />

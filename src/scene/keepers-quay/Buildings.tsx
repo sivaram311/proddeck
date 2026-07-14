@@ -2,10 +2,11 @@
 
 import { Html } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import type { DeckApp } from "@/lib/types";
-import type { CrewToken, QuayPlace } from "./types";
+import { WatchSilhouette } from "./Characters";
+import type { CrewToken } from "./types";
 
 function BuildingShell({
   position,
@@ -31,7 +32,6 @@ function BuildingShell({
         <boxGeometry args={[w + 0.3, 0.3, d + 0.3]} />
         <meshStandardMaterial color={roof} roughness={0.9} />
       </mesh>
-      {/* Windows */}
       <mesh position={[0, h * 0.55, d / 2 + 0.02]}>
         <planeGeometry args={[w * 0.55, h * 0.28]} />
         <meshStandardMaterial
@@ -47,12 +47,21 @@ function BuildingShell({
   );
 }
 
-export function GateLantern({ breathe = true }: { breathe?: boolean }) {
+export function GateLantern({ acknowledge }: { acknowledge: boolean }) {
   const core = useRef<THREE.MeshStandardMaterial>(null);
-  useFrame(({ clock }) => {
-    if (!breathe || !core.current) return;
-    core.current.emissiveIntensity = 0.9 + Math.sin(clock.elapsedTime * 1.4) * 0.35;
+  const ack = useRef(0);
+
+  useEffect(() => {
+    if (acknowledge) ack.current = 1;
+  }, [acknowledge]);
+
+  useFrame((_, dt) => {
+    if (!core.current) return;
+    if (ack.current > 0) ack.current = Math.max(0, ack.current - dt * 0.7);
+    const breathe = 0.9 + Math.sin(performance.now() * 0.0014) * 0.35;
+    core.current.emissiveIntensity = breathe + ack.current * 2.2;
   });
+
   return (
     <group position={[0, 0, 3.5]}>
       <mesh position={[0, 1.1, 0]} castShadow>
@@ -76,17 +85,80 @@ export function GateLantern({ breathe = true }: { breathe?: boolean }) {
   );
 }
 
+function BerthFace({
+  app,
+  x,
+  y,
+  attention,
+  selected,
+  cast,
+  onPick,
+}: {
+  app: DeckApp;
+  x: number;
+  y: number;
+  attention: boolean;
+  selected: boolean;
+  cast: boolean;
+  onPick: () => void;
+}) {
+  const mat = useRef<THREE.MeshStandardMaterial>(null);
+  useFrame(() => {
+    if (!mat.current) return;
+    let i = 0.15 + Math.sin(performance.now() * 0.002) * 0.05;
+    if (attention) i = 0.35;
+    if (selected) i = 0.85;
+    if (cast) i = 1.6;
+    mat.current.emissiveIntensity = i;
+  });
+  return (
+    <mesh
+      position={[x, y, -1.9]}
+      onClick={(e) => {
+        e.stopPropagation();
+        onPick();
+      }}
+    >
+      <boxGeometry args={[0.95, 0.7, 0.08]} />
+      <meshStandardMaterial
+        ref={mat}
+        color="#1c2430"
+        emissive="#b8f000"
+        emissiveIntensity={0.2}
+        metalness={0.3}
+        roughness={0.45}
+      />
+    </mesh>
+  );
+}
+
 export function ManifestHall({
   apps,
   active,
+  pendingSlug,
+  wakeToken,
   onEnter,
   onSelectApp,
 }: {
   apps: DeckApp[];
   active: boolean;
+  pendingSlug: string | null;
+  wakeToken: number;
   onEnter: () => void;
   onSelectApp: (app: DeckApp) => void;
 }) {
+  const lastWake = useRef(wakeToken);
+  const casting = useRef(false);
+  useFrame(() => {
+    if (wakeToken !== lastWake.current) {
+      lastWake.current = wakeToken;
+      casting.current = true;
+      window.setTimeout(() => {
+        casting.current = false;
+      }, 700);
+    }
+  });
+
   return (
     <BuildingShell position={[-0.2, 0, -10]} size={[5.2, 3.2, 4.5]} color="#141a22">
       <mesh
@@ -118,41 +190,64 @@ export function ManifestHall({
           Manifest Hall
         </div>
       </Html>
-      {/* Berths along inner wall (visible when near / always for realism) */}
       {apps.slice(0, 8).map((app, i) => {
         const x = -1.8 + (i % 4) * 1.2;
         const y = 1.1 + Math.floor(i / 4) * 0.9;
         return (
-          <mesh
+          <BerthFace
             key={app.slug}
-            position={[x, y, -1.9]}
-            onClick={(e) => {
-              e.stopPropagation();
+            app={app}
+            x={x}
+            y={y}
+            attention={active}
+            selected={pendingSlug === app.slug}
+            cast={casting.current && pendingSlug === app.slug}
+            onPick={() => {
               onEnter();
               onSelectApp(app);
             }}
-          >
-            <boxGeometry args={[0.95, 0.7, 0.08]} />
-            <meshStandardMaterial
-              color="#1c2430"
-              emissive="#b8f000"
-              emissiveIntensity={0.2}
-              metalness={0.3}
-              roughness={0.45}
-            />
-          </mesh>
+          />
         );
       })}
     </BuildingShell>
   );
 }
 
-export function MemoryShed({ active, onEnter }: { active: boolean; onEnter: () => void }) {
+export function MemoryShed({
+  active,
+  ticketToken,
+  onEnter,
+}: {
+  active: boolean;
+  ticketToken: number;
+  onEnter: () => void;
+}) {
+  const peg = useRef<THREE.Group>(null);
+  const ticket = useRef<THREE.Mesh>(null);
+  const last = useRef(ticketToken);
+  const nailT = useRef(0);
+
+  useFrame((_, dt) => {
+    if (ticketToken !== last.current) {
+      last.current = ticketToken;
+      nailT.current = 0.001;
+    }
+    if (nailT.current > 0 && ticket.current) {
+      nailT.current += dt;
+      const u = Math.min(1, nailT.current / 0.55);
+      ticket.current.position.set(0.2, 1.2 - u * 0.55, 0.15);
+      ticket.current.visible = true;
+      const m = ticket.current.material as THREE.MeshStandardMaterial;
+      m.emissiveIntensity = 0.3 + (1 - u) * 0.8;
+      if (u >= 1) nailT.current = 0;
+    }
+  });
+
   return (
     <BuildingShell position={[4.2, 0, -18]} size={[3.2, 2.4, 3]} color="#1a1612" roof="#12100e">
       <mesh position={[-1.55, 0.7, 0]} rotation={[0, Math.PI / 2, 0]}>
         <planeGeometry args={[1.4, 1]} />
-        <meshStandardMaterial color="#2a1c10" emissive="#c48a3a" emissiveIntensity={0.35} />
+        <meshStandardMaterial color="#2a1c10" emissive="#c48a3a" emissiveIntensity={active ? 0.55 : 0.35} />
       </mesh>
       <pointLight position={[-0.5, 1.4, 0]} intensity={0.55} distance={5} color="#e0a050" />
       <mesh
@@ -183,11 +278,27 @@ export function MemoryShed({ active, onEnter }: { active: boolean; onEnter: () =
           Memory Shed
         </div>
       </Html>
-      {/* Desk */}
       <mesh position={[0, 0.55, 0]} castShadow>
         <boxGeometry args={[1.4, 0.12, 0.7]} />
         <meshStandardMaterial color="#3a2a1c" roughness={0.85} />
       </mesh>
+      {/* Ticket peg board */}
+      <group ref={peg} position={[0.55, 1.1, -0.9]}>
+        <mesh>
+          <boxGeometry args={[0.7, 1.1, 0.06]} />
+          <meshStandardMaterial color="#2a1e14" />
+        </mesh>
+        {[0, 1, 2].map((i) => (
+          <mesh key={i} position={[-0.15 + (i % 2) * 0.25, 0.3 - Math.floor(i / 2) * 0.35, 0.06]}>
+            <cylinderGeometry args={[0.03, 0.03, 0.08, 8]} />
+            <meshStandardMaterial color="#8a7a60" metalness={0.5} />
+          </mesh>
+        ))}
+        <mesh ref={ticket} position={[0.2, 1.2, 0.15]} visible={false}>
+          <boxGeometry args={[0.22, 0.28, 0.02]} />
+          <meshStandardMaterial color="#e8eef4" emissive="#c48a3a" emissiveIntensity={0.4} />
+        </mesh>
+      </group>
     </BuildingShell>
   );
 }
@@ -195,15 +306,27 @@ export function MemoryShed({ active, onEnter }: { active: boolean; onEnter: () =
 export function WatchLoft({
   crews,
   active,
+  loftAck,
   onEnter,
 }: {
   crews: CrewToken[];
   active: boolean;
+  loftAck: boolean;
   onEnter: () => void;
 }) {
+  const chart = useRef<THREE.MeshStandardMaterial>(null);
+  const ack = useRef(0);
+  useEffect(() => {
+    if (loftAck) ack.current = 1;
+  }, [loftAck]);
+  useFrame((_, dt) => {
+    if (!chart.current) return;
+    if (ack.current > 0) ack.current = Math.max(0, ack.current - dt * 1.2);
+    chart.current.emissiveIntensity = 0.15 + ack.current * 1.1;
+  });
+
   return (
     <group position={[-3.8, 0, -26]}>
-      {/* stilts */}
       {[-1.2, 1.2].map((x) =>
         [-1, 1].map((z) => (
           <mesh key={`${x}-${z}`} position={[x, 0.7, z]} castShadow>
@@ -242,20 +365,27 @@ export function WatchLoft({
             Watch Loft
           </div>
         </Html>
-        {/* Chart table */}
         <mesh position={[0, 0.45, 0]}>
           <boxGeometry args={[1.6, 0.1, 1]} />
-          <meshStandardMaterial color="#1e2830" metalness={0.2} roughness={0.6} />
+          <meshStandardMaterial
+            ref={chart}
+            color="#1e2830"
+            emissive="#b8f000"
+            emissiveIntensity={0.15}
+            metalness={0.2}
+            roughness={0.6}
+          />
         </mesh>
-        {/* Silhouette crew tokens */}
         {crews.slice(0, 4).map((c, i) => (
-          <mesh key={c.id} position={[-1.1 + i * 0.7, 0.95, -0.9]}>
-            <capsuleGeometry args={[0.12, 0.35, 4, 8]} />
-            <meshStandardMaterial color="#0a0e12" emissive="#4a6070" emissiveIntensity={0.35} />
-          </mesh>
+          <WatchSilhouette
+            key={c.id}
+            position={[-1.1 + i * 0.7, 0.55, -0.9]}
+            acknowledge={loftAck}
+            delay={i * 0.07}
+            label={c.label}
+          />
         ))}
       </BuildingShell>
-      {/* stair */}
       {[0, 1, 2, 3].map((i) => (
         <mesh key={i} position={[2.1, 0.2 + i * 0.32, 1.2 - i * 0.35]} castShadow>
           <boxGeometry args={[0.7, 0.1, 0.4]} />
@@ -264,53 +394,4 @@ export function WatchLoft({
       ))}
     </group>
   );
-}
-
-export function KeeperPlayer({
-  target,
-  playerRef,
-}: {
-  target: THREE.Vector3 | null;
-  playerRef: React.MutableRefObject<THREE.Vector3>;
-}) {
-  const ref = useRef<THREE.Group>(null);
-
-  useFrame((_, dt) => {
-    if (target) {
-      const flat = new THREE.Vector3(target.x, 0, target.z);
-      flat.x = THREE.MathUtils.clamp(flat.x, -2.6, 2.6);
-      flat.z = THREE.MathUtils.clamp(flat.z, -32, 4);
-      const dist = playerRef.current.distanceTo(flat);
-      if (dist > 0.05) {
-        playerRef.current.lerp(flat, Math.min(1, dt * 2.8));
-      }
-    }
-    if (ref.current) {
-      ref.current.position.set(playerRef.current.x, 0.9, playerRef.current.z);
-    }
-  });
-
-  return (
-    <group ref={ref} position={[0, 0.9, 2]}>
-      <mesh castShadow>
-        <capsuleGeometry args={[0.22, 0.7, 6, 12]} />
-        <meshStandardMaterial color="#2a323c" metalness={0.15} roughness={0.7} />
-      </mesh>
-      <mesh position={[0, 0.55, 0]}>
-        <sphereGeometry args={[0.18, 16, 16]} />
-        <meshStandardMaterial color="#c8d0d8" />
-      </mesh>
-      <pointLight position={[0, 0.4, 0.3]} intensity={0.35} distance={3} color="#b8f000" />
-    </group>
-  );
-}
-
-export function PlaceMarkers({
-  onPlace,
-}: {
-  onPlace: (p: QuayPlace) => void;
-}) {
-  // invisible helpers retained for future; doors handle enter
-  void onPlace;
-  return null;
 }

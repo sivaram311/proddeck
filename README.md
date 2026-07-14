@@ -5,12 +5,13 @@ CSS-gated production launcher — **Keepers’ Quay**: call apps, leave memory, 
 | Env | URL / path | Port |
 |-----|------------|------|
 | DEV | `E:\MyWorkspace\sandbox\proddeck` | `3320` |
-| PREPROD | `https://home-staging.delena.buzz` | `4320` **LIVE 0.3.0** |
+| PREPROD | `https://home-staging.delena.buzz` | `4320` (promote 0.4.0 next) |
 | PROD | `https://home.delena.buzz` | `5320` (not Q2 yet) |
 
-- **clientId:** `proddeck`
+- **Version:** **0.4.0** — Keeper humanoid + berth/ticket/watch animations  
+- **clientId:** `proddeck`  
+- **Repo:** https://github.com/sivaram311/proddeck  
 - **World:** [docs/WORLD.md](docs/WORLD.md) · [docs/OPS.md](docs/OPS.md) · [docs/HANDOFF.md](docs/HANDOFF.md)
-- **Pack:** `packs/proddeck/app.json` (`keepers-quay`)
 
 ## Run
 
@@ -20,12 +21,8 @@ npm run dev
 npm run smoke
 ```
 
-After CSS login you land on the Quay (WebGL fail → flat catalog). Tap pier studs to walk. Manifest launches apps (Answering Wake).
+Land on the Quay after CSS login. Walk (tap studs). Manifest → launch (Answering Wake). Loft → Watch Acknowledge.
 
 ## Stack
 
-Next.js 15 · React 19 · R3F/drei/three · Zod pack · CSS `/api/css` · catalog · helpdesk
-
-## Crew
-
-`agents/crew-manifest.md` — isolate from AgentVerse ports when promoting.
+Next.js 15 · React 19 · R3F/drei/three · Zod pack · CSS auth · catalog · helpdesk

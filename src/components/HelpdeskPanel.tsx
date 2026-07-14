@@ -18,9 +18,10 @@ type Ticket = {
 
 type Props = {
   categories: Category[];
+  onTicketCreated?: () => void;
 };
 
-export function HelpdeskPanel({ categories }: Props) {
+export function HelpdeskPanel({ categories, onTicketCreated }: Props) {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(categories[0]?.id || "");
@@ -73,6 +74,7 @@ export function HelpdeskPanel({ categories }: Props) {
       }
       setTitle("");
       setBody("");
+      onTicketCreated?.();
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Create failed");

@@ -1,7 +1,7 @@
 {
   "name": "proddeck",
-  "version": "0.3.0",
-  "description": "CSS-gated production app launcher (ProdDeck)",
+  "version": "0.4.0",
+  "description": "CSS-gated production app launcher — Keepers Quay",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3320",

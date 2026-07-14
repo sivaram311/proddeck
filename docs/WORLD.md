@@ -1,7 +1,7 @@
 # Keepers' Quay — World & Story
 
 **Product:** ProdDeck  
-**Version:** 0.3.0 live (PREPROD) · **0.4.0** characters/animations in flight  
+**Version:** **0.4.0** characters/animations · 0.3.0 was walkable Quay shell  
 **Session:** `proddeck-keepers-quay-2026-07-14`
 
 ## Purpose (why this world exists)
@@ -26,7 +26,8 @@ The 3D world exists to make those three verbs **legible and memorable**. If a me
 | Watch Loft | Watch | Config crew tokens |
 
 **Signature (shipped):** *Answering Wake* — launch → lime line across the water → far shore answers.  
-**Signature (0.4.0):** *Watch Acknowledge* — enter loft → chart rim + silhouettes turn toward the Keeper.
+**Signature (shipped 0.4.0):** *Watch Acknowledge* — enter loft → chart rim + silhouettes turn toward the Keeper.  
+**Also 0.4.0:** Keeper humanoid (idle/walk/enter/call/nail/scan), Gate acknowledge, berth cast, ticket nail.
 
 ## Characters (0.4.0)
 

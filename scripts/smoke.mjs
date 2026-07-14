@@ -32,12 +32,12 @@ async function main() {
   const packRes = await expectStatus("/api/pack", 200);
   const pack = await packRes.json();
   if (pack.appId !== "proddeck") throw new Error(`appId ${pack.appId}`);
-  if (pack.version !== "0.3.0") throw new Error(`version ${pack.version} (expected 0.3.0)`);
+  if (pack.version !== "0.4.0") throw new Error(`version ${pack.version} (expected 0.4.0)`);
   if (pack.scene?.pack !== "keepers-quay") throw new Error(`scene.pack ${pack.scene?.pack}`);
   if (!pack.modules?.scene || !pack.modules?.catalog || !pack.modules?.crewsDesk) {
     throw new Error("modules scene/catalog/crewsDesk expected true");
   }
-  console.log(`OK: pack keepers-quay 0.3.0`);
+  console.log(`OK: pack keepers-quay 0.4.0`);
 
   console.log("SMOKE_PASS");
 }

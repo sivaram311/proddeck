@@ -7,6 +7,7 @@ import type { DeckApp } from "@/lib/types";
 import { AppTile } from "@/components/AppTile";
 import { HelpdeskPanel } from "@/components/HelpdeskPanel";
 import { KeepersQuayScene } from "@/scene/keepers-quay/KeepersQuayScene";
+import type { KeeperAction } from "@/scene/keepers-quay/Characters";
 import type { QuayPlace } from "@/scene/keepers-quay/types";
 
 type Props = {
@@ -35,6 +36,22 @@ export function DeckHome({ username, onLogout }: Props) {
   const [webglFailed, setWebglFailed] = useState(false);
   const [pendingLaunch, setPendingLaunch] = useState<DeckApp | null>(null);
   const [flatMode, setFlatMode] = useState(false);
+  const [ticketToken, setTicketToken] = useState(0);
+  const [keeperAction, setKeeperAction] = useState<KeeperAction>("idle");
+  const [actionToken, setActionToken] = useState(0);
+  const [loftAck, setLoftAck] = useState(false);
+  const [gateAck, setGateAck] = useState(false);
+
+  useEffect(() => {
+    setGateAck(true);
+    const t = window.setTimeout(() => setGateAck(false), 1600);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  function fireAction(a: KeeperAction) {
+    setKeeperAction(a);
+    setActionToken((n) => n + 1);
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -104,13 +121,27 @@ export function DeckHome({ username, onLogout }: Props) {
 
   function onPlace(p: QuayPlace) {
     setPlace(p);
-    if (p === "manifest") setPanel("catalog");
-    else if (p === "shed") setPanel("helpdesk");
-    else if (p === "loft") setPanel("crews");
-    else setPanel("none");
+    if (p === "manifest") {
+      setPanel("catalog");
+      fireAction("enter");
+      setLoftAck(false);
+    } else if (p === "shed") {
+      setPanel("helpdesk");
+      fireAction("enter");
+      setLoftAck(false);
+    } else if (p === "loft") {
+      setPanel("crews");
+      fireAction("scan");
+      setLoftAck(true);
+      window.setTimeout(() => setLoftAck(false), 1400);
+    } else {
+      setPanel("none");
+      setLoftAck(false);
+    }
   }
 
   function launchApp(app: DeckApp) {
+    fireAction("call");
     setWakeToken((n) => n + 1);
     setPendingLaunch(null);
     window.open(app.baseUrl, "_blank", "noopener,noreferrer");
@@ -120,6 +151,11 @@ export function DeckHome({ username, onLogout }: Props) {
     setPlace("manifest");
     setPanel("catalog");
     setPendingLaunch(app);
+  }
+
+  function onTicketCreated() {
+    fireAction("nail");
+    setTicketToken((n) => n + 1);
   }
 
   const crews = pack?.crews || [];
@@ -136,6 +172,12 @@ export function DeckHome({ username, onLogout }: Props) {
           wakeToken={wakeToken}
           webglFailed={webglFailed}
           onWebglFail={onWebglFail}
+          pendingSlug={pendingLaunch?.slug ?? null}
+          ticketToken={ticketToken}
+          keeperAction={keeperAction}
+          actionToken={actionToken}
+          loftAck={loftAck}
+          gateAck={gateAck}
         />
       ) : null}
 
@@ -299,7 +341,7 @@ export function DeckHome({ username, onLogout }: Props) {
                 Memory Shed
               </p>
             ) : null}
-            <HelpdeskPanel categories={pack.helpdesk.categories} />
+            <HelpdeskPanel categories={pack.helpdesk.categories} onTicketCreated={onTicketCreated} />
           </div>
         ) : null}
 

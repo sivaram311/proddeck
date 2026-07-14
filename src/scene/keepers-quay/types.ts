@@ -1,6 +1,7 @@
 "use client";
 
 import type { DeckApp } from "@/lib/types";
+import type { KeeperAction } from "./Characters";
 
 export type QuayPlace = "pier" | "manifest" | "shed" | "loft";
 
@@ -19,4 +20,10 @@ export type QuaySceneProps = {
   wakeToken: number;
   webglFailed: boolean;
   onWebglFail: () => void;
+  pendingSlug: string | null;
+  ticketToken: number;
+  keeperAction: KeeperAction;
+  actionToken: number;
+  loftAck: boolean;
+  gateAck: boolean;
 };

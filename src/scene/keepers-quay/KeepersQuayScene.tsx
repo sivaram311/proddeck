@@ -1,8 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { DeckApp } from "@/lib/types";
-import type { CrewToken, QuayPlace } from "./types";
+import type { QuaySceneProps } from "./types";
 
 const QuayCanvas = dynamic(
   () => import("./QuayCanvas").then((m) => m.QuayCanvas),
@@ -16,17 +15,6 @@ const QuayCanvas = dynamic(
   },
 );
 
-type Props = {
-  apps: DeckApp[];
-  crews: CrewToken[];
-  place: QuayPlace;
-  onPlace: (p: QuayPlace) => void;
-  onSelectApp: (app: DeckApp) => void;
-  wakeToken: number;
-  webglFailed: boolean;
-  onWebglFail: () => void;
-};
-
-export function KeepersQuayScene(props: Props) {
+export function KeepersQuayScene(props: QuaySceneProps) {
   return <QuayCanvas {...props} />;
 }
