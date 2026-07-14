@@ -29,5 +29,16 @@ Pulse / Ports / Identity / Activity Log / Archive / Dispatch / Promote / Yard �
 - `src/components/DeckHome.tsx` (Lead only)
 - `src/os/shell/**`, `src/os/places.ts`, `src/os/registry.tsx` (Lead only; Drive Guard chip wiring = Lead)
 - `src/scene/**`
-- `E:\MyAgent\workflow\activity\ACTIVITY-LOG.md` (Lead serial)
-- F:/G: deploys until Wave 2D EM GO
+- `E:\MyAgent\workflow\activity\ACTIVITY-LOG.md` (Lead serial — queue file under `.data/` is OK for phone staging)
+- F:/G: deploys until EM GO
+
+## Cloud OS 0.7.0 (safe subset) — parallel
+
+| Branch | Owns |
+|--------|------|
+| `feat/os-alog-queue` | `activity-log/**`, `api/os/activity-log/**` (queue to `.data/activity-queue.jsonl` only) |
+| `feat/os-drive-reauth` | `drive-guard/**` only (import identity probe — do not edit identity) |
+| `feat/os-ports-stop` | `ports/**` |
+| `feat/os-yard-skills` | `yard/**` |
+| `feat/os-filebridge-list` | `filebridge/**`, `api/os/filebridge/**` list harden |
+| AV `feature/desk-0.3.17` | `E:\wt\agentverse-0.3.17` solely — Desk slices; no F/G |
