@@ -8,7 +8,7 @@
 
 | Env | Port | Path | Host |
 |-----|------|------|------|
-| DEV | 3320 | `E:\wt\proddeck-integrate` | local |
+| DEV | 3320 | `E:\wt\proddeck-integrate` | https://home-dev.delena.buzz |
 | PREPROD | 4320 | `F:\apps\proddeck` | https://home-staging.delena.buzz |
 | PROD | 5320 | `G:\apps\proddeck` | https://home.delena.buzz |
 
@@ -46,8 +46,10 @@ Branch `feature/css-next-oauth-pilot`. Local `.env.local` (gitignored):
 CSS_AUTH_URL=https://css-next.delena.buzz
 NEXT_PUBLIC_CSS_ISSUER=https://css-next.delena.buzz
 NEXT_PUBLIC_CSS_AUTH_MODE=oauth
-NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI=http://127.0.0.1:3320/auth/callback
+NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI=https://home-dev.delena.buzz/auth/callback
 ```
+
+Also valid for laptop-only: `http://127.0.0.1:3320/auth/callback` (css-next allow-list). Public DEV host is **home-dev.delena.buzz**.
 
 Default without flag: **password** (classic `/auth/login`). Do **not** bake oauth into F/G. Spec: CSS `docs/proddeck-css-next-oauth-pilot.md`.
 
