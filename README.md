@@ -18,6 +18,7 @@ CSS-gated **home** for this machine — Keepers' Quay (call apps · leave memory
 |-----|--------|
 | [docs/WORLD.md](docs/WORLD.md) | Quay mythos + cast |
 | [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) | Cloud OS features + Crew Fabric |
+| [docs/PARALLEL-EXECUTION-PLAN.md](docs/PARALLEL-EXECUTION-PLAN.md) | Parallel git lanes / N subagents |
 | [docs/OPS.md](docs/OPS.md) | Ports / smoke / promote |
 | [docs/HANDOFF.md](docs/HANDOFF.md) | Live hosts + next |
 

@@ -370,6 +370,7 @@ Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports re
 | [WORLD.md](./WORLD.md) | Keepers’ Quay mythos + cast |
 | [OPS.md](./OPS.md) | Ports / smoke / promote ops |
 | [HANDOFF.md](./HANDOFF.md) | Live hosts |
+| [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md) | **N subagents · git branches/worktrees · singleshot swarm** |
 | `E:\MyAgent\workflow\CONSCIOUS.md` | Standing orders |
 | `E:\MyAgent\workflow\promote\` | Promote skills + field lessons |
 | `E:\machine-docs\personas\` | Personas / crew standards |
