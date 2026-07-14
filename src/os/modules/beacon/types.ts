@@ -17,3 +17,15 @@ export type BeaconSnapshot = {
   at: string;
   rows: BeaconRow[];
 };
+
+/** Hire / promote-related OS events surfaced as Beacon tip. */
+export type BeaconTipType =
+  | "dispatch.hire.requested"
+  | "promote.decision"
+  | "crew.fabric.spawned";
+
+export type BeaconTip = {
+  type: BeaconTipType;
+  at: string;
+  actor: string;
+};
