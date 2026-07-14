@@ -1,10 +1,10 @@
 # Deploy — ProdDeck
 
-## Live targets (0.4.0)
+## Live targets (0.5.0)
 
 | Env | Host | Port | Path |
 |-----|------|------|------|
-| DEV | local | 3320 | `E:\MyWorkspace\sandbox\proddeck\` |
+| DEV | local | 3320 | `E:\wt\proddeck-integrate` |
 | PREPROD | `https://home-staging.delena.buzz` | 4320 | `F:\apps\proddeck` |
 | PROD | `https://home.delena.buzz` | 5320 | `G:\apps\proddeck` |
 

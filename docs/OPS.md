@@ -44,7 +44,7 @@ Expect pack `0.5.0` / `keepers-quay` + `os.enabled` on F/G/DEV. Catalog + helpde
 
 | Gate | Evidence |
 |------|----------|
-| Q1 | `H:\releases\proddeck-0.4.0\evidence\q1\` |
-| Q2 | `H:\releases\proddeck-0.4.0\evidence\q2\` |
+| Q1 | `H:\releases\proddeck-0.5.0\evidence\q1\` |
+| Q2 | `H:\releases\proddeck-0.5.0\evidence\q2\` |
 
 Always hire **promote-field-ops** with promote crew. Next product direction (Pulse, Promote phone GO, Crew Fabric): [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
