@@ -1,12 +1,14 @@
 # Deploy — ProdDeck
 
-## Live targets (0.6.1)
+## Live targets
 
-| Env | Host | Port | Path |
-|-----|------|------|------|
-| DEV | local | 3320 | `E:\wt\proddeck-integrate` |
-| PREPROD | `https://home-staging.delena.buzz` | 4320 | `F:\apps\proddeck` |
-| PROD | `https://home.delena.buzz` | 5320 | `G:\apps\proddeck` |
+| Env | Host | Port | Path | Version |
+|-----|------|------|------|---------|
+| DEV | local | 3320 | `E:\wt\proddeck-integrate` | **0.7.0** |
+| PREPROD | `https://home-staging.delena.buzz` | 4320 | `F:\apps\proddeck` | **0.6.2** live |
+| PROD | `https://home.delena.buzz` | 5320 | `G:\apps\proddeck` | **0.6.2** live |
+
+Peer minimums for promote: [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md).
 
 Layout on F:/G:: wrapper (`start.ps1`, `VERSION`) + `app\` (Next.js + `.next` + `packs\`).
 
@@ -28,6 +30,8 @@ Runtime on F/G also uses `app\.env.production.local`:
 
 - `CSS_AUTH_URL=http://127.0.0.1:5900`
 - `NEXT_PUBLIC_CSS_ISSUER=https://css.delena.buzz`
+- `PLATFORM_APPS_URL` → `:4080` (F) / `:5080` (G) platform apps
+- `OS_EVENTS_FORWARD=1` (requires Portal **≥ 0.1.8**)
 
 Skipping the public issuer at build time causes post-login JWT rejection (client expects `localhost:9000`).
 

@@ -1,9 +1,12 @@
-# Cloud OS 0.7.0 — ProdDeck lanes **MERGED** (DEV)
+# Cloud OS 0.7.0 — DEV packed · F/G promote pending
 
-**Integrate:** tsc green · merges drive → ports → alog → filebridge → yard  
-**AV 0.3.17:** still in progress on `feature/desk-0.3.17` (dirty WIP)
+**ProdDeck:** DEV + pack **0.7.0** (`v0.7.0` · `H:\releases\proddeck-0.7.0`) · F/G still **0.6.2**  
+**AV:** live **0.3.16** · pack **0.3.17** awaiting EM (`H:\releases\agentverse-0.3.17`)  
+**Portal:** live **0.1.8**
 
-## Landed (ProdDeck)
+Compatibility matrix: [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)
+
+## ProdDeck 0.7.0 landed (safe subset)
 
 | Pri | Outcome |
 |-----|---------|
@@ -12,5 +15,10 @@
 | 3 | Ports request-stop event+JSON |
 | 4 | Yard read-only skill registry |
 | 5 | FileBridge list jail + delete hard-fail |
+| 6 | AV 0.3.17 Desk upgradation packaged (separate promote) |
 
-Await: AV Desk 0.3.17 · then pack **0.7.0** · EM GO for F/G
+## Peer mins before Q1/Q2 of 0.7.0
+
+- Portal **≥ 0.1.8**
+- AV classic **≥ 0.3.16** (prefer promote **0.3.17** with or before ProdDeck 0.7)
+- CSS issuer bake `https://css.delena.buzz`

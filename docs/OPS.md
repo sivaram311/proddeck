@@ -1,7 +1,8 @@
 # Ops — ProdDeck
 
-**Version:** **0.6.1** LIVE on PREPROD + PROD (leftover sprint)  
-**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [LEFTOVER-SPRINT.md](./LEFTOVER-SPRINT.md) · [DEPLOY.md](./DEPLOY.md)
+**Versions:** DEV **0.7.0** · F/G LIVE **0.6.2** · pack ready **0.7.0**  
+**Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.7-PLAN.md](./CLOUD-OS-0.7-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Ports / hosts
 
@@ -20,7 +21,7 @@ Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for Pr
 | CSS `clientId` | `proddeck` |
 | Pack | `packs/proddeck/app.json` ? `keepers-quay` + `os.enabled` |
 | Quay modules | catalog · helpdesk · scene · crewsDesk |
-| OS modules | Wave 1–2 set + leftovers (reauth, yard hire, ports reserve, archive pins); see pack `os.modules` |
+| OS modules | see pack `os.modules` (0.7 adds queue / request-stop / skill registry / FB jail) |
 
 ### CSS JWT bake (mandatory for F/G builds)
 
@@ -31,11 +32,22 @@ Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for Pr
 | `CSS_AUTH_URL` | `:9000` | `http://127.0.0.1:5900` |
 | `NEXT_PUBLIC_CSS_ISSUER` | match DEV CSS | **`https://css.delena.buzz`** (also in `.env.production`) |
 | `PLATFORM_APPS_URL` | optional | `:4080` / `:5080` platform apps |
-| OS_EVENTS_FORWARD | DEV default-on | **1** on F/G (Portal intake live) |
+| `OS_EVENTS_FORWARD` | DEV default-on | **`1`** on F/G (requires Portal ? **0.1.8**) |
 
 Commit `.env.production` holds the public issuer for release builds. After cutover: hard-refresh clients if an old chunk is cached.
 
 Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
+
+## Dependent peers (minimum)
+
+| Feature in ProdDeck | Requires |
+|---------------------|----------|
+| Login / catalog JWT | CSS issuer + `clientId=proddeck` |
+| OS event forward | Portal **? 0.1.8** `POST /api/os-events` |
+| Dispatch ? Session Desk | AV classic **? 0.3.16** (`/desk` URI brief); **? 0.3.17** for Desk search/cancel |
+| H-Drive Archive / FileBridge browse | `https://hdrive.delena.buzz` + `H:\releases` on host |
+
+Full matrix: [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md).
 
 ## Health
 
@@ -44,20 +56,18 @@ npm run smoke
 npm run smoke -- http://127.0.0.1:4320
 npm run smoke -- https://home-staging.delena.buzz
 npm run smoke -- https://home.delena.buzz
-# optional module smokes (when server up):
 node scripts/smoke-pulse.mjs
 node scripts/smoke-ports.mjs
 node scripts/smoke-activity-log.mjs
 ```
 
-Expect pack `0.6.1` (DEV) / `keepers-quay` + `os.enabled`. Catalog + helpdesk **401** without Bearer; **200 + apps** with a valid `proddeck` JWT.
+Expect pack version match (DEV **0.7.0** / F/G **0.6.2** until promote) · `keepers-quay` + `os.enabled`. Catalog + helpdesk **401** without Bearer; **200 + apps** with a valid `proddeck` JWT.
 
 ## Promote
 
 | Gate | Evidence |
 |------|----------|
-| Q1 0.6.1 | `H:\releases\proddeck-0.6.1\evidence\q1\` |
-| Q2 0.6.1 | `H:\releases\proddeck-0.6.1\evidence\q2\` |
-| Prior live | `H:\releases\proddeck-0.6.0\` |
+| Q1/Q2 live | `H:\releases\proddeck-0.6.2\evidence\` |
+| Next | `H:\releases\proddeck-0.7.0\evidence\` (await EM GO) |
 
-Always hire **promote-field-ops** with promote crew. Roadmap: [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
+Always hire **promote-field-ops**. On promote day also verify Portal ? 0.1.8 and AV ? 0.3.16 (prefer 0.3.17).

@@ -1,30 +1,30 @@
 ﻿# ProdDeck
 
-CSS-gated **home** for this machine — Keepers' Quay (call apps · leave memory · see the watch) plus phone-first **Cloud OS** Places (Pulse · Ports · Yard · Vault · …). AgentVerse stays the crew work plane.
+CSS-gated **home** for this machine — Keepers' Quay plus phone-first **Cloud OS** Places. AgentVerse stays the crew work plane.
 
-| Env | URL / path | Port |
-|-----|------------|------|
-| DEV | `E:\wt\proddeck-integrate` · branch `cloud-os/integrate` | `3320` |
-| PREPROD | `https://home-staging.delena.buzz` | `4320` **LIVE 0.6.1** |
-| PROD | `https://home.delena.buzz` | `5320` **LIVE 0.6.1** |
+| Env | URL / path | Port | Version |
+|-----|------------|------|---------|
+| DEV | `E:\wt\proddeck-integrate` · `cloud-os/integrate` | `3320` | **0.7.0** |
+| PREPROD | `https://home-staging.delena.buzz` | `4320` | **LIVE 0.6.2** |
+| PROD | `https://home.delena.buzz` | `5320` | **LIVE 0.6.2** |
 
-- **Version:** **0.6.1** (Cloud OS Wave 2 + leftovers)
 - **clientId:** `proddeck`
 - **Repo:** https://github.com/sivaram311/proddeck
-- **Release:** `H:\releases\proddeck-0.6.1`
+- **Releases:** live `H:\releases\proddeck-0.6.2` · next `H:\releases\proddeck-0.7.0`
+- **Supported peers / deps:** [docs/SUPPORTED-VERSIONS.md](docs/SUPPORTED-VERSIONS.md)
 
 ## Docs
 
 | Doc | Topic |
 |-----|--------|
-| [docs/WORLD.md](docs/WORLD.md) | Quay mythos + cast |
-| [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) | Cloud OS features + Crew Fabric |
-| [docs/LEFTOVER-SPRINT.md](docs/LEFTOVER-SPRINT.md) | 0.6.1 leftovers — shipped + still pending |
-| [docs/PARALLEL-EXECUTION-PLAN.md](docs/PARALLEL-EXECUTION-PLAN.md) | Parallel git lanes / N subagents |
+| [docs/SUPPORTED-VERSIONS.md](docs/SUPPORTED-VERSIONS.md) | **Fleet pin + dependency matrix** |
+| [docs/HANDOFF.md](docs/HANDOFF.md) | Live hosts + peers |
 | [docs/OPS.md](docs/OPS.md) | Ports / smoke / promote / CSS bake |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Build + F/G cutover |
-| [docs/HANDOFF.md](docs/HANDOFF.md) | Live hosts + next |
-| [docs/os/](docs/os/) | Per-module Cloud OS notes |
+| [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) | Cloud OS features + Crew Fabric |
+| [docs/CLOUD-OS-0.7-PLAN.md](docs/CLOUD-OS-0.7-PLAN.md) | 0.7.0 safe-subset train |
+| [docs/LEFTOVER-SPRINT.md](docs/LEFTOVER-SPRINT.md) | 0.6.1 leftovers (shipped) |
+| [docs/os/](docs/os/) | Per-module notes |
 
 ## Run
 
@@ -37,11 +37,9 @@ npm run dev   # or next start -p 3320
 npm run smoke
 ```
 
-After CSS login you land on the Quay (WebGL fail → flat catalog). Places nav opens Cloud OS panels (Control Tower / Forge / Yard / …). Manifest launches (Answering Wake).
-
 ## Stack
 
-Next.js 15 · React 19 · R3F/drei/three · Zod pack · CSS `/api/css` · catalog · helpdesk · crews · `src/os/**`
+Next.js 15 · React 19 · R3F/drei/three · Zod pack · CSS `/api/css` · `src/os/**`
 
 ## Crew
 
