@@ -10,9 +10,9 @@ test.describe("ProdDeck desktop (1280×800)", () => {
     await expect(page.locator("body")).not.toBeEmpty();
   });
 
-  test("pack is 0.8.0 with os enabled", async ({ request }) => {
+  test("pack is 0.8.1 with os enabled", async ({ request }) => {
     const pack = await (await request.get("/api/pack")).json();
-    expect(pack.version).toBe("0.8.0");
+    expect(pack.version).toBe("0.8.1");
     expect(pack.os?.enabled).toBe(true);
   });
 
