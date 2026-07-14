@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
+import { FabricEventsTail } from "./FabricEventsTail";
 import { MISSION_TEMPLATES, initialLaneState } from "./mission-templates";
 import { PROMOTE_SKILL_IDS, PROMOTE_SKILL_LABEL, SKILL_PACKS } from "./skill-packs";
 import {
@@ -50,6 +51,7 @@ export function YardView() {
   );
   const [hireBusyId, setHireBusyId] = useState<string | null>(null);
   const [hireFlash, setHireFlash] = useState<{ packId: string; state: HireFlash } | null>(null);
+  const [eventsRefreshToken, setEventsRefreshToken] = useState(0);
 
   function selectMission(m: MissionTemplate) {
     setMissionId(m.id);
@@ -99,6 +101,7 @@ export function YardView() {
       }
 
       setHireFlash({ packId: pack.id, state: eventOk ? "ok" : "soft-fail" });
+      if (eventOk) setEventsRefreshToken((n) => n + 1);
       window.setTimeout(() => setHireFlash(null), 2200);
     },
     [mission],
@@ -237,6 +240,8 @@ export function YardView() {
           })}
         </ul>
       </section>
+
+      <FabricEventsTail refreshToken={eventsRefreshToken} />
 
       <section aria-label="Promote skills legend">
         <p className="m-0 text-xs font-semibold uppercase tracking-wide text-[var(--pd-mist)]">
