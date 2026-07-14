@@ -1,6 +1,6 @@
 # Deploy — ProdDeck
 
-## Live targets (0.5.0)
+## Live targets (0.6.1)
 
 | Env | Host | Port | Path |
 |-----|------|------|------|

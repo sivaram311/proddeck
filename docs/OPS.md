@@ -1,6 +1,6 @@
 ﻿# Ops — ProdDeck
 
-**Version:** DEV **0.6.1** leftovers · F/G LIVE **0.6.0** until promote  
+**Version:** **0.6.1** LIVE on PREPROD + PROD (leftover sprint)  
 **SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [LEFTOVER-SPRINT.md](./LEFTOVER-SPRINT.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Ports / hosts
