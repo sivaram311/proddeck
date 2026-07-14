@@ -19,9 +19,12 @@ Update this file whenever F/G pins or peer minimums change.
 | App | PREPROD | PROD | Ports | Notes |
 |-----|---------|------|-------|-------|
 | **Agent Portal** | **0.1.8** | **0.1.8** | 4080 / 5080 | `POST /api/os-events` required for OS event forward |
-| **AgentVerse classic** | **0.3.17** | **0.3.17** | 4310 / 5310 | Densify + `/desk` + Desk upgradation UX |
-| **AgentVerse v2** | side fleet | side fleet | 4311 / 5311 | Independent; do not disturb on classic/ProdDeck promote |
+| **agentverse-upgrade** | **0.3.1** | **0.3.1** | 4312 / 5312 | **Dispatch peer SoT** · `agentverse-upgrade-staging.delena.buzz` / `agentverse-upgrade.delena.buzz` · `F:\apps\agentverse-upgrade` / `G:\apps\agentverse-upgrade` |
+| **AgentVerse classic** | **0.3.17** | **0.3.17** | 4310 / 5310 | **Rollback only** — densify + `/desk`; **not** the ProdDeck Dispatch default |
+| **AgentVerse v2** | side fleet | side fleet | 4311 / 5311 | Industrial / independent; **non-Dispatch**; do not disturb on upgrade/classic/ProdDeck promote |
 | **CSS (prod IdP)** | shared | shared | 5900 · css.delena.buzz | Issuer bake mandatory on Next builds · `v0.1.0` |
+
+**Dispatch peer SoT:** ProdDeck Cloud OS Dispatch deep-links target **agentverse-upgrade** (ports **4312/5312**), not classic densify (**4310/5310**).
 
 ## Dependency matrix
 
@@ -38,20 +41,33 @@ Everything in **0.7.0**, plus:
 |------------|---------|-----|
 | CSS | prod issuer `https://css.delena.buzz` · `clientId=proddeck` · tag `v0.1.0` | Login + catalog JWT |
 | Agent Portal | **≥ 0.1.8** | `OS_EVENTS_FORWARD=1` → `POST /api/os-events` |
-| AgentVerse classic | **≥ 0.3.16** (live **0.3.17**) | Dispatch `/desk` URI brief + Desk UX |
+| **agentverse-upgrade** | **0.3.1** (live F/G) | **Dispatch peer SoT** — `/desk` URI brief + Desk UX on upgrade hosts |
+| AgentVerse classic | **0.3.17** | Rollback / densify only — **not** Dispatch default |
 | `PLATFORM_APPS_URL` | F→`:4080` / G→`:5080` platform apps base | Event forward base strip |
 
 Still deferred (hard outs): FileBridge H: delete IO · Drive Guard mutations · ports kill · Portal runners · Quay densify mega — see [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md).
 
-### AgentVerse **0.3.17** (live)
+### agentverse-upgrade **0.3.1** (Dispatch peer SoT — live)
 
 | Depends on | Minimum | Why |
 |------------|---------|-----|
 | CSS | `https://css.delena.buzz` baked · `v0.1.0` | Session auth |
 | Agent Portal | **≥ 0.1.8** | Session Desk / cancel / quests |
-| ProdDeck Dispatch | **≥ 0.6.2** URI `brief` (live **0.8.0**) | Deep-link land |
+| ProdDeck Dispatch | **≥ 0.6.2** URI `brief` (live **0.8.0**) | Deep-link land on upgrade fleet |
 
-Do **not** deploy `feature/upgradation-functionality` over densify F/G (diverged history / side ports 4312/5312).
+Hosts: staging `agentverse-upgrade-staging.delena.buzz` **:4312** · prod `agentverse-upgrade.delena.buzz` **:5312**.  
+Pack: `H:\releases\agentverse-upgrade-0.3.1` · tag `v0.3.1`.  
+Do **not** robocopy upgrade over classic densify (**4310/5310**).
+
+### AgentVerse classic **0.3.17** (rollback / densify)
+
+| Depends on | Minimum | Why |
+|------------|---------|-----|
+| CSS | `https://css.delena.buzz` baked · `v0.1.0` | Session auth |
+| Agent Portal | **≥ 0.1.8** | Session Desk / cancel / quests |
+| ProdDeck | **≥ 0.6.2** (live **0.8.0**) | Historical densify peer — **not** Dispatch SoT |
+
+Keep classic F/G for rollback only. Dispatch must not default here.
 
 ### Agent Portal **0.1.8**
 
@@ -75,6 +91,7 @@ Do **not** deploy `feature/upgradation-functionality` over densify F/G (diverged
 |------|------|
 | `H:\releases\proddeck-0.8.0` | Live F/G |
 | `H:\releases\proddeck-0.7.0` | Previous |
-| `H:\releases\agentverse-0.3.17` | Live classic |
+| `H:\releases\agentverse-upgrade-0.3.1` | Live Dispatch peer (upgrade fleet) |
+| `H:\releases\agentverse-0.3.17` | Live classic (rollback) |
 | `H:\releases\agent-portal-0.1.8` | Live Portal + os-events |
 | `H:\releases\css-0.1.0` | Shared IdP |
