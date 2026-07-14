@@ -16,17 +16,38 @@ const fieldClass =
 const actionClass =
   "min-h-[44px] min-w-[44px] flex-1 rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-[var(--pd-paper)] transition hover:border-[var(--pd-lime)] hover:text-[var(--pd-lime)] disabled:cursor-not-allowed disabled:opacity-50";
 
-function decodeBriefParam(raw: string | null): string | null {
-  if (!raw) return null;
+/** Legacy base64url → UTF-8 (old Dispatch emit). */
+function tryDecodeBase64UrlBrief(raw: string): string | null {
   try {
     const b64 = raw.replace(/-/g, "+").replace(/_/g, "/");
     const pad = b64.length % 4 === 0 ? "" : "=".repeat(4 - (b64.length % 4));
     const binary = atob(b64 + pad);
     const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
+    const decoded = new TextDecoder().decode(bytes).trim();
+    if (!decoded || decoded.includes("\uFFFD")) return null;
+    return decoded;
   } catch {
     return null;
   }
+}
+
+/**
+ * Prefer plain URI text (`URLSearchParams.get` already percent-decodes).
+ * Optionally accept leftover base64url briefs from older Dispatch links.
+ */
+function decodeBriefParam(raw: string | null): string | null {
+  if (!raw) return null;
+  const text = raw.trim();
+  if (!text) return null;
+
+  // Clearly plain URI text (spaces / punctuation outside base64url alphabet).
+  if (/[^A-Za-z0-9\-_]/.test(text)) {
+    return text;
+  }
+
+  // Restricted charset: may be legacy base64url or a short plain title.
+  const legacy = tryDecodeBase64UrlBrief(text);
+  return legacy ?? text;
 }
 
 type InboundParams = {

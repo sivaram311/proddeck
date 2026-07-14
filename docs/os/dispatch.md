@@ -24,7 +24,9 @@ ProdDeck is always the **producer** (`src=proddeck`). Targets use a shared param
 
 ### `brief` encoding
 
-Mission title → UTF-8 → standard base64 → base64url (`+` → `-`, `/` → `_`, strip `=`).
+Mission title → plain UTF-8 → `URLSearchParams.set("brief", text)` (single percent-encode).  
+Do **not** pre-`encodeURIComponent` then `set` (double-encode). Do **not** emit base64url as primary.  
+Inbound decode prefers URI text; optionally accepts leftover base64url (transition). See [`av-deeplink-contract.md`](./av-deeplink-contract.md).
 
 ### AgentVerse (primary)
 
@@ -32,7 +34,7 @@ Mission title → UTF-8 → standard base64 → base64url (`+` → `-`, `/` → 
 {AGENTVERSE_BASE}/desk?
   src=proddeck
   &intent=session-desk
-  &brief=<base64url mission title>
+  &brief=<plain UTF-8 mission title>
   &return=<return URL>
   &env=dev|preprod|prod
 ```
@@ -45,7 +47,7 @@ Mission title → UTF-8 → standard base64 → base64url (`+` → `-`, `/` → 
 {PORTAL_BASE}/?
   src=proddeck
   &intent=hire
-  &brief=<base64url mission title>
+  &brief=<plain UTF-8 mission title>
   &return=<return URL>
   &env=dev|preprod|prod
 ```
@@ -60,7 +62,7 @@ Mission title → UTF-8 → standard base64 → base64url (`+` → `-`, `/` → 
   &intent=dispatch
   &place=forge
   &module=dispatch
-  &brief=<base64url mission title>
+  &brief=<plain UTF-8 mission title>
   &return=<return URL>
   &env=dev|preprod|prod
 ```
@@ -91,7 +93,7 @@ Derived from hostname: `localhost` / `127.0.0.1` → `dev`; `*staging*` → `pre
 | Path | Role |
 |------|------|
 | `src/os/modules/dispatch/config.ts` | Target labels, base URLs, return default |
-| `src/os/modules/dispatch/build-url.ts` | Pure URL builder + `brief` encoder |
+| `src/os/modules/dispatch/build-url.ts` | Pure URL builder + plain `brief` via `searchParams.set` |
 | `src/os/modules/dispatch/index.tsx` | Client UI |
 
 ## Out of scope (Wave 1)

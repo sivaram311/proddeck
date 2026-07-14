@@ -12,16 +12,13 @@ export type DispatchLinkInput = {
   env?: DispatchEnv;
 };
 
-/** Base64url-encode mission text for the `brief` query param (UTF-8 safe). */
-export function encodeBrief(text: string): string {
-  const trimmed = text.trim();
-  if (!trimmed) return "";
-  const bytes = new TextEncoder().encode(trimmed);
-  let binary = "";
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
-  }
-  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+/**
+ * Normalize mission text for the `brief` query param.
+ * Pass plain UTF-8 to `URLSearchParams.set` — do not pre-`encodeURIComponent`
+ * (that double-encodes) and do not base64url-encode (legacy only on inbound).
+ */
+export function normalizeBrief(text: string): string {
+  return text.trim();
 }
 
 /**
@@ -34,7 +31,7 @@ export function buildDispatchUrl(input: DispatchLinkInput): string | null {
 
   const env = input.env ?? resolveDispatchEnv();
   const base = resolveTargetBaseUrl(input.target);
-  const brief = encodeBrief(title);
+  const brief = normalizeBrief(title);
   const returnUrl = input.returnUrl.trim().replace(/\/$/, "");
 
   if (input.target === "agentverse") {
