@@ -97,5 +97,10 @@ export async function collectHealthSnapshot(): Promise<HealthSnapshot> {
     drives,
     postgresOk,
     cssOk,
+    notes: [
+      `load=${os.loadavg().map((n) => n.toFixed(2)).join("/")}`,
+      `ramFreeGb=${bytesToGb(os.freemem())}/${bytesToGb(os.totalmem())}`,
+      `stackPilot=http://127.0.0.1:5091 (control.delena.buzz)`,
+    ],
   };
 }

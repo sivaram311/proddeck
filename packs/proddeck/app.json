@@ -1,7 +1,7 @@
 {
   "appId": "proddeck",
   "displayName": "ProdDeck",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "modules": {
     "catalog": true,
     "helpdesk": true,

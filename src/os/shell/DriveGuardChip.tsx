@@ -14,10 +14,15 @@ type Props = {
   onChange?: (env: OsEnv) => void;
 };
 
-/** Display + soft warn. Hard gates land in Wave 1 drive-guard lane. */
+/** Display + soft warn. Hard gates: see modules/drive-guard/confirm.ts */
 export function DriveGuardChip({ env, onChange }: Props) {
+  const hot = env === "prod" || env === "releases";
   return (
-    <label className="inline-flex min-h-11 items-center gap-2 rounded-md border border-white/15 bg-black/45 px-2 text-xs text-[var(--pd-mist)] backdrop-blur-sm">
+    <label
+      className={`inline-flex min-h-11 items-center gap-2 rounded-md border bg-black/45 px-2 text-xs text-[var(--pd-mist)] backdrop-blur-sm ${
+        hot ? "border-[var(--pd-danger)]/50" : "border-white/15"
+      }`}
+    >
       <span className="text-[var(--pd-lime)]" style={{ fontFamily: "var(--font-display)" }}>
         Env
       </span>

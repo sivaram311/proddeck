@@ -74,6 +74,16 @@ export function GateChecklist({ gate, subtitle }: Props) {
       const next = appendDecision(entry);
       setDecisions(next);
       setNote("");
+      void fetch("/api/os/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "promote.decision",
+          env: gate === "Q2" ? "prod" : "preprod",
+          actor: ACTOR_STUB,
+          payload: entry,
+        }),
+      }).catch(() => undefined);
     },
     [gate, note],
   );

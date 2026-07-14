@@ -205,6 +205,14 @@ export function PulseView() {
               ok={snapshot.cssOk}
             />
           </div>
+
+          {snapshot.notes && snapshot.notes.length > 0 ? (
+            <ul className="m-0 list-none space-y-1 p-0 font-mono text-xs text-[var(--pd-mist)]">
+              {snapshot.notes.map((n) => (
+                <li key={n}>{n}</li>
+              ))}
+            </ul>
+          ) : null}
         </>
       )}
     </section>

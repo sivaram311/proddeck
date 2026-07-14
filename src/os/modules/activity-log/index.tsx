@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import type { ActivityLogEntry, ActivityLogResponse } from "./types";
 
 function LogRow({ entry }: { entry: ActivityLogEntry }) {
+  const brief = `${entry.timestamp} ${entry.session} ${entry.action}`;
+  const href = `/?osPlace=forge&brief=${encodeURIComponent(brief.slice(0, 200))}`;
   return (
     <article
       className="flex min-h-[44px] items-center gap-2 rounded-lg border border-white/10 bg-black/55 px-3 py-2 backdrop-blur-md"
@@ -23,6 +25,12 @@ function LogRow({ entry }: { entry: ActivityLogEntry }) {
           <span className="ml-1 text-[10px] uppercase tracking-wide text-amber-300">redacted</span>
         )}
       </span>
+      <a
+        href={href}
+        className="shrink-0 rounded px-2 py-1 text-[10px] font-semibold text-[var(--pd-lime)]"
+      >
+        Continue
+      </a>
       <span className="shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide bg-white/5 text-[var(--pd-mist)]">
         {entry.provider}
       </span>
