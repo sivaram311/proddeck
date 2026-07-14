@@ -197,13 +197,19 @@ const OAUTH_REDIRECT_KEY = "prodDeckOauthRedirect";
 
 function resolveOAuthRedirectUri(config: AuthConfig): string {
   if (typeof window !== "undefined" && window.location?.origin) {
-    const origin = window.location.origin.replace(/\/$/, "");
-    // Always match the page the user opened (home-dev vs localhost)
-    return `${origin}/auth/callback`;
+    return `${window.location.origin.replace(/\/$/, "")}/auth/callback`;
   }
-  return (
-    config.oauthRedirectUri ||
-    "https://home-dev.delena.buzz/auth/callback"
+  if (config.oauthRedirectUri) {
+    return config.oauthRedirectUri.replace(/\/$/, "");
+  }
+  // SSR/docs only — set NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI or NEXT_PUBLIC_APP_URL
+  const app =
+    (typeof process !== "undefined" &&
+      (process.env.NEXT_PUBLIC_APP_URL || process.env.PRODDECK_PUBLIC_URL)?.trim()) ||
+    "";
+  if (app) return `${app.replace(/\/$/, "")}/auth/callback`;
+  throw new Error(
+    "OAuth redirect URI missing: open in a browser or set NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI / NEXT_PUBLIC_APP_URL",
   );
 }
 

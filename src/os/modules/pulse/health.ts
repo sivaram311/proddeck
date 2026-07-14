@@ -2,6 +2,7 @@ import { statfs } from "fs/promises";
 import net from "net";
 import os from "os";
 import type { HealthSnapshot } from "../../types";
+import { cssAuthUrl } from "@/lib/cssEnv";
 
 const DRIVE_LETTERS = ["E", "F", "G", "H"] as const;
 const PING_MS = 1500;
@@ -59,7 +60,7 @@ function tcpReachable(host: string, port: number, ms = PING_MS): Promise<boolean
 }
 
 async function cssReachable(): Promise<boolean> {
-  const base = process.env.CSS_AUTH_URL?.replace(/\/$/, "") ?? "http://127.0.0.1:9000";
+  const base = cssAuthUrl();
   try {
     const res = await withTimeout(
       fetch(`${base}/.well-known/jwks.json`, {
@@ -86,6 +87,7 @@ async function cssReachable(): Promise<boolean> {
 /** Collect machine health snapshot (Node runtime only). */
 export async function collectHealthSnapshot(): Promise<HealthSnapshot> {
   const drives = await Promise.all(DRIVE_LETTERS.map((letter) => probeDrive(letter)));
+  const cssBase = cssAuthUrl();
   const [postgresOk, cssOk] = await Promise.all([
     tcpReachable("127.0.0.1", 5432),
     cssReachable(),
@@ -97,6 +99,7 @@ export async function collectHealthSnapshot(): Promise<HealthSnapshot> {
     drives,
     postgresOk,
     cssOk,
+    cssBase,
     notes: [
       `load=${os.loadavg().map((n) => n.toFixed(2)).join("/")}`,
       `ramFreeGb=${bytesToGb(os.freemem())}/${bytesToGb(os.totalmem())}`,

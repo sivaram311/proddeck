@@ -3,11 +3,11 @@
 import { FormEvent, useState } from "react";
 import { AUTH_CONFIG } from "@/lib/config";
 import { beginCssOAuthLogin, loginWithCss, verifySession } from "@/lib/auth";
+import { isDevHostname } from "@/lib/cssEnv";
 
 function isLocalDevHost() {
   if (typeof window === "undefined") return true;
-  const h = window.location.hostname;
-  return h === "localhost" || h === "127.0.0.1" || h === "home-dev.delena.buzz";
+  return isDevHostname(window.location.hostname);
 }
 
 type Props = {

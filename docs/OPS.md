@@ -38,21 +38,19 @@ Commit `.env.production` holds the public issuer for release builds. After cutov
 
 Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
 
-### css-next OAuth pilot (DEV only)
+### css-next hybrid pilot (DEV only)
 
-Branch `feature/css-next-oauth-pilot`. Local `.env.local` (gitignored):
+Branch `feature/css-next-oauth-pilot`. Put URLs in **`.env.local`** only — SoT helper `src/lib/cssEnv.ts`:
 
 ```env
 CSS_AUTH_URL=https://css-next.delena.buzz
 NEXT_PUBLIC_CSS_ISSUER=https://css-next.delena.buzz
 NEXT_PUBLIC_CSS_AUTH_MODE=hybrid
-NEXT_PUBLIC_CSS_OAUTH_REDIRECT_URI=https://home-dev.delena.buzz/auth/callback
+NEXT_PUBLIC_APP_URL=https://home-dev.delena.buzz
+NEXT_PUBLIC_DEV_HOSTS=localhost,127.0.0.1,home-dev.delena.buzz
 ```
 
-Primary UX: **styled ProdDeck username/password** ? css-next `POST /auth/login` (no redirect).  
-Optional: **Continue with CSS SSO** ? oauth redirect. Use live CSS admin password (not README `admin123` on css-next prod).
-
-Default without flag: **password** only. Do **not** bake hybrid into F/G. Spec: CSS `docs/proddeck-css-next-oauth-pilot.md`.
+Primary: deck form ? `CSS_AUTH_URL` login. Optional SSO uses browser origin. Do not bake hybrid into F/G.
 
 ## Dependent peers (minimum)
 

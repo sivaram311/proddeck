@@ -201,7 +201,7 @@ export function PulseView() {
             <ServiceCard label="Postgres" detail="127.0.0.1:5432" ok={snapshot.postgresOk} />
             <ServiceCard
               label="CSS"
-              detail="127.0.0.1:9000"
+              detail={snapshot.cssBase || "CSS_AUTH_URL"}
               ok={snapshot.cssOk}
             />
           </div>

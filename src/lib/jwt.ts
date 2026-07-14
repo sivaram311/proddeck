@@ -1,15 +1,14 @@
 import { createRemoteJWKSet, jwtVerify } from "jose";
+import { cssAuthUrl, cssIssuer } from "./cssEnv";
 
 const CLIENT_ID = "proddeck";
 
 function cssBase(): string {
-  return (process.env.CSS_AUTH_URL || "http://127.0.0.1:9000").replace(/\/$/, "");
+  return cssAuthUrl();
 }
 
 function expectedIssuer(): string {
-  const fromEnv = (process.env.NEXT_PUBLIC_CSS_ISSUER || "").trim().replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  return cssBase();
+  return cssIssuer();
 }
 
 let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;

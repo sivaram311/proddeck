@@ -35,5 +35,7 @@ export type HealthSnapshot = {
   drives?: { letter: string; freeGb?: number; totalGb?: number; ok: boolean }[];
   postgresOk?: boolean;
   cssOk?: boolean;
+  /** CSS_AUTH_URL used for the reachability probe */
+  cssBase?: string;
   notes?: string[];
 };
