@@ -1,8 +1,8 @@
 # Ops — ProdDeck
 
-**Versions:** DEV / F / G LIVE **0.7.0** · pack `H:\releases\proddeck-0.7.0` · tag `v0.7.0`  
+**Versions:** DEV / F / G LIVE **0.8.0** Wave A · pack `H:\releases\proddeck-0.8.0` · tag `v0.8.0`  
 **Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
-**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.7-PLAN.md](./CLOUD-OS-0.7-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Ports / hosts
 
@@ -44,7 +44,7 @@ Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADM
 |---------------------|----------|
 | Login / catalog JWT | CSS issuer + `clientId=proddeck` |
 | OS event forward | Portal **? 0.1.8** `POST /api/os-events` |
-| Dispatch ? Session Desk | AV classic **? 0.3.16** (`/desk` URI brief); **? 0.3.17** for Desk search/cancel |
+| Dispatch ? Session Desk | **AV upgrade fleet** (default): `agentverse-upgrade-staging.delena.buzz` / `agentverse-upgrade.delena.buzz` · contract `/desk?src=&crew=&session=&intent=&brief=&skills=&return=&env=` · classic `agentverse.delena.buzz` is **not** the Dispatch default |
 | H-Drive Archive / FileBridge browse | `https://hdrive.delena.buzz` + `H:\releases` on host |
 
 Full matrix: [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md).

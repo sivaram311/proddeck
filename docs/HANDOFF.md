@@ -1,12 +1,17 @@
 ﻿# Handoff — ProdDeck
 
-**DEV:** **0.7.0** · `E:\wt\proddeck-integrate` · `:3320` · tag `v0.7.0`  
-**PREPROD LIVE:** **0.7.0** · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
-**PROD LIVE:** **0.7.0** · `https://home.delena.buzz` · `G:\apps\proddeck` · `:5320`  
-**Pack:** `H:\releases\proddeck-0.7.0`
+**DEV / PREPROD / PROD LIVE:** **0.8.0** Wave A  
+**Hosts:** `:3320` · `https://home-staging.delena.buzz` · `https://home.delena.buzz`  
+**Pack:** `H:\releases\proddeck-0.8.0` · tag `v0.8.0` · branch `cloud-os/integrate`
 
 **Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
-**Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)
+**Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
+**Wave A / deferred:** [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md)
+
+## Wave A (this release)
+
+- Lead activity-queue drain (confirm `DRAIN_TO_MYAGENT`)
+- Ports stop **dry-run** (deny-list critical; no kill IO)
 
 ## Peers (must stay compatible — see matrix)
 
