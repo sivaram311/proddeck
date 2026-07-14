@@ -1,93 +1,197 @@
 import { readFile } from "fs/promises";
-import { execFile } from "child_process";
-import { promisify } from "util";
-import type { PortReservation, PortRow, PortsSnapshot } from "./types";
+import path from "path";
+import type { PortRegistryEntry, PortStatus } from "./types";
 
-export type { PortReservation, PortRow, PortsSnapshot } from "./types";
+const DEFAULT_JSON = "E:\\MyAgent\\workflow\\ports\\registry.json";
 
-const execFileAsync = promisify(execFile);
-
-const REGISTRY_PATH = "E:\\MyAgent\\workflow\\ports\\registry.json";
-
-type RegistryFile = {
-  shared?: PortReservation[];
-  reservations?: PortReservation[];
+type RawRegistry = {
+  version?: number;
+  updated?: string;
+  ranges?: Record<string, { drive?: string; min?: number; max?: number }>;
+  shared?: RawEntry[];
+  reservations?: RawEntry[];
+  ports?: RawEntry[];
 };
 
-async function loadRegistry(): Promise<PortReservation[]> {
-  const raw = JSON.parse(await readFile(REGISTRY_PATH, "utf8")) as RegistryFile;
-  return [...(raw.shared ?? []), ...(raw.reservations ?? [])];
+type RawEntry = {
+  port?: number;
+  appId?: string;
+  env?: string;
+  role?: string;
+  status?: string;
+  notes?: string;
+  path?: string;
+};
+
+function registryJsonPath(): string {
+  return (process.env.MYAGENT_PORTS_REGISTRY || DEFAULT_JSON).trim();
 }
 
-async function listeningPorts(): Promise<Set<number>> {
-  const set = new Set<number>();
+function registryMdPath(): string {
+  const fromEnv = (process.env.MYAGENT_PORTS_REGISTRY_MD || "").trim();
+  if (fromEnv) return fromEnv;
+  return path.join(path.dirname(registryJsonPath()), "REGISTRY.md");
+}
+
+function stripBom(raw: string): string {
+  return raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw;
+}
+
+function normalizeStatus(raw: string | undefined): PortStatus | string {
+  const s = (raw || "reserved").toLowerCase();
+  if (s === "active" || s === "reserved" || s === "legacy" || s === "retired") return s;
+  return s;
+}
+
+function normalizeEntry(raw: RawEntry): PortRegistryEntry | null {
+  const port = Number(raw.port);
+  const appId = String(raw.appId ?? "").trim();
+  if (!Number.isFinite(port) || port <= 0 || !appId) return null;
+  return {
+    port,
+    appId,
+    env: String(raw.env ?? "unknown").trim(),
+    role: String(raw.role ?? "http").trim(),
+    status: normalizeStatus(raw.status),
+    notes: raw.notes ? String(raw.notes).trim() : undefined,
+    path: raw.path ? String(raw.path).trim() : undefined,
+  };
+}
+
+function mergeEntries(lists: PortRegistryEntry[][]): PortRegistryEntry[] {
+  const byPort = new Map<number, PortRegistryEntry>();
+  for (const list of lists) {
+    for (const entry of list) {
+      const prev = byPort.get(entry.port);
+      byPort.set(entry.port, prev ? { ...prev, ...entry } : entry);
+    }
+  }
+  return Array.from(byPort.values()).sort((a, b) => a.port - b.port);
+}
+
+function inferEnvFromSection(section: string): string {
+  const s = section.toLowerCase();
+  if (s.includes("dev (e:")) return "dev";
+  if (s.includes("preprod (f:")) return "preprod";
+  if (s.includes("prod (g:")) return "prod";
+  if (s.includes("shared")) return "shared";
+  if (s.includes("legacy")) return "unknown";
+  return "unknown";
+}
+
+function parseRegistryMd(content: string): PortRegistryEntry[] {
+  const entries: PortRegistryEntry[] = [];
+  let section = "";
+
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("## ")) {
+      section = trimmed.slice(3);
+      continue;
+    }
+    if (!trimmed.startsWith("|")) continue;
+    if (/^\|\s*[-:]/.test(trimmed)) continue;
+
+    const cols = trimmed
+      .split("|")
+      .map((c) => c.trim())
+      .filter((c) => c.length > 0);
+    if (cols.length < 4) continue;
+
+    const port = Number.parseInt(cols[0], 10);
+    if (!Number.isFinite(port) || port <= 0) continue;
+
+    const appId = cols[1];
+    if (!appId || appId.toLowerCase() === "port") continue;
+
+    let env = inferEnvFromSection(section);
+    let role = "http";
+    let status: PortStatus | string = "reserved";
+    let notes: string | undefined;
+    let entryPath: string | undefined;
+
+    if (cols.length >= 7) {
+      env = cols[2] || env;
+      role = cols[3] || role;
+      status = normalizeStatus(cols[4]);
+      notes = cols[6] || cols[5] || undefined;
+    } else if (cols.length >= 6) {
+      role = cols[2] || role;
+      status = normalizeStatus(cols[3]);
+      entryPath = cols[4] || undefined;
+      notes = cols[5] || undefined;
+    } else {
+      role = cols[2] || role;
+      status = normalizeStatus(cols[3]);
+      notes = cols[4] || undefined;
+    }
+
+    entries.push({ port, appId, env, role, status, notes, path: entryPath });
+  }
+
+  return entries;
+}
+
+export type LoadedRegistry = {
+  updated?: string;
+  ranges?: RawRegistry["ranges"];
+  entries: PortRegistryEntry[];
+  source: "registry.json" | "registry.md" | "merged";
+};
+
+const THIN_JSON_THRESHOLD = 5;
+
+export async function loadPortRegistry(): Promise<LoadedRegistry> {
+  const jsonPath = registryJsonPath();
+  const mdPath = registryMdPath();
+
+  let jsonEntries: PortRegistryEntry[] = [];
+  let updated: string | undefined;
+  let ranges: RawRegistry["ranges"];
+
   try {
-    const { stdout } = await execFileAsync(
-      "powershell.exe",
-      [
-        "-NoProfile",
-        "-Command",
-        "(Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue).LocalPort | Sort-Object -Unique",
-      ],
-      { timeout: 8000, windowsHide: true },
-    );
-    for (const line of stdout.split(/\r?\n/)) {
-      const n = Number(line.trim());
-      if (Number.isFinite(n) && n > 0) set.add(n);
-    }
+    const raw = stripBom(await readFile(jsonPath, "utf8"));
+    const parsed = JSON.parse(raw) as RawRegistry;
+    updated = parsed.updated;
+    ranges = parsed.ranges;
+    jsonEntries = mergeEntries([
+      (parsed.shared || []).map(normalizeEntry).filter(Boolean) as PortRegistryEntry[],
+      (parsed.reservations || []).map(normalizeEntry).filter(Boolean) as PortRegistryEntry[],
+      (parsed.ports || []).map(normalizeEntry).filter(Boolean) as PortRegistryEntry[],
+    ]);
   } catch {
-    try {
-      const { stdout } = await execFileAsync("netstat", ["-ano"], {
-        timeout: 8000,
-        windowsHide: true,
-      });
-      for (const line of stdout.split(/\r?\n/)) {
-        if (!/\sLISTEN/i.test(line)) continue;
-        const m = line.match(/:(\d+)\s/);
-        if (m) set.add(Number(m[1]));
-      }
-    } catch {
-      /* best-effort */
-    }
+    jsonEntries = [];
   }
-  return set;
-}
 
-export async function collectPortsSnapshot(): Promise<PortsSnapshot> {
-  const reserved = await loadRegistry();
-  const listening = await listeningPorts();
-  const reservedPorts = new Set(reserved.map((r) => r.port));
+  if (jsonEntries.length >= THIN_JSON_THRESHOLD) {
+    return { updated, ranges, entries: jsonEntries, source: "registry.json" };
+  }
 
-  const rows: PortRow[] = reserved.map((r) => {
-    const isUp = listening.has(r.port);
+  let mdEntries: PortRegistryEntry[] = [];
+  try {
+    const md = await readFile(mdPath, "utf8");
+    mdEntries = parseRegistryMd(md);
+  } catch {
+    mdEntries = [];
+  }
+
+  if (jsonEntries.length === 0 && mdEntries.length > 0) {
+    return { updated, ranges, entries: mdEntries, source: "registry.md" };
+  }
+
+  if (jsonEntries.length > 0 && mdEntries.length > 0) {
     return {
-      ...r,
-      listening: isUp,
-      mismatch: isUp ? "ok" : "reserved-not-listening",
+      updated,
+      ranges,
+      entries: mergeEntries([jsonEntries, mdEntries]),
+      source: "merged",
     };
-  });
-
-  const unknownListening = [...listening]
-    .filter((p) => !reservedPorts.has(p) && p >= 3000 && p < 6000)
-    .sort((a, b) => a - b)
-    .map((port) => ({ port }));
-
-  for (const u of unknownListening) {
-    rows.push({
-      port: u.port,
-      appId: "(unknown)",
-      env: "?",
-      listening: true,
-      mismatch: "listening-unknown",
-    });
   }
-
-  rows.sort((a, b) => a.port - b.port);
 
   return {
-    at: new Date().toISOString(),
-    registryPath: REGISTRY_PATH,
-    rows,
-    unknownListening,
+    updated,
+    ranges,
+    entries: jsonEntries.length > 0 ? jsonEntries : mdEntries,
+    source: jsonEntries.length > 0 ? "registry.json" : "registry.md",
   };
 }
