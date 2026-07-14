@@ -1,9 +1,9 @@
 import { defineConfig, devices as pwDevices } from "@playwright/test";
 import { devices } from "./e2e/fixtures/devices";
 
-/** Prefer public staging for lane isolation; override with PRODDECK_URL. */
+/** Prefer DEV for tag gate (CONSCIOUS #16); override with PRODDECK_URL for staging cutover checks. */
 const baseURL =
-  process.env.PRODDECK_URL || "https://home-staging.delena.buzz";
+  process.env.PRODDECK_URL || "http://127.0.0.1:3320";
 
 export default defineConfig({
   testDir: "./e2e",
