@@ -1,28 +1,20 @@
 ﻿# Handoff — ProdDeck
 
-**DEV / PREPROD / PROD LIVE:** **0.8.0** Wave A  
-**Hosts:** `:3320` · `https://home-staging.delena.buzz` · `https://home.delena.buzz`  
-**Pack:** `H:\releases\proddeck-0.8.0` · tag `v0.8.0` · branch `cloud-os/integrate`
+**DEV:** **0.8.1** · `release/0.8.1` / integrate · `:3320` · tag `v0.8.1` (Phase A)
+**PREPROD/PROD LIVE:** **0.8.0** until Phase B GO · `H:\releases\proddeck-0.8.0`
+**Next pack:** `H:\releases\proddeck-0.8.1`
 
-**Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
-**Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
-**Wave A / next backlog:** [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) · roadmap §10 [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md)
+**Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`
+**Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)
+**Git release:** follow MyAgent `GIT-RELEASE-MANAGEMENT.md` · skill `git-release`
 
-## Wave A (this release)
-
-- Lead activity-queue drain (confirm `DRAIN_TO_MYAGENT`)
-- Ports stop **dry-run** (deny-list critical; no kill IO)
-
-## Peers (must stay compatible — see matrix)
+## Peers
 
 | Peer | Live F/G | Notes |
 |------|----------|-------|
-| Agent Portal | **0.1.8** (`:4080` / `:5080`) | os-events |
-| AgentVerse classic | **0.3.17** (`:4310` / `:5310`) | densify + Desk |
-| CSS | `https://css.delena.buzz` · `:5900` · `v0.1.0` | issuer bake mandatory |
-
-## Isolation
-
-Never stop AgentVerse v2 (`4311`/`5311`) or unrelated portal cutovers during ProdDeck/AV classic promote.
+| Agent Portal | **0.1.8** | os-events |
+| agentverse-upgrade | **0.3.1** | Dispatch SoT `:4312/:5312` |
+| AgentVerse classic | **0.3.17** | rollback only |
+| CSS | `v0.1.0` · css.delena.buzz | classic IdP |
 
 Session: `proddeck-keepers-quay-2026-07-14`.

@@ -1,7 +1,7 @@
 {
   "name": "proddeck",
-  "version": "0.7.0",
-  "description": "CSS-gated production launcher - Keepers Quay + Cloud OS 0.7.0",
+  "version": "0.8.1",
+  "description": "CSS-gated production launcher - Keepers Quay + Cloud OS 0.8.1 Wave A + Device Lab",
   "private": true,
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3320",
@@ -9,7 +9,11 @@
     "start": "next start -H 0.0.0.0 -p 3320",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "smoke": "node scripts/smoke.mjs"
+    "smoke": "node scripts/smoke.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:realme": "playwright test --project=realme-p2-pro",
+    "test:e2e:tablet": "playwright test --project=tablet-pad2-approx",
+    "test:e2e:desktop": "playwright test --project=desktop-1280"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -22,6 +26,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4.1.8",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.5",

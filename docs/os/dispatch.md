@@ -1,8 +1,8 @@
 # Dispatch — Cloud OS module
 
-**Lane:** `feat/os-dispatch` · **Place:** Forge (Quay)
+**Lane:** leftover 0.3.1 / Lane D · **Place:** Forge (Quay)
 
-Dispatch builds **Session Desk–style deep links** from ProdDeck so an operator can send mission context to AgentVerse (primary), Agent Portal, or back to ProdDeck — without Portal API calls in Wave 1.
+Dispatch builds **AgentVerse Desk deep links** from ProdDeck so an operator can hire a crew with a brief and land on the **upgrade** fleet (not classic `agentverse.delena.buzz`).
 
 ## UI
 
@@ -10,106 +10,61 @@ Dispatch builds **Session Desk–style deep links** from ProdDeck so an operator
 
 | Field | Purpose |
 |-------|---------|
-| **Target app** | `agentverse` · `proddeck` · `portal` |
-| **Mission title** | Human-readable brief; encoded into `brief` query param |
-| **Return URL** | Defaults to current pack host (`window.location.origin`) or prod pack host |
+| **Crew** | `rajesh` · `karthik` · `lavanya` · `aravind` · `meenakshi` · `muthu` · `kabilan` |
+| **Brief** | Textarea → `brief` query (URI-encoded via `URLSearchParams`) |
+| **Intent** | `session-desk` \| `hire` |
+| **Fleet** | Staging → `https://agentverse-upgrade-staging.delena.buzz` · Prod → `https://agentverse-upgrade.delena.buzz` |
+| **Skills** | Optional comma list → `skills` |
+| **Return URL** | Defaults to current ProdDeck origin (`home-staging` / `home` / local) |
 
-Actions: **Copy link** and **Open** (both ≥44px tap targets). Link preview updates live.
+Actions: **Open Desk** (primary, navigates) and **Copy link** (both ≥44px tap targets).
 
 Open ProdDeck → Cloud OS → Forge → **Dispatch**.
 
-## Deep-link contract (Wave 1 assumptions)
+## Deep-link contract
 
-ProdDeck is always the **producer** (`src=proddeck`). Targets use a shared param vocabulary aligned with [`CLOUD-OS-ROADMAP.md`](../CLOUD-OS-ROADMAP.md) §6. **Consumers do not fully land these links until Wave 2** (AgentVerse classic + Portal stubs).
+Aligned with AgentVerse `docs/DEEP-LINK-CONTRACT.md` on upgrade hosts:
+
+```text
+{UPGRADE_BASE}/desk?
+  src=proddeck
+  &crew=<persona id>
+  &session=<optional uuid>
+  &intent=session-desk|hire
+  &brief=<plain UTF-8>
+  &skills=<optional comma list>
+  &return=<ProdDeck origin>
+  &env=dev|preprod|prod
+```
 
 ### `brief` encoding
 
-Mission title → plain UTF-8 → `URLSearchParams.set("brief", text)` (single percent-encode).  
-Do **not** pre-`encodeURIComponent` then `set` (double-encode). Do **not** emit base64url as primary.  
-Inbound decode prefers URI text; optionally accepts leftover base64url (transition). See [`av-deeplink-contract.md`](./av-deeplink-contract.md).
+Plain UTF-8 → `URLSearchParams.set("brief", text)` (single percent-encode).  
+Do **not** pre-`encodeURIComponent` then `set`. Do **not** emit base64url as primary.  
+Inbound decode prefers URI text; optional base64url fallback. See [`av-deeplink-contract.md`](./av-deeplink-contract.md).
 
-### AgentVerse (primary)
+### Fleet → host + `env`
 
-```text
-{AGENTVERSE_BASE}/desk?
-  src=proddeck
-  &intent=session-desk
-  &brief=<plain UTF-8 mission title>
-  &return=<return URL>
-  &env=dev|preprod|prod
-```
+| Toggle | Host | `env` (typical) |
+|--------|------|-----------------|
+| Staging | `https://agentverse-upgrade-staging.delena.buzz` | `preprod` (`dev` on localhost) |
+| Prod | `https://agentverse-upgrade.delena.buzz` | `prod` |
 
-**Assumption:** AgentVerse classic Session Desk will read these params on `/desk` and pre-fill hire/brief UI (Wave 2: `agentverse-project`).
-
-### Agent Portal
-
-```text
-{PORTAL_BASE}/?
-  src=proddeck
-  &intent=hire
-  &brief=<plain UTF-8 mission title>
-  &return=<return URL>
-  &env=dev|preprod|prod
-```
-
-**Assumption:** Portal will accept hire intent at root with the same brief/return contract (Wave 2).
-
-### ProdDeck (self)
-
-```text
-{PRODDECK_BASE}/?
-  src=proddeck
-  &intent=dispatch
-  &place=forge
-  &module=dispatch
-  &brief=<plain UTF-8 mission title>
-  &return=<return URL>
-  &env=dev|preprod|prod
-```
-
-**Assumption:** Future Places router may honor `place` + `module` + `brief` for in-app navigation; Wave 1 only builds the URL.
-
-## Base URL resolution
-
-| Target | Env override | Default (this machine) |
-|--------|--------------|------------------------|
-| AgentVerse | `NEXT_PUBLIC_AGENTVERSE_URL` | `https://agentverse.delena.buzz` |
-| ProdDeck | `NEXT_PUBLIC_PRODDECK_URL` | `https://home.delena.buzz` |
-| Agent Portal | `NEXT_PUBLIC_AGENT_PORTAL_URL` | `https://agent-portal.delena.buzz` |
-
-Trailing slashes are stripped. No new listen ports are introduced.
-
-### Default return URL
-
-1. Browser: `window.location.origin` (DEV `:3320`, staging, or prod pack host).
-2. SSR fallback from pack hosts: `http://127.0.0.1:3320` · `https://home-staging.delena.buzz` · `https://home.delena.buzz`.
-
-### `env` query param
-
-Derived from hostname: `localhost` / `127.0.0.1` → `dev`; `*staging*` → `preprod`; else `prod`.
+Override all AgentVerse bases with `NEXT_PUBLIC_AGENTVERSE_URL` when set.
 
 ## Implementation
 
 | Path | Role |
 |------|------|
-| `src/os/modules/dispatch/config.ts` | Target labels, base URLs, return default |
-| `src/os/modules/dispatch/build-url.ts` | Pure URL builder + plain `brief` via `searchParams.set` |
-| `src/os/modules/dispatch/index.tsx` | Client UI |
-
-## Out of scope (Wave 1)
-
-- Portal API / `dispatch.hire.requested` events
-- Persona/crew picker from `E:\machine-docs\personas\`
-- AgentVerse v2 host (`agentverse-v2.delena.buzz`) — classic only in defaults
+| `src/os/modules/dispatch/config.ts` | Crew list, upgrade hosts, return default |
+| `src/os/modules/dispatch/build-url.ts` | Pure `/desk` URL builder |
+| `src/os/modules/dispatch/index.tsx` | Mobile-friendly client UI |
 
 ## Smoke test
 
-With dev server on `:3320`:
-
 1. Cloud OS → Forge → Dispatch.
-2. Enter mission title → preview shows `/desk?...` for AgentVerse.
-3. Copy link → paste in notepad; params include `src=proddeck`, `brief`, `return`, `env`.
-4. Open → new tab navigates to AgentVerse `/desk?...` (landing behavior is Wave 2).
+2. Pick crew + brief → preview shows upgrade host `/desk?...`.
+3. Copy / Open → params include `src=proddeck`, `crew`, `intent`, `brief`, `return`, `env`.
 
 ```bash
 npm run typecheck

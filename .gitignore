@@ -9,6 +9,8 @@ dist
 npm-debug.log*
 tsconfig.tsbuildinfo
 e2e-artifacts
+playwright-report
+test-results
 .cursor/*
 !.cursor/rules/
 !.cursor/rules/**

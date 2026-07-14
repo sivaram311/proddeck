@@ -45,6 +45,7 @@ export function PortsView() {
   const [flash, setFlash] = useState<ReserveFlash>("idle");
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [selected, setSelected] = useState<Set<string>>(() => new Set());
+  const [dryRunText, setDryRunText] = useState<string | null>(null);
 
   const [customPort, setCustomPort] = useState("");
   const [customAppId, setCustomAppId] = useState("");
@@ -195,6 +196,43 @@ export function PortsView() {
     }
   }, [selectedRows, stopInputFromRow]);
 
+  const onDryRunStopSelected = useCallback(async () => {
+    if (selectedRows.length === 0) return;
+    setBusyKey("dry-run-stop");
+    setDryRunText(null);
+    try {
+      const res = await fetch("/api/os/ports/stop-dry-run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ports: selectedRows.map((r) => r.port) }),
+      });
+      const body = (await res.json().catch(() => ({}))) as {
+        message?: string;
+        wouldKill?: boolean;
+        rows?: Array<{
+          port: number;
+          allowed: boolean;
+          reason: string;
+          listenPid: number | null;
+          appId: string;
+        }>;
+      };
+      if (!res.ok) throw new Error(body.message ?? `HTTP ${res.status}`);
+      const lines = (body.rows ?? []).map(
+        (r) =>
+          `:${r.port} ${r.appId} · ${r.allowed ? "would-allow" : "blocked"} · ${r.reason}` +
+          (r.listenPid ? ` · pid ${r.listenPid}` : ""),
+      );
+      setDryRunText(
+        `Dry-run only (wouldKill=${String(body.wouldKill ?? false)}):\n${lines.join("\n")}`,
+      );
+    } catch (err) {
+      setDryRunText(err instanceof Error ? err.message : "dry-run failed");
+    } finally {
+      setBusyKey(null);
+    }
+  }, [selectedRows]);
+
   const onCustomReserve = useCallback(() => {
     const port = Number.parseInt(customPort.trim(), 10);
     if (!Number.isFinite(port) || port < 1 || port > 65535) {
@@ -225,11 +263,21 @@ export function PortsView() {
             Ports
           </p>
           <p className="mt-1 m-0 text-sm text-[var(--pd-mist)]">
-            MyAgent registry vs live listeners — reserve before bind; request stop only
-            (no kill).
+            MyAgent registry vs live listeners — reserve before bind; dry-run stop preview
+            (no kill); request-stop hire event only.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void onDryRunStopSelected()}
+            disabled={busy || selectedRows.length === 0}
+            className="min-h-11 rounded-lg border border-amber-400/40 bg-amber-400/10 px-4 text-sm font-semibold text-amber-100 disabled:opacity-50"
+          >
+            {busyKey === "dry-run-stop"
+              ? "Dry-run…"
+              : `Dry-run stop (${selectedRows.length})`}
+          </button>
           <button
             type="button"
             onClick={() => void onStopSelected()}
@@ -258,6 +306,15 @@ export function PortsView() {
         >
           {statusText}
         </p>
+      ) : null}
+
+      {dryRunText ? (
+        <pre
+          className="m-0 max-h-48 overflow-auto whitespace-pre-wrap rounded-lg border border-amber-400/30 bg-black/55 px-4 py-3 font-mono text-[11px] text-amber-100"
+          aria-live="polite"
+        >
+          {dryRunText}
+        </pre>
       ) : null}
 
       <div className="flex flex-col gap-2 sm:flex-row">
