@@ -1,6 +1,6 @@
 ﻿# ProdDeck
 
-CSS-gated production launcher — **Keepers' Quay**: call apps, leave memory, see the watch.
+CSS-gated **home** for this machine — Keepers' Quay (call apps · leave memory · see the watch). Evolving into a phone-first **cloud OS** for AI-operated VPS work; AgentVerse stays the crew work plane.
 
 | Env | URL / path | Port |
 |-----|------------|------|
@@ -11,7 +11,15 @@ CSS-gated production launcher — **Keepers' Quay**: call apps, leave memory, se
 - **Version:** **0.4.0**
 - **clientId:** `proddeck`
 - **Repo:** https://github.com/sivaram311/proddeck
-- **World:** [docs/WORLD.md](docs/WORLD.md) · [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) · [docs/OPS.md](docs/OPS.md) · [docs/HANDOFF.md](docs/HANDOFF.md)
+
+## Docs
+
+| Doc | Topic |
+|-----|--------|
+| [docs/WORLD.md](docs/WORLD.md) | Quay mythos + cast |
+| [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) | Cloud OS features + Crew Fabric |
+| [docs/OPS.md](docs/OPS.md) | Ports / smoke / promote |
+| [docs/HANDOFF.md](docs/HANDOFF.md) | Live hosts + next |
 
 ## Run
 
@@ -21,6 +29,12 @@ npm run dev
 npm run smoke
 ```
 
+After CSS login you land on the Quay (WebGL fail → flat catalog). Tap pier studs to walk. Manifest launches (Answering Wake). Loft → Watch Acknowledge.
+
 ## Stack
 
-Next.js 15 · React 19 · R3F/drei/three · Zod pack · CSS auth · catalog · helpdesk
+Next.js 15 · React 19 · R3F/drei/three · Zod pack · CSS `/api/css` · catalog · helpdesk · crews
+
+## Crew
+
+`agents/crew-manifest.md` — isolate from other app ports when promoting.

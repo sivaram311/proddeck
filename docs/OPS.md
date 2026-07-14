@@ -1,21 +1,50 @@
 ﻿# Ops — ProdDeck
 
 **Version:** 0.4.0 **PROD + PREPROD LIVE**  
-**World SoT:** [WORLD.md](./WORLD.md) · [HANDOFF.md](./HANDOFF.md)
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md)
 
-## Ports
+## Ports / hosts
 
-| Env | Port | Host |
-|-----|------|------|
-| DEV | 3320 | local |
-| PREPROD | 4320 | https://home-staging.delena.buzz |
-| PROD | 5320 | https://home.delena.buzz |
+| Env | Port | Path | Host |
+|-----|------|------|------|
+| DEV | 3320 | `E:\MyWorkspace\sandbox\proddeck` | local |
+| PREPROD | 4320 | `F:\apps\proddeck` | https://home-staging.delena.buzz |
+| PROD | 5320 | `G:\apps\proddeck` | https://home.delena.buzz |
+
+Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for ProdDeck cutovers. Playbook: `agents/pre-work/CUTOVER-ROLLBACK.md`.
+
+## Auth / pack
+
+| Item | Value |
+|------|--------|
+| CSS `clientId` | `proddeck` |
+| Pack | `packs/proddeck/app.json` → `keepers-quay` |
+| Modules | catalog · helpdesk · scene · crewsDesk |
+
+## Env vars
+
+| Variable | Purpose |
+|----------|---------|
+| `CSS_AUTH_URL` | DEV `:9000` · F/G often `:5900` |
+| `NEXT_PUBLIC_CSS_ISSUER` | JWT `iss` (prod `https://css.delena.buzz`) |
+| `PLATFORM_APPS_URL` | Optional Agent Portal platform apps |
 
 ## Health
 
 ```bash
 npm run smoke
+npm run smoke -- http://127.0.0.1:4320
+npm run smoke -- https://home-staging.delena.buzz
 npm run smoke -- https://home.delena.buzz
 ```
 
-Promote: evidence under `H:\releases\proddeck-<ver>\evidence\` + EM GO + field-ops.
+Expect pack `0.4.0` / `keepers-quay`; catalog + helpdesk **401** without Bearer.
+
+## Promote
+
+| Gate | Evidence |
+|------|----------|
+| Q1 | `H:\releases\proddeck-0.4.0\evidence\q1\` |
+| Q2 | `H:\releases\proddeck-0.4.0\evidence\q2\` |
+
+Always hire **promote-field-ops** with promote crew. Next product direction (Pulse, Promote phone GO, Crew Fabric): [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).

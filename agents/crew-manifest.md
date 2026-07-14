@@ -1,34 +1,41 @@
-# Crew Manifest — ProdDeck (AgentVerse-style initiative)
+# Crew Manifest — ProdDeck
 
-**Project:** ProdDeck  
-**Initiative:** AgentVerse-style appliance (config-driven crews + helpdesk + scene)  
-**Status:** Q1 PREPROD **LIVE** 0.2.0 — Q2 not started  
+**Project:** ProdDeck (home.delena.buzz)  
+**Status:** **0.4.0 LIVE** Q1 PREPROD + Q2 PROD  
 **app-id / clientId:** `proddeck`  
-**Ports:** `3320` / `4320` / `5320` (unchanged; do not use AgentVerse lanes)  
+**Ports:** `3320` / `4320` / `5320`  
 **Hosts:** `home-staging.delena.buzz` · `home.delena.buzz`  
-**Crew Lead:** Cursor  
 **Workspace:** `E:\MyWorkspace\sandbox\proddeck\`  
-**Session:** `proddeck-agentverse-style-2026-07-14`  
-**Plan SoT:** `agents/pre-work/PLAN-agentverse-style-2026-07-14.md`  
-**Approval:** `agents/pre-work/approval.md` **GO** 2026-07-14
+**Repo:** https://github.com/sivaram311/proddeck  
+**Session:** `proddeck-keepers-quay-2026-07-14`
 
-## Members (this initiative)
+## SoT docs
+
+| Doc | Role |
+|-----|------|
+| `docs/WORLD.md` | Quay mythos |
+| `docs/CLOUD-OS-ROADMAP.md` | Cloud OS + **Crew Fabric / Yard** |
+| `docs/OPS.md` / `HANDOFF.md` / `DEPLOY.md` | Ops / live / promote |
+| `agents/pre-work/` | GO + cutover playbooks |
+
+## Members
 
 | Role | Status | Notes |
 |------|--------|-------|
-| Crew Lead | Active | GO issued; DEV done |
-| App Integrator | Active | DeckHome modules |
-| Config / Pack | Active | `packs/proddeck` + Zod |
-| Scene | Active | Stub CSS hub |
-| Helpdesk | Active | Memory API+UI |
-| Docs / QA | Active | OPS + smoke |
-| Promote crew + field-ops | Hire at Q1 | After DEV soak |
+| Crew Lead | Active | Orchestration + ACTIVITY-LOG serial |
+| App Integrator | Active | DeckHome / Places (next) |
+| Config / Pack | Active | Zod packs |
+| Scene / Characters | Active | Keepers Quay R3F 0.4.0 |
+| Helpdesk | Active | Memory tickets |
+| Docs / QA | Active | Smoke + roadmap docs |
+| Promote-EM/QA/Security/Ops/**Field-Ops** | On demand | Every Q1/Q2 |
+| Crew Fabric / Yard | Planned | Parallel skill packs per CLOUD-OS-ROADMAP §8 |
 
 ## Isolation
 
-Never stop `4310/4311/5310/5311/5080` or CSS. Cutover only `4320`/`5320`.
+Never stop `4310/4311/5310/5311/5080` or CSS for ProdDeck. Cutover only `4320`/`5320`.
 
 ## Session history
 
-- 2026-07-14: Pre-work re-GO; 0.2.0 pack/helpdesk/stub scene; DEV smoke PASS; other apps left running.
-- 2026-07-13: Classic 0.1.0 Q1 live (`home-staging`).
+- 2026-07-14: Quay 0.3→0.4 characters; Q1+Q2 live; cloud OS + Crew Fabric roadmap written.
+- 2026-07-13: Classic launcher 0.1.0 Q1 staging.
