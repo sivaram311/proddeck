@@ -1,37 +1,20 @@
-/** Shared types for Ports module — registry rows + live listener scan. */
-
-export type PortStatus = "active" | "reserved" | "legacy" | "retired";
-
-export type PortRegistryEntry = {
+export type PortReservation = {
   port: number;
   appId: string;
   env: string;
-  role: string;
-  status: PortStatus | string;
+  role?: string;
+  status?: string;
   notes?: string;
-  path?: string;
 };
 
-export type PortMismatch = "none" | "not-listening" | "unknown-listener";
-
-export type PortRow = PortRegistryEntry & {
+export type PortRow = PortReservation & {
   listening: boolean;
-  mismatch: PortMismatch;
+  mismatch: "ok" | "reserved-not-listening" | "listening-unknown";
 };
 
-export type PortRange = {
-  drive: string;
-  min: number;
-  max: number;
-};
-
-export type PortsResponse = {
+export type PortsSnapshot = {
   at: string;
-  source: "registry.json" | "registry.md" | "merged";
-  registryUpdated?: string;
-  ranges?: Record<string, PortRange>;
-  reserved: PortRow[];
-  unknownListeners: number[];
-  listenerScan: "ok" | "skipped" | "failed";
-  listenerNote?: string;
+  registryPath: string;
+  rows: PortRow[];
+  unknownListening: { port: number }[];
 };
