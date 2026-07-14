@@ -18,3 +18,16 @@ export type PortsSnapshot = {
   rows: PortRow[];
   unknownListening: { port: number }[];
 };
+
+export type PortReserveEnv = "dev" | "preprod" | "prod";
+
+/** Job payload for dispatch.hire.requested — request-only, no bind. */
+export type PortReserveJob = {
+  kind: "ports.reserve";
+  port: number;
+  appId: string;
+  env: PortReserveEnv;
+  notes?: string;
+  registryHint: string;
+  requestedAt: string;
+};
