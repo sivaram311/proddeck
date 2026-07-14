@@ -2,7 +2,9 @@
 
 **Mandate:** CONSCIOUS #14 · `E:\MyAgent\workflow\testing\E2E-HIRE.md`  
 **Hire:** [agents/hires/2026-07-15-e2e-device-lab.md](../agents/hires/2026-07-15-e2e-device-lab.md)  
-**App version:** 0.8.0 Wave A · base URL default `https://home-staging.delena.buzz`
+**App version:** 0.8.0 Wave A  
+**Preferred base (tag gate):** DEV `http://127.0.0.1:3320` (`PRODDECK_URL`) — CONSCIOUS **#16**  
+**Optional cutover check:** `https://home-staging.delena.buzz`
 
 ## Projects
 
@@ -19,16 +21,15 @@
 ```powershell
 # claim
 powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\claim-playwright-slot.ps1 -SessionId "proddeck-keepers-quay-2026-07-14" -AppId proddeck -Project all -AgentRole e2e-lead
-# run
+# run against DEV (tag gate)
+$env:PRODDECK_URL = "http://127.0.0.1:3320"
 npm run test:e2e
-npm run test:e2e:realme
-npm run test:e2e:desktop
-npm run test:e2e:tablet
 # release / confirm
 powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\release-playwright-slot.ps1 -SessionId "proddeck-keepers-quay-2026-07-14" -Result pass
+# then hire git-release for v* tag (CONSCIOUS #16)
 ```
 
-Override URL: `PRODDECK_URL=http://127.0.0.1:3320 npm run test:e2e`
+Override: `PRODDECK_URL=https://home-staging.delena.buzz` only for post-tag cutover checks.
 
 ## Evidence
 
