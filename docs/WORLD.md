@@ -52,3 +52,7 @@ The 3D world exists to make those three verbs **legible and memorable**. If a me
 ## Config
 
 `packs/proddeck/app.json` — `scene.pack=keepers-quay`. Catalog `/api/catalog` remains SoT for apps. WebGL fail → flat catalog.
+
+## Next direction
+
+Phone-first **cloud OS** for this VPS + **Crew Fabric** (parallel skill-hired subagents): see [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).

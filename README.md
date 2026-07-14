@@ -11,7 +11,7 @@ CSS-gated production launcher — **Keepers' Quay**: call apps, leave memory, se
 - **Version:** **0.4.0**
 - **clientId:** `proddeck`
 - **Repo:** https://github.com/sivaram311/proddeck
-- **World:** [docs/WORLD.md](docs/WORLD.md) · [docs/OPS.md](docs/OPS.md) · [docs/HANDOFF.md](docs/HANDOFF.md)
+- **World:** [docs/WORLD.md](docs/WORLD.md) · [docs/CLOUD-OS-ROADMAP.md](docs/CLOUD-OS-ROADMAP.md) · [docs/OPS.md](docs/OPS.md) · [docs/HANDOFF.md](docs/HANDOFF.md)
 
 ## Run
 

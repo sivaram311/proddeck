@@ -13,4 +13,5 @@ Never stop AgentVerse / portal ports for ProdDeck work.
 
 ## World
 
-[WORLD.md](./WORLD.md) — Call / Remember / Watch · Keepers' Quay
+[WORLD.md](./WORLD.md) — Call / Remember / Watch · Keepers' Quay  
+[CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) — home as phone cloud OS + Crew Fabric (parallel skill subagents)
