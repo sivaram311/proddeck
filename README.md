@@ -6,9 +6,9 @@ CSS-gated production launcher — **Keepers' Quay**: call apps, leave memory, se
 |-----|------------|------|
 | DEV | `E:\MyWorkspace\sandbox\proddeck` | `3320` |
 | PREPROD | `https://home-staging.delena.buzz` | `4320` **LIVE 0.4.0** |
-| PROD | `https://home.delena.buzz` | `5320` (not Q2 yet) |
+| PROD | `https://home.delena.buzz` | `5320` **LIVE 0.4.0** |
 
-- **Version:** **0.4.0** — Keeper humanoid + berth/ticket/watch animations
+- **Version:** **0.4.0**
 - **clientId:** `proddeck`
 - **Repo:** https://github.com/sivaram311/proddeck
 - **World:** [docs/WORLD.md](docs/WORLD.md) · [docs/OPS.md](docs/OPS.md) · [docs/HANDOFF.md](docs/HANDOFF.md)
@@ -20,8 +20,6 @@ npm install
 npm run dev
 npm run smoke
 ```
-
-Land on the Quay after CSS login. Walk (tap studs). Manifest → launch (Answering Wake). Loft → Watch Acknowledge.
 
 ## Stack
 
