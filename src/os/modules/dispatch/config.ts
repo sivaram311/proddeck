@@ -1,51 +1,80 @@
-/** Dispatch target apps and base URL resolution (client-safe). */
+/** Dispatch → AgentVerse upgrade fleet (client-safe). */
 
-export type DispatchTargetApp = "agentverse" | "proddeck" | "portal";
+/** Fleet toggle in the UI — maps to upgrade hosts (not classic agentverse.delena.buzz). */
+export type DispatchFleet = "staging" | "prod";
 
+/** `env` query hint consumed by AgentVerse Desk. */
 export type DispatchEnv = "dev" | "preprod" | "prod";
 
-export const DISPATCH_TARGET_LABELS: Record<DispatchTargetApp, string> = {
-  agentverse: "AgentVerse",
-  proddeck: "ProdDeck",
-  portal: "Agent Portal",
+export type DispatchIntent = "session-desk" | "hire";
+
+/** Persona ids — AgentVerse `/desk?crew=` contract. */
+export const DISPATCH_CREW = [
+  "rajesh",
+  "karthik",
+  "lavanya",
+  "aravind",
+  "meenakshi",
+  "muthu",
+  "kabilan",
+] as const;
+
+export type DispatchCrewId = (typeof DISPATCH_CREW)[number];
+
+export const DISPATCH_CREW_LABELS: Record<DispatchCrewId, string> = {
+  rajesh: "Rajesh",
+  karthik: "Karthik",
+  lavanya: "Lavanya",
+  aravind: "Aravind",
+  meenakshi: "Meenakshi",
+  muthu: "Muthu",
+  kabilan: "Kabilan",
 };
 
-/** Machine-known prod hosts — overridable via NEXT_PUBLIC_* env vars. */
-const DEFAULT_BASE_URLS: Record<DispatchTargetApp, string> = {
-  agentverse: "https://agentverse.delena.buzz",
-  proddeck: "https://home.delena.buzz",
-  portal: "https://agent-portal.delena.buzz",
+/**
+ * Default AgentVerse bases — upgrade fleet is SoT for Dispatch.
+ * Classic `agentverse.delena.buzz` is NOT the default.
+ */
+export const AGENTVERSE_UPGRADE_HOSTS: Record<DispatchFleet, string> = {
+  staging: "https://agentverse-upgrade-staging.delena.buzz",
+  prod: "https://agentverse-upgrade.delena.buzz",
 };
 
-const ENV_BASE_KEYS: Record<DispatchTargetApp, string> = {
-  agentverse: "NEXT_PUBLIC_AGENTVERSE_URL",
-  proddeck: "NEXT_PUBLIC_PRODDECK_URL",
-  portal: "NEXT_PUBLIC_AGENT_PORTAL_URL",
-};
-
-/** Pack host fallbacks when `window` is unavailable (SSR). */
-const PACK_HOSTS: Record<DispatchEnv, string> = {
+/** ProdDeck pack hosts used when deriving return URL without `window`. */
+const PACK_HOSTS: Record<DispatchFleet | "dev", string> = {
   dev: "http://127.0.0.1:3320",
-  preprod: "https://home-staging.delena.buzz",
+  staging: "https://home-staging.delena.buzz",
   prod: "https://home.delena.buzz",
 };
 
-export function resolveDispatchEnv(): DispatchEnv {
+export function resolveFleetFromHostname(): DispatchFleet {
   if (typeof window === "undefined") return "prod";
   const host = window.location.hostname;
-  if (host === "127.0.0.1" || host === "localhost") return "dev";
-  if (host.includes("staging")) return "preprod";
+  if (host === "127.0.0.1" || host === "localhost") return "staging";
+  if (host.includes("staging")) return "staging";
   return "prod";
 }
 
+/** Map fleet toggle → AgentVerse `env` query param. */
+export function fleetToEnvParam(fleet: DispatchFleet): DispatchEnv {
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "127.0.0.1" || host === "localhost") return "dev";
+  }
+  return fleet === "staging" ? "preprod" : "prod";
+}
+
+export function resolveAgentVerseBase(fleet: DispatchFleet): string {
+  const override = (process.env.NEXT_PUBLIC_AGENTVERSE_URL || "").trim().replace(/\/$/, "");
+  if (override) return override;
+  return AGENTVERSE_UPGRADE_HOSTS[fleet];
+}
+
+/** Return = current ProdDeck origin (home-staging / home / local). */
 export function defaultReturnUrl(): string {
   if (typeof window !== "undefined" && window.location.origin) {
     return window.location.origin.replace(/\/$/, "");
   }
-  return PACK_HOSTS[resolveDispatchEnv()];
-}
-
-export function resolveTargetBaseUrl(target: DispatchTargetApp): string {
-  const fromEnv = (process.env[ENV_BASE_KEYS[target]] || "").trim().replace(/\/$/, "");
-  return fromEnv || DEFAULT_BASE_URLS[target];
+  const fleet = resolveFleetFromHostname();
+  return PACK_HOSTS[fleet];
 }

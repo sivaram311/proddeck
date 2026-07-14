@@ -44,7 +44,7 @@ Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADM
 |---------------------|----------|
 | Login / catalog JWT | CSS issuer + `clientId=proddeck` |
 | OS event forward | Portal **? 0.1.8** `POST /api/os-events` |
-| Dispatch ? Session Desk | AV classic **? 0.3.16** (`/desk` URI brief); **? 0.3.17** for Desk search/cancel |
+| Dispatch ? Session Desk | **AV upgrade fleet** (default): `agentverse-upgrade-staging.delena.buzz` / `agentverse-upgrade.delena.buzz` · contract `/desk?src=&crew=&session=&intent=&brief=&skills=&return=&env=` · classic `agentverse.delena.buzz` is **not** the Dispatch default |
 | H-Drive Archive / FileBridge browse | `https://hdrive.delena.buzz` + `H:\releases` on host |
 
 Full matrix: [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md).
