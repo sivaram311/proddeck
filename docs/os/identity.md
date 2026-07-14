@@ -11,7 +11,10 @@ Phone-first CSS session awareness for ProdDeck Cloud OS. Shows the active `prodd
 | Surface | Path |
 |---------|------|
 | Vault session strip | `src/os/modules/identity/VaultSessionStrip.tsx` |
+| CSS session probe (shared) | `src/os/modules/identity/cssSessionFresh.ts` — `probeCssSessionFresh` / `useCssSessionFresh` |
 | Module entry | `src/os/modules/identity/index.tsx` |
+
+Promote’s GO gate imports the shared probe so re-auth is Identity↔Promote wired (CSS probe, not localStorage-only).
 
 ### Session strip fields
 
@@ -25,7 +28,7 @@ Phone-first CSS session awareness for ProdDeck Cloud OS. Shows the active `prodd
 | Control | Behavior |
 |---------|----------|
 | **Sign out** | `clearTokens()` (proddeck localStorage keys); optional `onSignOut` callback |
-| **Re-auth** | Optional `onReAuth` callback; default shows stub message for Quay reload |
+| **Re-auth** | Optional `onReAuth` callback; default navigates to Vault (`/?osPlace=vault`) via `openCssReAuth` |
 
 ## Auth integration
 

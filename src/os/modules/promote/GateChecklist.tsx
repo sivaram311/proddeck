@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  openCssReAuth,
+  probeCssSessionFresh,
+  useCssSessionFresh,
+} from "@/os/modules/identity/cssSessionFresh";
+import {
   CHECKLIST_LABELS,
   EVIDENCE_PATH_RE,
   type GateChecklist,
@@ -22,12 +27,15 @@ export function GateChecklist({ gate, subtitle }: Props) {
   const [note, setNote] = useState("");
   const [decisions, setDecisions] = useState<PromoteDecision[]>(() => loadDecisions());
   const [savedFlash, setSavedFlash] = useState(false);
+  const [goBusy, setGoBusy] = useState(false);
+  const { fresh, ready: sessionReady, subject, refresh: refreshSession } = useCssSessionFresh();
 
   useEffect(() => {
     setChecklist(loadChecklist(gate));
     setDecisions(loadDecisions());
     setNote("");
-  }, [gate]);
+    refreshSession();
+  }, [gate, refreshSession]);
 
   const evidenceOk = useMemo(
     () => EVIDENCE_PATH_RE.test(checklist.evidencePath.trim()),
@@ -43,6 +51,8 @@ export function GateChecklist({ gate, subtitle }: Props) {
       evidenceOk,
     [checklist, evidenceOk],
   );
+
+  const canGo = sessionReady && fresh && checklistComplete && !goBusy;
 
   const lastDecision = useMemo(
     () => [...decisions].reverse().find((d) => d.gate === gate),
@@ -63,7 +73,20 @@ export function GateChecklist({ gate, subtitle }: Props) {
   );
 
   const recordDecision = useCallback(
-    (decision: "GO" | "HOLD") => {
+    async (decision: "GO" | "HOLD") => {
+      if (decision === "GO") {
+        setGoBusy(true);
+        try {
+          const probe = await probeCssSessionFresh();
+          if (!probe.fresh) {
+            refreshSession();
+            return;
+          }
+        } finally {
+          setGoBusy(false);
+        }
+      }
+
       const entry: PromoteDecision = {
         gate,
         decision,
@@ -85,7 +108,7 @@ export function GateChecklist({ gate, subtitle }: Props) {
         }),
       }).catch(() => undefined);
     },
-    [gate, note],
+    [gate, note, refreshSession],
   );
 
   return (
@@ -143,19 +166,69 @@ export function GateChecklist({ gate, subtitle }: Props) {
         />
       </label>
 
+      <div
+        className="rounded-md border border-white/10 bg-black/35 px-3 py-2 text-xs text-[var(--pd-mist)]"
+        role="status"
+      >
+        {!sessionReady ? (
+          <span>Checking CSS session…</span>
+        ) : fresh ? (
+          <span>
+            CSS session{" "}
+            <span className="text-[var(--pd-lime)]">fresh</span>
+            {subject ? (
+              <>
+                {" "}
+                · <span className="font-mono text-[var(--pd-paper)]">{subject}</span>
+              </>
+            ) : null}
+          </span>
+        ) : (
+          <span className="flex min-h-11 flex-wrap items-center gap-2">
+            <span>
+              CSS session{" "}
+              <span className="text-[var(--pd-danger)]">not fresh</span> — re-auth required
+              before GO
+            </span>
+            <button
+              type="button"
+              onClick={() => openCssReAuth()}
+              className="min-h-11 touch-manipulation rounded-md border border-white/20 bg-black/45 px-3 text-sm text-[var(--pd-paper)]"
+            >
+              Re-auth
+            </button>
+            <button
+              type="button"
+              onClick={() => refreshSession()}
+              className="min-h-11 touch-manipulation rounded-md border border-white/15 bg-transparent px-3 text-sm text-[var(--pd-mist)]"
+            >
+              Recheck
+            </button>
+          </span>
+        )}
+      </div>
+
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
-          onClick={() => recordDecision("GO")}
+          onClick={() => void recordDecision("GO")}
           className="min-h-11 min-w-[5.5rem] rounded-md bg-[var(--pd-lime)] px-4 text-sm font-semibold text-[var(--pd-ink)] disabled:opacity-50"
-          disabled={!checklistComplete}
-          title={checklistComplete ? "Record GO decision" : "Complete checklist first"}
+          disabled={!canGo}
+          title={
+            !sessionReady
+              ? "Checking CSS session…"
+              : !fresh
+                ? "CSS session must be fresh before GO"
+                : !checklistComplete
+                  ? "Complete checklist first"
+                  : "Record GO decision"
+          }
         >
           GO
         </button>
         <button
           type="button"
-          onClick={() => recordDecision("HOLD")}
+          onClick={() => void recordDecision("HOLD")}
           className="min-h-11 min-w-[5.5rem] rounded-md border border-white/20 bg-black/45 px-4 text-sm font-semibold text-[var(--pd-paper)]"
         >
           HOLD

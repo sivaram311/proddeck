@@ -7,3 +7,11 @@ export function IdentityView(props: VaultSessionStripProps = {}) {
 }
 
 export { VaultSessionStrip, type VaultSessionStripProps } from "./VaultSessionStrip";
+export {
+  probeCssSessionFresh,
+  useCssSessionFresh,
+  openCssReAuth,
+  CSS_REAUTH_HREF,
+  type CssSessionFreshProbe,
+  type CssSessionFreshState,
+} from "./cssSessionFresh";

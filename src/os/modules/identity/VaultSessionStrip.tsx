@@ -1,20 +1,17 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { AUTH_CONFIG } from "@/lib/config";
+import { clearTokens } from "@/lib/auth";
 import {
-  clearTokens,
-  decodeJwtPayload,
-  ensureFreshToken,
-  getAccessToken,
-  getStoredUser,
-  verifySession,
-} from "@/lib/auth";
+  openCssReAuth,
+  useCssSessionFresh,
+} from "./cssSessionFresh";
 
 export type VaultSessionStripProps = {
   /** Called after local proddeck tokens are cleared. */
   onSignOut?: () => void;
-  /** Re-auth redirect hook; default shows stub messaging. */
+  /** Re-auth redirect hook; default opens Vault (`/?osPlace=vault`). */
   onReAuth?: () => void;
 };
 
@@ -27,37 +24,14 @@ function formatExpiry(exp?: number): string {
 }
 
 export function VaultSessionStrip({ onSignOut, onReAuth }: VaultSessionStripProps = {}) {
-  const [ready, setReady] = useState(false);
-  const [active, setActive] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [expiry, setExpiry] = useState<string | null>(null);
+  const { ready, fresh: active, subject, expiry, refresh } = useCssSessionFresh();
   const [reAuthNote, setReAuthNote] = useState<string | null>(null);
-
-  const probeSession = useCallback(async () => {
-    await ensureFreshToken(AUTH_CONFIG);
-    const ok = await verifySession(AUTH_CONFIG);
-    const user = getStoredUser();
-    const token = getAccessToken();
-    const claims = token ? decodeJwtPayload(token) : null;
-    const name = user?.username ?? claims?.sub ?? null;
-
-    setActive(ok);
-    setUsername(name);
-    setExpiry(ok && claims?.exp ? formatExpiry(claims.exp) : null);
-    setReady(true);
-  }, []);
-
-  useEffect(() => {
-    void probeSession();
-  }, [probeSession]);
 
   function handleSignOut() {
     clearTokens();
-    setActive(false);
-    setUsername(null);
-    setExpiry(null);
     setReAuthNote(null);
     onSignOut?.();
+    refresh();
   }
 
   function handleReAuth() {
@@ -65,12 +39,13 @@ export function VaultSessionStrip({ onSignOut, onReAuth }: VaultSessionStripProp
       onReAuth();
       return;
     }
-    setReAuthNote(
-      "Re-auth hook stub — sign in again from Quay or reload after CSS refresh.",
-    );
+    setReAuthNote("Opening Vault for CSS re-auth…");
+    openCssReAuth();
   }
 
   const clientId = AUTH_CONFIG.clientId;
+  const username = subject ?? null;
+  const expiryLabel = active && expiry ? formatExpiry(expiry) : null;
 
   if (!ready) {
     return (
@@ -113,10 +88,10 @@ export function VaultSessionStrip({ onSignOut, onReAuth }: VaultSessionStripProp
             {username ?? "—"}
           </dd>
         </div>
-        {expiry ? (
+        {expiryLabel ? (
           <div className="flex min-h-11 items-center justify-between gap-3 rounded-md border border-white/10 bg-black/35 px-3">
             <dt className="text-[var(--pd-mist)]">Expires</dt>
-            <dd className="m-0 font-mono text-xs text-[var(--pd-paper)]">{expiry}</dd>
+            <dd className="m-0 font-mono text-xs text-[var(--pd-paper)]">{expiryLabel}</dd>
           </div>
         ) : null}
       </dl>

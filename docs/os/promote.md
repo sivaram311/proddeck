@@ -23,7 +23,7 @@ Phone-first Q1/Q2 evidence checklist and GO/HOLD decision record for ProdDeck pr
 4. **Field-ops tip** — operator acknowledges `promote-field-ops` hire (`field-lessons.md`).
 5. **Evidence path** — must match `H:\releases\proddeck-<version>\...` (e.g. `H:\releases\proddeck-0.4.0\evidence\q1\`).
 
-**GO** is enabled only when all items are checked and the evidence path validates. **HOLD** always records (with optional note).
+**GO** is enabled only when all items are checked, the evidence path validates, **and** a CSS session freshness probe passes (`ensureFreshToken` + `verifySession` via identity `useCssSessionFresh` — not localStorage-only). When the session is not fresh, a **Re-auth** CTA opens Vault (`/?osPlace=vault`). **HOLD** always records (with optional note) and does not require re-auth.
 
 ## Decision object
 
