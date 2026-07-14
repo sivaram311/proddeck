@@ -1,9 +1,10 @@
 ﻿# Handoff — ProdDeck
 
-**DEV:** **0.7.0** · `E:\wt\proddeck-integrate` · `:3320` · tag `v0.7.0`  
+**DEV:** **0.7.0** + Wave A (`cloud-os/integrate`) · `:3320` · activity drain + ports stop dry-run  
 **PREPROD LIVE:** **0.7.0** · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
 **PROD LIVE:** **0.7.0** · `https://home.delena.buzz` · `G:\apps\proddeck` · `:5320`  
-**Pack:** `H:\releases\proddeck-0.7.0`
+**Live pack:** `H:\releases\proddeck-0.7.0` · tag `v0.7.0`  
+**Next:** [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) — Wave A DEV only until pack + EM GO
 
 **Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
 **Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)
