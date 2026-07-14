@@ -1,7 +1,7 @@
 ﻿# Ops — ProdDeck
 
-**Version:** **0.5.0** **PROD + PREPROD LIVE** (Cloud OS Wave 1)  
-**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
+**Version:** DEV **0.6.1** leftovers · F/G LIVE **0.6.0** until promote  
+**SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [LEFTOVER-SPRINT.md](./LEFTOVER-SPRINT.md) · [DEPLOY.md](./DEPLOY.md)
 
 ## Ports / hosts
 
@@ -20,7 +20,7 @@ Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for Pr
 | CSS `clientId` | `proddeck` |
 | Pack | `packs/proddeck/app.json` → `keepers-quay` + `os.enabled` |
 | Quay modules | catalog · helpdesk · scene · crewsDesk |
-| OS modules (Wave 1) | pulse · ports · identity · yard · activity-log · archive · dispatch · promote |
+| OS modules | Wave 1–2 set + leftovers (reauth, yard hire, ports reserve, archive pins); see pack `os.modules` |
 
 ### CSS JWT bake (mandatory for F/G builds)
 
@@ -49,14 +49,14 @@ node scripts/smoke-ports.mjs
 node scripts/smoke-activity-log.mjs
 ```
 
-Expect pack `0.5.0` / `keepers-quay` + `os.enabled`. Catalog + helpdesk **401** without Bearer; **200 + apps** with a valid `proddeck` JWT.
+Expect pack `0.6.1` (DEV) / `keepers-quay` + `os.enabled`. Catalog + helpdesk **401** without Bearer; **200 + apps** with a valid `proddeck` JWT.
 
 ## Promote
 
 | Gate | Evidence |
 |------|----------|
-| Q1 | `H:\releases\proddeck-0.5.0\evidence\q1\` |
-| Q2 | `H:\releases\proddeck-0.5.0\evidence\q2\` |
-| JWT hotfix | `evidence/q2/qa/jwt-issuer-hotfix.md` |
+| Q1 0.6.1 | `H:\releases\proddeck-0.6.1\evidence\q1\` |
+| Q2 0.6.1 | `H:\releases\proddeck-0.6.1\evidence\q2\` |
+| Prior live | `H:\releases\proddeck-0.6.0\` |
 
 Always hire **promote-field-ops** with promote crew. Roadmap: [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
