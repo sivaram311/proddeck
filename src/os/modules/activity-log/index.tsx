@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type {
   ActivityLogEntry,
   ActivityLogResponse,
   ActivityQueueResponse,
   ActivityQueueRow,
 } from "./types";
+
+const DRAIN_CONFIRM_PHRASE = "DRAIN_TO_MYAGENT";
 
 function LogRow({ entry }: { entry: ActivityLogEntry }) {
   const brief = `${entry.timestamp} ${entry.session} ${entry.action}`;
@@ -43,12 +45,27 @@ function LogRow({ entry }: { entry: ActivityLogEntry }) {
   );
 }
 
-function QueueRow({ entry }: { entry: ActivityQueueRow }) {
+function QueueRow({
+  entry,
+  selected,
+  onToggle,
+}: {
+  entry: ActivityQueueRow;
+  selected: boolean;
+  onToggle: () => void;
+}) {
   return (
     <article
       className="flex min-h-11 items-center gap-2 rounded-lg border border-amber-400/25 bg-black/55 px-3 py-2 backdrop-blur-md"
       aria-label={`Queued ${entry.timestamp} ${entry.session} ${entry.action}`}
     >
+      <input
+        type="checkbox"
+        checked={selected}
+        onChange={onToggle}
+        aria-label={`Select ${entry.action}`}
+        className="min-h-11 min-w-11 shrink-0 accent-[var(--pd-lime)]"
+      />
       <time
         className="shrink-0 font-mono text-[10px] leading-tight text-[var(--pd-mist)]"
         dateTime={entry.at}
@@ -82,6 +99,11 @@ export function ActivityLogView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
+  const [selectedAts, setSelectedAts] = useState<Set<string>>(() => new Set());
+  const [busy, setBusy] = useState<"preview" | "apply" | null>(null);
+  const [previewMd, setPreviewMd] = useState<string[] | null>(null);
+  const [confirmText, setConfirmText] = useState("");
+  const [drainFlash, setDrainFlash] = useState<string | null>(null);
 
   const refresh = useCallback(async (query: string) => {
     setLoading(true);
@@ -119,6 +141,72 @@ export function ActivityLogView() {
     return () => window.clearTimeout(id);
   }, [filter, refresh]);
 
+  const selectableAts = useMemo(
+    () => (queue?.entries ?? []).map((e) => e.at),
+    [queue],
+  );
+
+  const toggleAt = useCallback((at: string) => {
+    setSelectedAts((prev) => {
+      const next = new Set(prev);
+      if (next.has(at)) next.delete(at);
+      else next.add(at);
+      return next;
+    });
+  }, []);
+
+  const selectAllQueue = useCallback(() => {
+    setSelectedAts(new Set(selectableAts));
+  }, [selectableAts]);
+
+  const clearSelection = useCallback(() => {
+    setSelectedAts(new Set());
+    setPreviewMd(null);
+    setConfirmText("");
+  }, []);
+
+  const runDrain = useCallback(
+    async (mode: "dry-run" | "apply") => {
+      setBusy(mode === "dry-run" ? "preview" : "apply");
+      setDrainFlash(null);
+      setError(null);
+      try {
+        const ats = selectedAts.size > 0 ? [...selectedAts] : undefined;
+        const res = await fetch("/api/os/activity-log", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            op: "drain",
+            mode,
+            ats,
+            confirm: mode === "apply" ? confirmText : undefined,
+          }),
+        });
+        const body = (await res.json().catch(() => ({}))) as {
+          message?: string;
+          markdownLines?: string[];
+          drained?: number;
+          selected?: number;
+        };
+        if (!res.ok) throw new Error(body.message ?? `HTTP ${res.status}`);
+        setPreviewMd(body.markdownLines ?? []);
+        if (mode === "apply") {
+          setDrainFlash(`Drained ${body.drained ?? body.selected ?? 0} row(s) into MyAgent ACTIVITY-LOG`);
+          setConfirmText("");
+          setSelectedAts(new Set());
+          await refresh(filter);
+        } else {
+          setDrainFlash(`Preview ${body.selected ?? 0} row(s) — confirm phrase required to apply`);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "drain failed");
+      } finally {
+        setBusy(null);
+      }
+    },
+    [confirmText, filter, refresh, selectedAts],
+  );
+
   return (
     <section className="flex flex-col gap-3" aria-label="Activity Log">
       <header className="flex flex-col gap-3">
@@ -130,8 +218,8 @@ export function ActivityLogView() {
             Activity Log
           </p>
           <p className="mt-1 m-0 text-sm text-[var(--pd-mist)]">
-            MyAgent ACTIVITY-LOG tail (read-only) plus local staging queue. Phone/API never writes the
-            MyAgent file.
+            MyAgent ACTIVITY-LOG tail plus local staging queue. Staging POSTs never write MyAgent;
+            Lead drain requires an explicit confirm phrase.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -158,11 +246,10 @@ export function ActivityLogView() {
         className="min-h-11 rounded-lg border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-[var(--pd-paper)]"
         aria-label="Queue drain SOP"
       >
-        <p className="m-0 font-semibold text-amber-200">SOP — staging queue</p>
+        <p className="m-0 font-semibold text-amber-200">SOP — Lead drain</p>
         <p className="mt-1 m-0 text-[var(--pd-mist)]">
-          Lead drains queue into MyAgent ACTIVITY-LOG serially. ProdDeck only appends{" "}
-          <code className="text-[10px] text-amber-100">.data/activity-queue.jsonl</code> (CONSCIOUS
-          #10 staging — not a waiver).
+          Preview first, then type <code className="text-[10px] text-amber-100">{DRAIN_CONFIRM_PHRASE}</code>{" "}
+          and Apply. Drains serially into MyAgent ACTIVITY-LOG (CONSCIOUS #10).
         </p>
       </aside>
 
@@ -171,23 +258,89 @@ export function ActivityLogView() {
           {error}
         </p>
       )}
+      {drainFlash && (
+        <p
+          className="m-0 rounded-lg border border-[var(--pd-lime)]/30 bg-[var(--pd-lime)]/10 px-4 py-3 text-sm text-[var(--pd-lime)]"
+          aria-live="polite"
+        >
+          {drainFlash}
+        </p>
+      )}
 
       {queue && (
         <div className="flex flex-col gap-2">
-          <p className="m-0 font-mono text-xs text-amber-200/90">
-            Queue · {queue.matched} pending
-            {queue.query ? ` (filter “${queue.query}”)` : ""}
-            {queue.truncated ? " · tail capped" : ""}
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="m-0 flex-1 font-mono text-xs text-amber-200/90">
+              Queue · {queue.matched} pending
+              {queue.query ? ` (filter “${queue.query}”)` : ""}
+              {queue.truncated ? " · tail capped" : ""}
+              {selectedAts.size > 0 ? ` · ${selectedAts.size} selected` : " · all if none selected"}
+            </p>
+            <button
+              type="button"
+              onClick={selectAllQueue}
+              className="min-h-11 rounded-lg border border-white/15 bg-white/5 px-3 text-xs font-semibold text-[var(--pd-paper)]"
+            >
+              Select all
+            </button>
+            <button
+              type="button"
+              onClick={clearSelection}
+              className="min-h-11 rounded-lg border border-white/15 bg-white/5 px-3 text-xs font-semibold text-[var(--pd-paper)]"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              onClick={() => void runDrain("dry-run")}
+              disabled={busy !== null || queue.entries.length === 0}
+              className="min-h-11 rounded-lg border border-amber-400/40 bg-amber-400/10 px-3 text-xs font-semibold text-amber-100 disabled:opacity-50"
+            >
+              {busy === "preview" ? "Preview…" : "Preview drain"}
+            </button>
+          </div>
+
           {queue.entries.length === 0 ? (
             <p className="m-0 min-h-11 rounded-lg border border-white/10 bg-black/40 px-4 py-3 text-sm text-[var(--pd-mist)]">
               No pending staging rows.
             </p>
           ) : (
             queue.entries.map((entry) => (
-              <QueueRow key={`${entry.at}-${entry.session}-${entry.action}`} entry={entry} />
+              <QueueRow
+                key={`${entry.at}-${entry.session}-${entry.action}`}
+                entry={entry}
+                selected={selectedAts.has(entry.at)}
+                onToggle={() => toggleAt(entry.at)}
+              />
             ))
           )}
+
+          {previewMd && previewMd.length > 0 ? (
+            <div className="flex flex-col gap-2 rounded-lg border border-white/15 bg-black/50 p-3">
+              <p className="m-0 text-xs font-semibold text-[var(--pd-paper)]">Markdown preview</p>
+              <pre className="m-0 max-h-40 overflow-auto whitespace-pre-wrap break-all font-mono text-[10px] text-[var(--pd-mist)]">
+                {previewMd.join("\n")}
+              </pre>
+              <label className="flex flex-col gap-1 text-xs text-[var(--pd-mist)]">
+                Confirm phrase
+                <input
+                  value={confirmText}
+                  onChange={(e) => setConfirmText(e.target.value)}
+                  placeholder={DRAIN_CONFIRM_PHRASE}
+                  className="min-h-11 rounded-lg border border-white/15 bg-black/40 px-3 text-sm text-[var(--pd-paper)]"
+                  autoComplete="off"
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => void runDrain("apply")}
+                disabled={busy !== null || confirmText !== DRAIN_CONFIRM_PHRASE}
+                className="min-h-11 rounded-lg border border-[var(--pd-danger)]/50 bg-[var(--pd-danger)]/15 px-4 text-sm font-semibold text-[var(--pd-paper)] disabled:opacity-40"
+              >
+                {busy === "apply" ? "Draining…" : "Apply drain to MyAgent"}
+              </button>
+            </div>
+          ) : null}
         </div>
       )}
 

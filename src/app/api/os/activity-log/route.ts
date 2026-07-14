@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { corsPreflight, withOpenCors } from "@/lib/cors";
 import { readActivityLogTail } from "@/os/modules/activity-log/reader";
 import { appendActivityQueueRow, readActivityQueue } from "@/os/modules/activity-log/queue";
+import {
+  applyActivityDrain,
+  DRAIN_CONFIRM_PHRASE,
+  previewActivityDrain,
+} from "@/os/modules/activity-log/drain";
 import type { ActivityQueueInput } from "@/os/modules/activity-log/types";
 
 export const dynamic = "force-dynamic";
@@ -35,13 +40,68 @@ export async function GET(req: NextRequest) {
   }
 }
 
+type DrainBody = {
+  op: "drain";
+  mode?: "dry-run" | "apply";
+  ats?: string[];
+  confirm?: string;
+};
+
+function isDrainBody(body: unknown): body is DrainBody {
+  return Boolean(body && typeof body === "object" && (body as DrainBody).op === "drain");
+}
+
 /**
- * POST stages a row into `.data/activity-queue.jsonl` only.
- * Lead/EM drains approved rows into MyAgent ACTIVITY-LOG serially (CONSCIOUS #10).
+ * POST:
+ * - default: stage a row into `.data/activity-queue.jsonl` only
+ * - `{ op: "drain", mode: "dry-run"|"apply" }`: Lead drain preview / confirmed apply
  */
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as Partial<ActivityQueueInput>;
+    const raw: unknown = await req.json();
+
+    if (isDrainBody(raw)) {
+      const ats = Array.isArray(raw.ats)
+        ? raw.ats.filter((x): x is string => typeof x === "string" && x.length > 0)
+        : undefined;
+      const mode = raw.mode === "apply" ? "apply" : "dry-run";
+      if (mode === "dry-run") {
+        const preview = await previewActivityDrain(ats);
+        return withOpenCors(NextResponse.json({ ok: true, ...preview }));
+      }
+      try {
+        const result = await applyActivityDrain({
+          ats,
+          confirm: typeof raw.confirm === "string" ? raw.confirm : "",
+        });
+        return withOpenCors(NextResponse.json(result));
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "drain failed";
+        if (message === "confirm_required") {
+          return withOpenCors(
+            NextResponse.json(
+              {
+                error: "confirm_required",
+                message: `confirm must be exactly ${DRAIN_CONFIRM_PHRASE}`,
+                confirmPhrase: DRAIN_CONFIRM_PHRASE,
+              },
+              { status: 400 },
+            ),
+          );
+        }
+        if (message === "drain_locked") {
+          return withOpenCors(
+            NextResponse.json(
+              { error: "drain_locked", message: "another drain is in progress" },
+              { status: 409 },
+            ),
+          );
+        }
+        throw err;
+      }
+    }
+
+    const body = raw as Partial<ActivityQueueInput>;
     if (!body.action || typeof body.action !== "string" || !body.action.trim()) {
       return withOpenCors(
         NextResponse.json({ error: "action_required", message: "action is required" }, { status: 400 }),
