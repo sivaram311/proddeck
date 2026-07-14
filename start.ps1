@@ -10,16 +10,19 @@ if ($EnvName -eq "prod") {
     $env:CSS_AUTH_URL = "http://127.0.0.1:5900"
     $env:NEXT_PUBLIC_CSS_ISSUER = "https://css.delena.buzz"
     $env:PLATFORM_APPS_URL = "http://127.0.0.1:5080/api/platform/apps"
+    $env:OS_EVENTS_FORWARD = "1"
     $env:PORT = "5320"
 } elseif ($EnvName -eq "preprod") {
     $env:CSS_AUTH_URL = "http://127.0.0.1:5900"
     $env:NEXT_PUBLIC_CSS_ISSUER = "https://css.delena.buzz"
     $env:PLATFORM_APPS_URL = "http://127.0.0.1:4080/api/platform/apps"
+    $env:OS_EVENTS_FORWARD = "1"
     $env:PORT = "4320"
 } else {
     $env:CSS_AUTH_URL = "http://127.0.0.1:9000"
     $env:NEXT_PUBLIC_CSS_ISSUER = "http://localhost:9000"
     $env:PLATFORM_APPS_URL = "http://127.0.0.1:8080/api/platform/apps"
+    $env:OS_EVENTS_FORWARD = "1"
     $env:PORT = "3320"
 }
 

@@ -4,15 +4,21 @@
 **PREPROD LIVE:** **0.6.2** · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
 **DEV:** `E:\wt\proddeck-integrate` · `:3320` · `cloud-os/integrate` · **0.6.2**  
 **Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
-**Release:** `H:\releases\proddeck-0.6.2` (Q1 + Q2)
+**Release:** `H:\releases\proddeck-0.6.2`
 
-## Shipped in 0.6.2
+## Live peers (same machine)
 
-Next-parallel train: `GET /api/os/events` tail · Dispatch URI brief · Yard fabric events mirror · Beacon hire/promote tip  
-(Plus all 0.6.1 leftovers)
+| App | PREPROD | PROD |
+|-----|---------|------|
+| AgentVerse classic | **0.3.16** `:4310` | **0.3.16** `:5310` |
+| Agent Portal | **0.1.8** `:4080` | **0.1.8** `:5080` |
+
+## 0.6.2 notes
+
+- Next-parallel: events GET · Dispatch URI brief · Yard/Beacon event tips  
+- `OS_EVENTS_FORWARD=1` on F/G → Portal `/api/os-events`  
+- AV Desk deep-link aligned (URI brief)
 
 ## Isolation
 
-Never stop AgentVerse (`4310/4311/5310/5311`) or portal (`5080`) unless that app’s promote.
-
-Session: `proddeck-keepers-quay-2026-07-14`.
+Never stop unrelated AV v2 / portal ports unless that promote. Session: `proddeck-keepers-quay-2026-07-14`.
