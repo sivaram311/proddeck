@@ -31,3 +31,14 @@ export type PortReserveJob = {
   registryHint: string;
   requestedAt: string;
 };
+
+/** Job payload for dispatch.hire.requested — request-only, no kill/stop IO. */
+export type PortStopJob = {
+  kind: "ports.request_stop";
+  port: number;
+  appId: string;
+  env: PortReserveEnv;
+  notes?: string;
+  stopHint: string;
+  requestedAt: string;
+};
