@@ -1,7 +1,7 @@
 {
   "appId": "proddeck",
   "displayName": "ProdDeck",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "modules": {
     "catalog": true,
     "helpdesk": true,
@@ -27,10 +27,7 @@
       "filebridge": true
     }
   },
-  "scene": {
-    "pack": "keepers-quay",
-    "defaultView": "scene"
-  },
+  "scene": { "pack": "keepers-quay", "defaultView": "scene" },
   "helpdesk": {
     "categories": [
       { "id": "ops", "label": "Operations", "crewRole": "promote-ops" },
