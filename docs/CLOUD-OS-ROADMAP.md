@@ -5,7 +5,8 @@
 **Operator client:** Realme P2 Pro (~360×800), AI-agent-first machine ops  
 **Session:** `proddeck-keepers-quay-2026-07-14`  
 **External strategy:** Grok 4.5 deep-dive 2026-07-14  
-**Status:** Vision + backlog — not all shipped
+**Status:** Live through **0.8.0 Wave A** · remaining hard outs + peer Device Labs on roadmap  
+**Live pin:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) · next slice: [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md)
 
 This document captures the full idea set for evolving **home** into a **phone-first cloud operating system for this VPS**, while AgentVerse remains the inhabitable crew workplace. It also invents how **parallel skill-hired subagents / crews** become a first-class OS capability (matching how we already work in MyAgent workflow).
 
@@ -329,37 +330,63 @@ Docs-Keeper + Review only — fastest safe parallel ship when code is frozen.
 
 ## 9. Phased roadmap
 
-### 0.5 — Operable phone control plane
-Places IA · Drive Guard chip · Identity strip · Pulse · Ports read-only · Activity Log · Archive (H-Drive) · Dispatch deep-link · **Yard board (manual / briefing)**.
+### 0.5 — Operable phone control plane — **SHIPPED**
+Places IA · Drive Guard chip · Identity strip · Pulse · Ports read-only · Activity Log · Archive · Dispatch · Yard board.
 
-**Done when:** From Realme you can answer health, see ports, read log, open evidence, send a crew to Session Desk, and see a fabricateable mission template.
+### 0.6 — Decisions & runbooks — **SHIPPED** (through 0.6.x → leftovers)
+Promote GO/HOLD · Runbooks · Beacon · Appliances · FileBridge · Portal os-events · Yard hire events.
 
-### 0.6 — Decisions & runbooks
-Promote GO/HOLD · Remember → Runbook → Dispatch · Beacon · Appliances · FileBridge phone lane · Portal events for hire/promote · **Yard promote pack + field-ops auto-hire tip**.
+### 0.7 — Safe-subset Cloud OS — **SHIPPED**
+Activity queue · Drive Guard CSS freshness · Ports request-stop (event) · Yard skill registry · FileBridge jail + delete hard-fail · AV Desk 0.3.17 peer.
 
-**Done when:** Promote decision and incident hire are phone-native; AgentVerse receives context.
+### 0.8 Wave A — Confirm / dry-run rails — **SHIPPED (LIVE)**
+Lead activity-queue drain (`DRAIN_TO_MYAGENT`) · Ports stop **dry-run** (deny-list; no kill) · Playwright Device Lab (Realme / desktop / tablet) · CONSCIOUS **#14** E2E hire mandate.
 
-### 1.0 — Cloud OS v1
-Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports reserve-via-job · Stack Pilot bridge return · Watch as real ops surface · **Crew Fabric live lanes + skill registry**.
+### 0.8 Wave B / 0.9 — Hard outs (EM GO each) — **ROADMAPPED**
+See §10. Destructive or cross-fleet power only after explicit confirm gates.
+
+### 1.0 — Cloud OS v1 — **ROADMAPPED**
+Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports reserve/stop via job with allowlist · Stack Pilot bridge return · Watch as real ops · Crew Fabric live lanes + skill registry.
 
 **Cloud OS v1 means:** A phone-only operator can **observe the VPS, decide promote, dispatch/hire skill crews in parallel, and browse releases** without RDP — destructive power gated; AgentVerse remains the work habitat.
 
 ---
 
-## 10. Top build-next checklist (coding crew)
+## 10. Build-next backlog (parked on roadmap — pick with EM GO)
 
-1. Places IA + Drive Guard chip (Quay chrome).  
-2. Identity strip (CSS session / sign-out / re-auth hook).  
-3. Pulse MVP (E–H disks + RAM/load + Postgres + CSS + Stack Pilot link).  
-4. Ports read-only browser (registry vs listening).  
-5. Activity Log viewer (provider filter + continue link).  
-6. Archive → H-Drive SSO for evidence.  
-7. Dispatch MVP → AgentVerse Session Desk deep-link.  
-8. Promote place MVP (checklist + GO/HOLD; suggest `promote-field-ops`).  
-9. **Yard (Crew Fabric) v0** — mission templates + lane board + promote skill pack listing.  
-10. Remember → Runbook map (4–5 categories → Dispatch / Yard / Pulse).  
-11. Agent Portal event stubs (`dispatch.*`, `promote.decision`, `crew.fabric.*`).  
-12. Docs sync (WORLD / OPS / HANDOFF) every meaningful ship (rule #12).
+Kept from post-0.8.0 “now what” (2026-07-15). Detail: [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md).
+
+### A. Close the loop (low blast)
+
+| ID | Item | Notes |
+|----|------|-------|
+| A1 | Drain leftover F/G activity staging queues | Lead-only · confirm `DRAIN_TO_MYAGENT` · never blind bulk without preview |
+| A2 | Mirror E2E SUMMARY onto `main` / keep [E2E.md](./E2E.md) current | Evidence already under `H:\releases\proddeck-0.8.0\evidence\e2e\` |
+
+### B. Hard outs (each needs EM GO)
+
+| ID | Item | Why hard |
+|----|------|----------|
+| B1 | FileBridge H: delete IO | CONSCIOUS #1 — today 403 |
+| B2 | Drive Guard real G:/H: mutations | Writes outside sandbox |
+| B3 | Ports actual stop/kill | Builds on dry-run allowlist; never CSS/DB/Portal/AV/ProdDeck deny-list |
+| B4 | Live Portal runners | Cross-app spawn |
+| B5 | Quay densify mega | Stay on densify line; side fleet if diverged |
+
+### C. Fleet E2E under CONSCIOUS #14
+
+| ID | Item | Notes |
+|----|------|-------|
+| C1 | Agent Portal Device Lab | Realme 360×780 · desktop 1280×800 · tablet 800×1280 |
+| C2 | AgentVerse classic Device Lab | Same three viewports; do not disturb v2 `4311/5311` |
+| C3 | Keep ProdDeck Device Lab green on every UI ship | Hire `e2e-*` lanes per `E:\MyAgent\workflow\testing\E2E-HIRE.md` |
+
+### D. Park / ops hygiene
+
+| ID | Item |
+|----|------|
+| D1 | No further Cloud OS coding until EM picks A/B/C |
+| D2 | Preserve peer pins: Portal ≥0.1.8 · AV ≥0.3.17 · CSS `v0.1.0` |
 
 ---
 
@@ -370,8 +397,12 @@ Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports re
 | [WORLD.md](./WORLD.md) | Keepers’ Quay mythos + cast |
 | [OPS.md](./OPS.md) | Ports / smoke / promote ops |
 | [HANDOFF.md](./HANDOFF.md) | Live hosts |
+| [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) | Fleet pin matrix |
+| [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) | Wave A live + hard-out backlog |
+| [E2E.md](./E2E.md) | Device Lab Playwright |
 | [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md) | **N subagents · git branches/worktrees · singleshot swarm** |
-| `E:\MyAgent\workflow\CONSCIOUS.md` | Standing orders |
+| `E:\MyAgent\workflow\CONSCIOUS.md` | Standing orders (#14 E2E hire) |
+| `E:\MyAgent\workflow\testing\E2E-HIRE.md` | Mandatory E2E testing hires |
 | `E:\MyAgent\workflow\promote\` | Promote skills + field lessons |
 | `E:\machine-docs\personas\` | Personas / crew standards |
 
@@ -381,5 +412,7 @@ Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports re
 
 | Date | Note |
 |------|------|
+| 2026-07-15 | **0.8.0 LIVE** Wave A + Device Lab 24/24; “now what” items parked in §10 |
+| 2026-07-15 | **0.7.0 LIVE** safe subset; AV classic 0.3.17 peer |
 | 2026-07-14 | **0.5.0 LIVE** PREPROD+PROD — Places shell + Wave 1 modules; JWT issuer bake required on build |
 | 2026-07-14 | Grok strategy captured; Crew Fabric / Yard deep idea added from MyAgent promote + personas workflow |
