@@ -1,7 +1,7 @@
 {
   "appId": "proddeck",
   "displayName": "ProdDeck",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "modules": {
     "catalog": true,
     "helpdesk": true,
@@ -33,21 +33,9 @@
   },
   "helpdesk": {
     "categories": [
-      {
-        "id": "ops",
-        "label": "Operations",
-        "crewRole": "promote-ops"
-      },
-      {
-        "id": "access",
-        "label": "Access / CSS",
-        "crewRole": "security-auditor"
-      },
-      {
-        "id": "apps",
-        "label": "App launch / catalog",
-        "crewRole": "helpdesk"
-      }
+      { "id": "ops", "label": "Operations", "crewRole": "promote-ops" },
+      { "id": "access", "label": "Access / CSS", "crewRole": "security-auditor" },
+      { "id": "apps", "label": "App launch / catalog", "crewRole": "helpdesk" }
     ]
   },
   "crews": [
@@ -56,17 +44,11 @@
     { "id": "helpdesk", "label": "Helpdesk", "watch": "Memory Shed queue" },
     { "id": "crew-lead", "label": "Crew Lead", "watch": "Keepers' shift" }
   ],
-  "auth": {
-    "cssClientId": "proddeck"
-  },
+  "auth": { "cssClientId": "proddeck" },
   "hosts": {
     "dev": "http://127.0.0.1:3320",
     "preprod": "https://home-staging.delena.buzz",
     "prod": "https://home.delena.buzz"
   },
-  "ports": {
-    "dev": 3320,
-    "preprod": 4320,
-    "prod": 5320
-  }
+  "ports": { "dev": 3320, "preprod": 4320, "prod": 5320 }
 }

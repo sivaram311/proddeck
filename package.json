@@ -1,6 +1,6 @@
 {
   "name": "proddeck",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "CSS-gated production launcher — Keepers Quay + Cloud OS 0.6.1 leftovers",
   "private": true,
   "scripts": {
