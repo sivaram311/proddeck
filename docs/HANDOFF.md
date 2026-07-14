@@ -1,9 +1,10 @@
 # Handoff — ProdDeck
 
-**Live PREPROD:** 0.3.0 Keepers’ Quay · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
-**DEV:** `E:\MyWorkspace\sandbox\proddeck` · `:3320`  
+**DEV live:** 0.4.0 Keepers’ Quay characters/animations · `:3320`  
+**PREPROD:** 0.3.0 until next Q1 · `https://home-staging.delena.buzz`  
+**Repo:** https://github.com/sivaram311/proddeck  
 **clientId:** `proddeck`  
-**Release:** `H:\releases\proddeck-0.3.0`
+**Release (last Q1):** `H:\releases\proddeck-0.3.0`
 
 ## Read first
 
@@ -11,13 +12,13 @@
 |-----|-----|
 | [WORLD.md](./WORLD.md) | Purpose → story → cast |
 | [OPS.md](./OPS.md) | Ports, smoke, promote |
-| `agents/pre-work/SCOPE-GO-keepers-quay-0.3.0.md` | Grok GO / locks |
-| `agents/pre-work/CUTOVER-ROLLBACK.md` | ProdDeck-only cutover |
+| `agents/pre-work/SCOPE-GO-keepers-quay-0.4.0.md` | Characters GO |
 
 ## Isolation
 
-Never stop/bind AgentVerse `4310/4311/5310/5311` or portal `5080` for ProdDeck work.
+Never stop AgentVerse / portal ports for ProdDeck work.
 
 ## Next
 
-0.4.0 — Keeper humanoid + berth/ticket/watch animations + Watch Acknowledge. Then Q1 0.4.0 when smoke green.
+Q1 0.4.0 to PREPROD when ready (EM + evidence + field-ops).
+
