@@ -1,16 +1,20 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { BeaconSnapshot } from "./types";
+import { fetchBeaconTip } from "./tip";
+import type { BeaconSnapshot, BeaconTip } from "./types";
 
 export function BeaconView() {
   const [data, setData] = useState<BeaconSnapshot | null>(null);
+  const [tip, setTip] = useState<BeaconTip | null>(null);
+  const [tipReady, setTipReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setTipReady(false);
     try {
       const res = await fetch("/api/os/beacon", { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -20,6 +24,9 @@ export function BeaconView() {
     } finally {
       setLoading(false);
     }
+    const nextTip = await fetchBeaconTip();
+    setTip(nextTip);
+    setTipReady(true);
   }, []);
 
   useEffect(() => {
@@ -44,6 +51,28 @@ export function BeaconView() {
           {loading ? "Refreshing…" : "Refresh"}
         </button>
       </header>
+
+      {tipReady ? (
+        <div
+          className="flex min-h-11 flex-col justify-center gap-1 rounded-lg border border-white/10 bg-black/55 px-3 py-3"
+          aria-label="Last hire or promote event"
+        >
+          {tip ? (
+            <>
+              <p className="m-0 text-xs text-[var(--pd-mist)]">Last hire / promote</p>
+              <p className="m-0 truncate font-mono text-sm text-[var(--pd-paper)]">{tip.type}</p>
+              <p className="m-0 font-mono text-xs text-[var(--pd-mist)]">
+                at {tip.at}
+                <span className="text-white/30"> · </span>
+                actor {tip.actor}
+              </p>
+            </>
+          ) : (
+            <p className="m-0 text-sm text-[var(--pd-mist)]">No recent hire / promote events</p>
+          )}
+        </div>
+      ) : null}
+
       {error ? <p className="m-0 text-sm text-[var(--pd-danger)]">{error}</p> : null}
       {data ? <p className="m-0 font-mono text-xs text-[var(--pd-mist)]">at {data.at}</p> : null}
       <ul className="m-0 flex list-none flex-col gap-2 p-0">
