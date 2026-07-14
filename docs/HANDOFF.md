@@ -1,19 +1,17 @@
 ﻿# Handoff — ProdDeck
 
-**PROD LIVE:** 0.4.0 · `https://home.delena.buzz` · `G:\apps\proddeck` · `:5320`  
-**PREPROD LIVE:** 0.4.0 · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
-**DEV:** `E:\wt\proddeck-integrate` · `:3320` · branch `cloud-os/integrate` · pack **`0.5.0-scaffold`**  
+**PROD LIVE:** **0.5.0** · `https://home.delena.buzz` · `G:\apps\proddeck` · `:5320`  
+**PREPROD LIVE:** **0.5.0** · `https://home-staging.delena.buzz` · `F:\apps\proddeck` · `:4320`  
+**DEV:** `E:\wt\proddeck-integrate` · `:3320` · branch `cloud-os/integrate`  
 **Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`  
-**Release:** `H:\releases\proddeck-0.4.0` — F/G still 0.4.0
+**Release:** `H:\releases\proddeck-0.5.0` (Q1 + Q2 evidence)
 
 ## Wave status
 
 | Wave | Status |
 |------|--------|
 | 0 scaffold | done · `cloud-os/scaffold-v1` |
-| 1a Pulse / Ports / Identity / Yard | merged |
-| 1b activity-log / archive / dispatch / promote | merged |
-| next | SemVer 0.5.0 cut + optional remaining stubs (beacon / appliances / drive-guard / filebridge / runbooks) |
+| 1a / 1b Cloud OS modules | live on F + G as **0.5.0** |
 
 ## Isolation
 
