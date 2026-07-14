@@ -269,10 +269,10 @@ Exit: integrate green smoke → docs → stop (promote separate GO)
 
 - [x] Freeze this ownership map in `agents/pre-work/CLOUD-OS-OWNERSHIP.md`  
 - [x] Cut `cloud-os/scaffold` and ship scaffold-v1  
-- [ ] Create worktrees for chosen Wave 1a set  
-- [ ] Hire N agents with pasted skill briefs  
-- [ ] Open `cloud-os/integrate`  
-- [ ] One ACTIVITY-LOG row for swarm start (Lead)  
+- [x] Create worktrees for chosen Wave 1a set  
+- [x] Hire N agents with pasted skill briefs  
+- [x] Open `cloud-os/integrate`  
+- [x] One ACTIVITY-LOG row for swarm start (Lead)  
 - [ ] After lanes done → merge → smoke → docs → SemVer 0.5.0  
 
 ---
