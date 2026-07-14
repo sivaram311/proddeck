@@ -8,6 +8,11 @@ import {
   requestPortReserve,
   type ReserveFlash,
 } from "./requestReserve";
+import { buildPortStopJob, requestPortStop } from "./requestStop";
+
+function rowKeyOf(r: PortRow): string {
+  return `row-${r.port}-${r.appId}`;
+}
 
 function MismatchBadge({ kind }: { kind: PortRow["mismatch"] }) {
   if (kind === "ok") {
@@ -39,6 +44,7 @@ export function PortsView() {
   const [mismatchesOnly, setMismatchesOnly] = useState(false);
   const [flash, setFlash] = useState<ReserveFlash>("idle");
   const [busyKey, setBusyKey] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(() => new Set());
 
   const [customPort, setCustomPort] = useState("");
   const [customAppId, setCustomAppId] = useState("");
@@ -86,6 +92,35 @@ export function PortsView() {
     });
   }, [data, filter, mismatchesOnly]);
 
+  const selectedRows = useMemo(
+    () => rows.filter((r) => selected.has(rowKeyOf(r))),
+    [rows, selected],
+  );
+
+  const toggleSelected = useCallback((key: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
+
+  const toggleSelectAllVisible = useCallback(() => {
+    setSelected((prev) => {
+      const visibleKeys = rows.map(rowKeyOf);
+      const allOn = visibleKeys.length > 0 && visibleKeys.every((k) => prev.has(k));
+      if (allOn) {
+        const next = new Set(prev);
+        for (const k of visibleKeys) next.delete(k);
+        return next;
+      }
+      const next = new Set(prev);
+      for (const k of visibleKeys) next.add(k);
+      return next;
+    });
+  }, [rows]);
+
   const runReserve = useCallback(
     async (
       key: string,
@@ -103,17 +138,62 @@ export function PortsView() {
     [],
   );
 
+  const runStop = useCallback(
+    async (
+      key: string,
+      input: { port: number; appId: string; env: string; notes?: string },
+    ) => {
+      setBusyKey(key);
+      try {
+        const job = buildPortStopJob(input);
+        const result = await requestPortStop(job);
+        setFlash(result);
+      } finally {
+        setBusyKey(null);
+      }
+    },
+    [],
+  );
+
+  const stopInputFromRow = useCallback((r: PortRow) => {
+    return {
+      port: r.port,
+      appId: r.appId === "(unknown)" ? "" : r.appId,
+      env: r.env,
+      notes: r.notes,
+    };
+  }, []);
+
   const onRowReserve = useCallback(
     (r: PortRow) => {
-      void runReserve(`row-${r.port}-${r.appId}`, {
-        port: r.port,
-        appId: r.appId === "(unknown)" ? "" : r.appId,
-        env: r.env,
-        notes: r.notes,
-      });
+      void runReserve(rowKeyOf(r), stopInputFromRow(r));
     },
-    [runReserve],
+    [runReserve, stopInputFromRow],
   );
+
+  const onRowStop = useCallback(
+    (r: PortRow) => {
+      void runStop(`stop-${rowKeyOf(r)}`, stopInputFromRow(r));
+    },
+    [runStop, stopInputFromRow],
+  );
+
+  const onStopSelected = useCallback(async () => {
+    if (selectedRows.length === 0) return;
+    setBusyKey("stop-selected");
+    try {
+      let worst: ReserveFlash = "queued";
+      for (const r of selectedRows) {
+        const job = buildPortStopJob(stopInputFromRow(r));
+        const result = await requestPortStop(job);
+        if (result === "soft-fail") worst = "soft-fail";
+        else if (result === "copied" && worst === "queued") worst = "copied";
+      }
+      setFlash(worst);
+    } finally {
+      setBusyKey(null);
+    }
+  }, [selectedRows, stopInputFromRow]);
 
   const onCustomReserve = useCallback(() => {
     const port = Number.parseInt(customPort.trim(), 10);
@@ -130,6 +210,9 @@ export function PortsView() {
   }, [customPort, customAppId, customEnv, customNotes, runReserve]);
 
   const statusText = flashLabel(flash);
+  const allVisibleSelected =
+    rows.length > 0 && rows.every((r) => selected.has(rowKeyOf(r)));
+  const busy = busyKey !== null;
 
   return (
     <section className="flex flex-col gap-4" aria-label="Ports">
@@ -142,17 +225,30 @@ export function PortsView() {
             Ports
           </p>
           <p className="mt-1 m-0 text-sm text-[var(--pd-mist)]">
-            MyAgent registry vs live listeners — reserve before bind.
+            MyAgent registry vs live listeners — reserve before bind; request stop only
+            (no kill).
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => void refresh()}
-          disabled={loading}
-          className="min-h-11 rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-semibold text-[var(--pd-paper)] disabled:opacity-50"
-        >
-          {loading ? "Refreshing…" : "Refresh"}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void onStopSelected()}
+            disabled={busy || selectedRows.length === 0}
+            className="min-h-11 rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-semibold text-[var(--pd-paper)] disabled:opacity-50"
+          >
+            {busyKey === "stop-selected"
+              ? "Requesting…"
+              : `Request stop selected (${selectedRows.length})`}
+          </button>
+          <button
+            type="button"
+            onClick={() => void refresh()}
+            disabled={loading}
+            className="min-h-11 rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-semibold text-[var(--pd-paper)] disabled:opacity-50"
+          >
+            {loading ? "Refreshing…" : "Refresh"}
+          </button>
+        </div>
       </header>
 
       {statusText ? (
@@ -270,34 +366,67 @@ export function PortsView() {
         </p>
       ) : null}
 
+      <div className="flex items-center gap-2">
+        <label className="flex min-h-11 items-center gap-2 text-sm text-[var(--pd-mist)]">
+          <input
+            type="checkbox"
+            checked={allVisibleSelected}
+            onChange={toggleSelectAllVisible}
+            disabled={rows.length === 0}
+            aria-label="Select all visible ports"
+          />
+          Select all visible
+        </label>
+      </div>
+
       <ul className="m-0 flex list-none flex-col gap-2 p-0">
         {rows.map((r) => {
-          const rowKey = `row-${r.port}-${r.appId}`;
-          const busy = busyKey === rowKey;
+          const rowKey = rowKeyOf(r);
+          const reserveBusy = busyKey === rowKey;
+          const stopBusy = busyKey === `stop-${rowKey}`;
+          const isSelected = selected.has(rowKey);
           return (
             <li
               key={`${r.port}-${r.appId}-${r.mismatch}`}
               className="flex min-h-11 flex-wrap items-center justify-between gap-3 rounded-lg border border-white/10 bg-black/55 px-3 py-3 backdrop-blur-md"
             >
-              <div className="min-w-0 flex-1">
-                <p className="m-0 font-mono text-sm text-[var(--pd-paper)]">
-                  :{r.port}{" "}
-                  <span className="text-[var(--pd-mist)]">· {r.appId}</span>
-                </p>
-                <p className="mt-0.5 m-0 truncate text-xs text-[var(--pd-mist)]">
-                  {r.env}
-                  {r.notes ? ` · ${r.notes}` : ""}
-                </p>
+              <div className="flex min-w-0 flex-1 items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => toggleSelected(rowKey)}
+                  className="mt-1"
+                  aria-label={`Select port ${r.port} ${r.appId}`}
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="m-0 font-mono text-sm text-[var(--pd-paper)]">
+                    :{r.port}{" "}
+                    <span className="text-[var(--pd-mist)]">· {r.appId}</span>
+                  </p>
+                  <p className="mt-0.5 m-0 truncate text-xs text-[var(--pd-mist)]">
+                    {r.env}
+                    {r.notes ? ` · ${r.notes}` : ""}
+                    {r.listening ? " · listening" : ""}
+                  </p>
+                </div>
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <MismatchBadge kind={r.mismatch} />
                 <button
                   type="button"
-                  disabled={busy || busyKey !== null}
+                  disabled={busy}
                   onClick={() => onRowReserve(r)}
                   className="min-h-11 rounded-md border border-white/15 bg-white/5 px-3 text-sm font-semibold text-[var(--pd-paper)] disabled:opacity-50"
                 >
-                  {busy ? "Requesting…" : "Request reserve"}
+                  {reserveBusy ? "Requesting…" : "Request reserve"}
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => onRowStop(r)}
+                  className="min-h-11 rounded-md border border-white/15 bg-white/5 px-3 text-sm font-semibold text-[var(--pd-paper)] disabled:opacity-50"
+                >
+                  {stopBusy ? "Requesting…" : "Request stop"}
                 </button>
               </div>
             </li>
