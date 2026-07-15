@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { corsPreflight, withOpenCors } from "@/lib/cors";
+import { cssAuthUrl } from "@/lib/cssEnv";
 
-const CSS = process.env.CSS_AUTH_URL || "http://127.0.0.1:9000";
+const CSS = cssAuthUrl();
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";

@@ -16,12 +16,25 @@ export type ApplianceDef = {
   probePort?: number;
 };
 
+function envUrl(...keys: string[]): string {
+  for (const k of keys) {
+    const v = process.env[k]?.trim();
+    if (v) return v.replace(/\/$/, "");
+  }
+  return "http://127.0.0.1:9000";
+}
+
+const cssPublic = envUrl("NEXT_PUBLIC_CSS_ISSUER", "CSS_AUTH_URL");
+const cssAuth = envUrl("CSS_AUTH_URL", "NEXT_PUBLIC_CSS_ISSUER");
+
 export const APPLIANCES: ApplianceDef[] = [
   {
     id: "proddeck",
     label: "ProdDeck",
     blurb: "This home / Cloud OS",
-    openUrl: "https://home.delena.buzz/",
+    openUrl:
+      process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, "") ||
+      "https://home.delena.buzz",
     probePort: 5320,
   },
   {
@@ -63,7 +76,7 @@ export const APPLIANCES: ApplianceDef[] = [
     id: "css",
     label: "CSS",
     blurb: "Centralized Security System",
-    openUrl: "https://css.delena.buzz/",
-    probeUrl: "http://127.0.0.1:5900/.well-known/jwks.json",
+    openUrl: cssPublic,
+    probeUrl: `${cssAuth}/.well-known/jwks.json`,
   },
 ];

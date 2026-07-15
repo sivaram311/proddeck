@@ -2,12 +2,12 @@
 
 import { FormEvent, useState } from "react";
 import { AUTH_CONFIG } from "@/lib/config";
-import { loginWithCss, verifySession } from "@/lib/auth";
+import { beginCssOAuthLogin, loginWithCss, verifySession } from "@/lib/auth";
+import { isDevHostname } from "@/lib/cssEnv";
 
 function isLocalDevHost() {
   if (typeof window === "undefined") return true;
-  const h = window.location.hostname;
-  return h === "localhost" || h === "127.0.0.1";
+  return isDevHostname(window.location.hostname);
 }
 
 type Props = {
@@ -15,11 +15,23 @@ type Props = {
 };
 
 export function LoginForm({ onSuccess }: Props) {
+  const ssoLane = AUTH_CONFIG.authMode === "hybrid" || AUTH_CONFIG.authMode === "oauth";
   const localDev = isLocalDevHost();
   const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState(localDev ? "admin123" : "");
+  const [password, setPassword] = useState(localDev ? "" : "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  async function onOauth() {
+    setBusy(true);
+    setError(null);
+    try {
+      await beginCssOAuthLogin(AUTH_CONFIG);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "OAuth start failed");
+      setBusy(false);
+    }
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -95,9 +107,21 @@ export function LoginForm({ onSuccess }: Props) {
           {busy ? "Signing in…" : "Sign in"}
         </button>
 
+        {ssoLane ? (
+          <button
+            type="button"
+            onClick={onOauth}
+            disabled={busy}
+            className="min-h-11 rounded-md border border-white/15 bg-transparent px-4 text-sm font-medium text-[var(--pd-mist)] disabled:opacity-60"
+          >
+            {busy ? "…" : "Continue with CSS SSO (redirect)"}
+          </button>
+        ) : null}
+
         <p className="m-0 text-xs text-[var(--pd-mist)]">
           clientId <code>proddeck</code>
-          {localDev ? " — DEV: admin / admin123" : ""}
+          {ssoLane ? ` · IdP ${AUTH_CONFIG.authUrl}` : ""}
+          {localDev && !ssoLane ? " — DEV: admin / admin123" : ""}
         </p>
       </form>
     </main>

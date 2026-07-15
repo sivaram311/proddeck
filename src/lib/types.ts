@@ -4,6 +4,9 @@ export type AuthConfig = {
   clientId: string;
   loginPath?: string;
   refreshPath?: string;
+  /** password = form only; oauth = form primary + SSO optional; hybrid = same as oauth */
+  authMode?: "password" | "oauth" | "hybrid";
+  oauthRedirectUri?: string;
 };
 
 export type DeckApp = {

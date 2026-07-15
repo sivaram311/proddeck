@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 /**
- * Smoke: GET / â†’ 200; catalog/helpdesk auth; pack keepers-quay + os scaffold
+ * Smoke: GET / → 200; catalog/helpdesk auth; pack keepers-quay + os scaffold
  * Usage: node scripts/smoke.mjs [baseUrl]
  */
 const base = (process.argv[2] || "http://127.0.0.1:3320").replace(/\/$/, "");
-const EXPECT_VERSION = "0.8.1";
+const EXPECT_VERSION = "0.8.2";
 
 async function expectStatus(path, status, init) {
   const res = await fetch(`${base}${path}`, { redirect: "manual", ...init });
   if (res.status !== status) {
-    throw new Error(`${path} â†’ ${res.status} (expected ${status})`);
+    throw new Error(`${path} → ${res.status} (expected ${status})`);
   }
   return res;
 }
 
 async function main() {
   await expectStatus("/", 200);
-  console.log(`OK: ${base}/ â†’ 200`);
+  console.log(`OK: ${base}/ → 200`);
 
   await expectStatus("/api/catalog", 401);
   await expectStatus("/api/catalog", 401, {

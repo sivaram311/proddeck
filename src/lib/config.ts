@@ -1,11 +1,16 @@
 import type { AuthConfig } from "./types";
+import {
+  cssAuthMode,
+  cssIssuer,
+  cssOauthRedirectUri,
+} from "./cssEnv";
 
 export const AUTH_CONFIG: AuthConfig = {
   cssEnabled: true,
-  authUrl:
-    (typeof process !== "undefined" && process.env.NEXT_PUBLIC_CSS_ISSUER) ||
-    "http://localhost:9000",
+  authUrl: cssIssuer(),
   clientId: "proddeck",
   loginPath: "/auth/login",
   refreshPath: "/auth/refresh",
+  authMode: cssAuthMode(),
+  oauthRedirectUri: cssOauthRedirectUri(),
 };
