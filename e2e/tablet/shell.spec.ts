@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("ProdDeck tablet (800×1280)", () => {
+test.describe("ProdDeck tablet (800Ã—1280)", () => {
   test("home shell loads at tablet size", async ({ page }) => {
     const res = await page.goto("/");
     expect(res?.ok()).toBeTruthy();
@@ -10,9 +10,9 @@ test.describe("ProdDeck tablet (800×1280)", () => {
     await expect(page.locator("body")).not.toBeEmpty();
   });
 
-  test("pack is 0.8.3 with os enabled", async ({ request }) => {
+  test("pack is 0.8.4 with os enabled", async ({ request }) => {
     const pack = await (await request.get("/api/pack")).json();
-    expect(pack.version).toBe("0.8.3");
+    expect(pack.version).toBe("0.8.4");
     expect(pack.os?.enabled).toBe(true);
   });
 

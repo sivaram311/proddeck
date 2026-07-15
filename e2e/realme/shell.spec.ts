@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("ProdDeck Realme P2 Pro (360×780)", () => {
+test.describe("ProdDeck Realme P2 Pro (360Ã—780)", () => {
   test("home shell loads", async ({ page }) => {
     const res = await page.goto("/");
     expect(res?.ok()).toBeTruthy();
@@ -9,12 +9,12 @@ test.describe("ProdDeck Realme P2 Pro (360×780)", () => {
     expect(text.length).toBeGreaterThan(20);
   });
 
-  test("pack is 0.8.3 with os enabled", async ({ request }) => {
+  test("pack is 0.8.4 with os enabled", async ({ request }) => {
     const res = await request.get("/api/pack");
     expect(res.ok()).toBeTruthy();
     const pack = await res.json();
     expect(pack.appId).toBe("proddeck");
-    expect(pack.version).toBe("0.8.3");
+    expect(pack.version).toBe("0.8.4");
     expect(pack.os?.enabled).toBe(true);
   });
 
