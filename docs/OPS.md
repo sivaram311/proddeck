@@ -11,3 +11,12 @@
 Bake: `.env.production` must set `NEXT_PUBLIC_CSS_ISSUER` + `NEXT_PUBLIC_CSS_AUTH_MODE=hybrid` before `npm run build`.
 
 Classic CSS `:5900` is untouched (other apps).
+
+## AgentVerse peers (Appliances)
+
+| URL | Port | Role |
+|-----|------|------|
+| https://agentverse-staging.delena.buzz | 4310 | PREPROD 7-story densify |
+| https://agentverse-v2-staging.delena.buzz | 4311 | PREPROD industrial v2 |
+| https://agentverse-v2.delena.buzz | 5311 | PROD industrial v2 |
+| https://agentverse.delena.buzz | 5312 | upgrade short host / Dispatch |
