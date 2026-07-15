@@ -1,6 +1,6 @@
 # Ops — ProdDeck
 
-**Versions:** DEV **0.8.2** css-next hybrid · F/G cutover target **0.8.2** (IdP css-next `v0.2.0`) · prior live **0.8.0** classic  
+**Versions:** DEV / F / G **0.8.3** · IdP **classic CSS** `v0.1.0` (Postgres `app_css`) · tag `v0.8.3`  
 **Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
 **SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
@@ -27,21 +27,19 @@ Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for Pr
 
 `NEXT_PUBLIC_*` is inlined at **`npm run build`**. If `NEXT_PUBLIC_CSS_ISSUER` is missing, the client falls back to `http://localhost:9000` and rejects live tokens after login.
 
-| Variable | DEV (pilot) | PREPROD/PROD (0.8.2+) |
-|----------|-------------|------------------------|
-| `CSS_AUTH_URL` | `https://css-next.delena.buzz` | `http://127.0.0.1:5910` |
-| `NEXT_PUBLIC_CSS_ISSUER` | **`https://css-next.delena.buzz`** | same (in `.env.production`) |
-| `NEXT_PUBLIC_CSS_AUTH_MODE` | `hybrid` | `hybrid` |
+| Variable | DEV | PREPROD/PROD |
+|----------|-----|----------------|
+| `CSS_AUTH_URL` | `http://127.0.0.1:5900` (stable classic; or `:9000` when CSS DEV up) | `http://127.0.0.1:5900` |
+| `NEXT_PUBLIC_CSS_ISSUER` | **`https://css.delena.buzz`** | same (in `.env.production`) |
+| `NEXT_PUBLIC_CSS_AUTH_MODE` | `password` | `password` |
 | `PLATFORM_APPS_URL` | optional | `:4080` / `:5080` platform apps |
 | `OS_EVENTS_FORWARD` | DEV default-on | **`1`** on F/G (requires Portal **0.1.8**) |
 
-Commit `.env.production` holds the public **css-next** issuer for release builds. Classic `css.delena.buzz` / `:5900` remains for other apps. After cutover: hard-refresh clients if an old chunk is cached.
+Commit `.env.production` holds classic **`https://css.delena.buzz`**. css-next (`:5910`) is a side fleet — not the ProdDeck IdP. Live admin password is whatever is hashed in Postgres `app_css.prod` (often `admin123` from first seed; `.env` `CSS_ADMIN_PASSWORD` does not rotate existing rows).
 
-Prod CSS admin password is **not** `admin123` — see `G:\apps\css-next\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
+### css-next hybrid (out of service for ProdDeck)
 
-### css-next hybrid pilot (DEV only)
-
-Branch `feature/css-next-oauth-pilot`. Put URLs in **`.env.local`** only — SoT helper `src/lib/cssEnv.ts`:
+Pilot branch remains historical. Do **not** bake css-next into F/G unless a new EM migrate GO.
 
 ```env
 CSS_AUTH_URL=https://css-next.delena.buzz
