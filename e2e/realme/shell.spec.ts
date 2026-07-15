@@ -9,12 +9,12 @@ test.describe("ProdDeck Realme P2 Pro (360×780)", () => {
     expect(text.length).toBeGreaterThan(20);
   });
 
-  test("pack is 0.8.1 with os enabled", async ({ request }) => {
+  test("pack is 0.8.2 with os enabled", async ({ request }) => {
     const res = await request.get("/api/pack");
     expect(res.ok()).toBeTruthy();
     const pack = await res.json();
     expect(pack.appId).toBe("proddeck");
-    expect(pack.version).toBe("0.8.1");
+    expect(pack.version).toBe("0.8.2");
     expect(pack.os?.enabled).toBe(true);
   });
 

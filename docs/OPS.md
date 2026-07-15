@@ -1,6 +1,6 @@
 # Ops — ProdDeck
 
-**Versions:** DEV / F / G LIVE **0.8.0** Wave A · pack `H:\releases\proddeck-0.8.0` · tag `v0.8.0`  
+**Versions:** DEV **0.8.2** css-next hybrid · F/G cutover target **0.8.2** (IdP css-next `v0.2.0`) · prior live **0.8.0** classic  
 **Compatibility:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)  
 **SoT:** [WORLD.md](./WORLD.md) · [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md) · [HANDOFF.md](./HANDOFF.md) · [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) · [DEPLOY.md](./DEPLOY.md)
 
@@ -25,18 +25,19 @@ Do **not** use AgentVerse ports (`4310/4311/5310/5311`) or portal `:5080` for Pr
 
 ### CSS JWT bake (mandatory for F/G builds)
 
-`NEXT_PUBLIC_*` is inlined at **`npm run build`**. If `NEXT_PUBLIC_CSS_ISSUER` is missing, the client falls back to `http://localhost:9000` and rejects live tokens (`iss=https://css.delena.buzz`) after login.
+`NEXT_PUBLIC_*` is inlined at **`npm run build`**. If `NEXT_PUBLIC_CSS_ISSUER` is missing, the client falls back to `http://localhost:9000` and rejects live tokens after login.
 
-| Variable | DEV | PREPROD/PROD |
-|----------|-----|----------------|
-| `CSS_AUTH_URL` | `:9000` | `http://127.0.0.1:5900` |
-| `NEXT_PUBLIC_CSS_ISSUER` | match DEV CSS | **`https://css.delena.buzz`** (also in `.env.production`) |
+| Variable | DEV (pilot) | PREPROD/PROD (0.8.2+) |
+|----------|-------------|------------------------|
+| `CSS_AUTH_URL` | `https://css-next.delena.buzz` | `http://127.0.0.1:5910` |
+| `NEXT_PUBLIC_CSS_ISSUER` | **`https://css-next.delena.buzz`** | same (in `.env.production`) |
+| `NEXT_PUBLIC_CSS_AUTH_MODE` | `hybrid` | `hybrid` |
 | `PLATFORM_APPS_URL` | optional | `:4080` / `:5080` platform apps |
-| `OS_EVENTS_FORWARD` | DEV default-on | **`1`** on F/G (requires Portal ? **0.1.8**) |
+| `OS_EVENTS_FORWARD` | DEV default-on | **`1`** on F/G (requires Portal **0.1.8**) |
 
-Commit `.env.production` holds the public issuer for release builds. After cutover: hard-refresh clients if an old chunk is cached.
+Commit `.env.production` holds the public **css-next** issuer for release builds. Classic `css.delena.buzz` / `:5900` remains for other apps. After cutover: hard-refresh clients if an old chunk is cached.
 
-Prod CSS admin password is **not** `admin123` — see `G:\apps\css\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
+Prod CSS admin password is **not** `admin123` — see `G:\apps\css-next\.env` (`CSS_ADMIN_PASSWORD`). Never commit it.
 
 ### css-next hybrid pilot (DEV only)
 

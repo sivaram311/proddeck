@@ -3,17 +3,17 @@
 **SoT for fleet compatibility with ProdDeck Cloud OS.**  
 Update this file whenever F/G pins or peer minimums change.
 
-**Last checked:** 2026-07-15 · Session `proddeck-keepers-quay-2026-07-14` · git-release Phase A
+**Last checked:** 2026-07-15 · Session `css-api-migrate-wave-2026-07-15` / css-migrate 0.8.2
 
 ## ProdDeck pin map
 
 | Env | Version | Path / host | Port |
 |-----|---------|-------------|------|
-| DEV | **0.8.1** | `E:\wt\proddeck-integrate` · `release/0.8.1` / `cloud-os/integrate` | 3320 |
-| PREPROD | **0.8.0** (live) | `F:\apps\proddeck` · home-staging.delena.buzz | 4320 |
-| PROD | **0.8.0** (live) | `G:\apps\proddeck` · home.delena.buzz | 5320 |
-| Pack ready | **0.8.1** | `H:\releases\proddeck-0.8.1` · tag `v0.8.1` | — Phase B for F/G |
-| Pack live | **0.8.0** | `H:\releases\proddeck-0.8.0` · tag `v0.8.0` | F/G until Phase B |
+| DEV | **0.8.2** | `E:\wt\proddeck-integrate` · css-next hybrid | 3320 |
+| PREPROD | **0.8.2** (cutover) | `F:\apps\proddeck` · home-staging · IdP css-next | 4320 |
+| PROD | **0.8.2** (cutover) | `G:\apps\proddeck` · home · IdP css-next | 5320 |
+| Pack | **0.8.2** | `H:\releases\proddeck-0.8.2` · tag `v0.8.2` | — |
+| Rollback | **0.8.0** | `H:\releases\proddeck-0.8.0` · classic CSS | — |
 
 ## Peer apps (live F/G)
 

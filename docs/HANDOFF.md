@@ -1,21 +1,24 @@
 ﻿# Handoff — ProdDeck
 
-**DEV:** **0.8.1** · `release/0.8.1` / integrate · `:3320` · tag `v0.8.1` (Phase A)
-**PREPROD/PROD LIVE:** **0.8.0** until Phase B GO · `H:\releases\proddeck-0.8.0`
-**Next pack:** `H:\releases\proddeck-0.8.1`
+**DEV:** **0.8.2** · `feature/css-next-oauth-pilot` → `main` · `:3320` · https://home-dev.delena.buzz · IdP **css-next** hybrid  
+**PREPROD / PROD target:** **0.8.2** css-next cutover (migrate Phase 6) · rollback pack `H:\releases\proddeck-0.8.0`  
+**Repo:** https://github.com/sivaram311/proddeck  
+**clientId:** `proddeck`  
+**Release pack:** `H:\releases\proddeck-0.8.2` · tag `v0.8.2`
 
-**Repo:** https://github.com/sivaram311/proddeck · **clientId:** `proddeck`
-**Compatibility SoT:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md)
-**Git release:** follow MyAgent `GIT-RELEASE-MANAGEMENT.md` · skill `git-release`
+## Read first
 
-## Peers
+| Doc | Why |
+|-----|-----|
+| [OPS.md](./OPS.md) | Ports, CSS bake, smoke |
+| [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) | Compatibility |
+| MyAgent `workflow/css/MIGRATE-PENDING.md` | CSS migrate tracker |
+| Skill `css-migrate` | Orchestrator for consumer cutovers |
 
-| Peer | Live F/G | Notes |
-|------|----------|-------|
-| Agent Portal | **0.1.8** | os-events |
-| agentverse-upgrade | **0.3.1** | Dispatch SoT `:4312/:5312` |
-| AgentVerse classic | **0.3.17** | rollback only |
-| CSS | `v0.1.0` · css.delena.buzz | classic IdP (F/G) |
-| CSS (DEV OAuth pilot) | css-next `v0.2.0` | `feature/css-next-oauth-pilot` · `.env.local` oauth only |
+## Isolation
 
-Session: `css-api-migrate-wave-2026-07-15` (ProdDeck-only oauth pilot).
+Never stop AgentVerse (`4310/4311/5310/5311`) or portal (`5080`) for ProdDeck work. Kill-by-port **only** `4320` / `5320` as appropriate.
+
+## Auth note (0.8.2)
+
+F/G issuer is **css-next** (`v0.2.0`). Classic CSS stays live for Portal/AV until their migrate IDs run.
