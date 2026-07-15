@@ -36,8 +36,10 @@ Home coordinates the machine. AgentVerse is where agents live and labor. **Peers
 |-----|-------------|
 | **CSS IdP** | `https://css.delena.buzz` (:5900 prod) — SSO for auth apps |
 | **Agent Portal** | `https://agent-portal.delena.buzz` — sessions platform API/UI |
-| **AgentVerse classic** | `https://agentverse.delena.buzz` — TN office / Session Desk |
-| **AgentVerse v2** | `https://agentverse-v2.delena.buzz` — industrial side deploy |
+| **AgentVerse** (short) | `https://agentverse.delena.buzz` — upgrade / Dispatch SoT |
+| **AgentVerse staging** | `https://agentverse-staging.delena.buzz` — PREPROD 7-story densify |
+| **AgentVerse v2** | `https://agentverse-v2.delena.buzz` — industrial PROD |
+| **AgentVerse v2 staging** | `https://agentverse-v2-staging.delena.buzz` — industrial PREPROD |
 | **ProdDeck / home** | `https://home.delena.buzz` — Keepers’ Quay home / future cloud OS |
 | **Stack Pilot / control** | `https://control.delena.buzz` — stack/control surfaces |
 | **H-Drive** | `https://hdrive.delena.buzz` — H:\ releases expose |

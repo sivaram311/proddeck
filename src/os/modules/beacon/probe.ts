@@ -10,8 +10,12 @@ export const BEACON_TARGETS: BeaconTarget[] = [
   { id: "home-staging", label: "home-staging", kind: "http", url: "https://home-staging.delena.buzz/" },
   { id: "css", label: "CSS JWKS", kind: "http", url: "http://127.0.0.1:5900/.well-known/jwks.json" },
   { id: "portal", label: "Agent Portal :5080", kind: "tcp", host: "127.0.0.1", port: 5080 },
-  { id: "agentverse", label: "AgentVerse :5310", kind: "tcp", host: "127.0.0.1", port: 5310 },
+  { id: "agentverse-staging", label: "agentverse-staging", kind: "http", url: "https://agentverse-staging.delena.buzz/" },
+  { id: "agentverse-v2-staging", label: "agentverse-v2-staging", kind: "http", url: "https://agentverse-v2-staging.delena.buzz/" },
+  { id: "agentverse-classic-preprod", label: "AgentVerse classic :4310", kind: "tcp", host: "127.0.0.1", port: 4310 },
+  { id: "agentverse-v2-preprod", label: "AgentVerse v2 :4311", kind: "tcp", host: "127.0.0.1", port: 4311 },
   { id: "agentverse-v2", label: "AgentVerse v2 :5311", kind: "tcp", host: "127.0.0.1", port: 5311 },
+  { id: "agentverse-upgrade", label: "AgentVerse upgrade :5312", kind: "tcp", host: "127.0.0.1", port: 5312 },
   { id: "hdrive", label: "H-Drive :5010", kind: "tcp", host: "127.0.0.1", port: 5010 },
   { id: "proddeck", label: "ProdDeck :5320", kind: "tcp", host: "127.0.0.1", port: 5320 },
 ];

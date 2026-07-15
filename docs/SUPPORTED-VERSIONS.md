@@ -21,8 +21,8 @@ Update this file whenever F/G pins or peer minimums change.
 |-----|---------|------|-------|-------|
 | **Agent Portal** | **0.1.8** | **0.1.8** | 4080 / 5080 | `POST /api/os-events` required for OS event forward |
 | **agentverse-upgrade** | **0.3.1** | **0.3.1** | 4312 / 5312 | **Dispatch peer SoT** Â· upgrade-staging / upgrade hosts |
-| **AgentVerse classic** | **0.3.17** | **0.3.17** | 4310 / 5310 | **Rollback only** â€” densify + `/desk`; **not** Dispatch default |
-| **AgentVerse v2** | side fleet | side fleet | 4311 / 5311 | Industrial / independent; do not disturb |
+| **AgentVerse classic** | **0.3.15** (`agentverse-staging`) | **0.3.17** (`:5310` loopback) | 4310 / 5310 | PREPROD public: `https://agentverse-staging.delena.buzz` (7-story); **not** Dispatch default |
+| **AgentVerse v2** | **0.4.3** (`agentverse-v2-staging`) | **0.4.3** (`agentverse-v2`) | 4311 / 5311 | Industrial open-floor; Appliances tiles for both staging + PROD |
 | **CSS (prod IdP)** | shared | shared | 5900 Â· css.delena.buzz | Issuer bake Â· `v0.1.0` |
 
 **Dispatch peer SoT:** ProdDeck Dispatch deep-links target **agentverse-upgrade** (**4312/5312**), not classic densify (**4310/5310**).

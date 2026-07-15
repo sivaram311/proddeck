@@ -35,10 +35,34 @@
     {
       "slug": "agentverse",
       "name": "AgentVerse",
-      "description": "Multi-agent collaboration hub",
+      "description": "Public short host — upgrade fleet / Dispatch SoT",
       "baseUrl": "https://agentverse.delena.buzz",
       "clientId": "agentverse",
       "env": "prod"
+    },
+    {
+      "slug": "agentverse-staging",
+      "name": "AgentVerse staging",
+      "description": "PREPROD 7-story densify (v0.3.15-unstable / :4310)",
+      "baseUrl": "https://agentverse-staging.delena.buzz",
+      "clientId": "agent-portal",
+      "env": "preprod"
+    },
+    {
+      "slug": "agentverse-v2",
+      "name": "AgentVerse v2",
+      "description": "stable-v2 industrial PROD (:5311)",
+      "baseUrl": "https://agentverse-v2.delena.buzz",
+      "clientId": "agent-portal",
+      "env": "prod"
+    },
+    {
+      "slug": "agentverse-v2-staging",
+      "name": "AgentVerse v2 staging",
+      "description": "PREPROD industrial open-floor (:4311)",
+      "baseUrl": "https://agentverse-v2-staging.delena.buzz",
+      "clientId": "agent-portal",
+      "env": "preprod"
     }
   ]
 }

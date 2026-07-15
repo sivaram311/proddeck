@@ -1,7 +1,9 @@
 export type ApplianceId =
   | "portal"
   | "agentverse"
+  | "agentverse-staging"
   | "agentverse-v2"
+  | "agentverse-v2-staging"
   | "hdrive"
   | "filebridge"
   | "proddeck"
@@ -47,16 +49,30 @@ export const APPLIANCES: ApplianceDef[] = [
   {
     id: "agentverse",
     label: "AgentVerse",
-    blurb: "Classic work plane",
+    blurb: "Public short host (upgrade / Dispatch SoT)",
     openUrl: "https://agentverse.delena.buzz/",
-    probePort: 5310,
+    probePort: 5312,
+  },
+  {
+    id: "agentverse-staging",
+    label: "AgentVerse staging",
+    blurb: "PREPROD 7-story densify (0.3.15-unstable)",
+    openUrl: "https://agentverse-staging.delena.buzz/",
+    probePort: 4310,
   },
   {
     id: "agentverse-v2",
     label: "AgentVerse v2",
-    blurb: "stable-v2 side deploy",
+    blurb: "stable-v2 industrial PROD",
     openUrl: "https://agentverse-v2.delena.buzz/",
     probePort: 5311,
+  },
+  {
+    id: "agentverse-v2-staging",
+    label: "AgentVerse v2 staging",
+    blurb: "PREPROD industrial (blue/white open floor)",
+    openUrl: "https://agentverse-v2-staging.delena.buzz/",
+    probePort: 4311,
   },
   {
     id: "hdrive",
