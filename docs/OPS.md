@@ -51,7 +51,7 @@ NEXT_PUBLIC_APP_URL=https://home-dev.delena.buzz
 NEXT_PUBLIC_DEV_HOSTS=localhost,127.0.0.1,home-dev.delena.buzz
 ```
 
-Primary: deck form ? `CSS_AUTH_URL` login. Optional SSO uses browser origin. Do not bake hybrid into F/G.
+Primary: deck form ? `CSS_AUTH_URL` login. Optional SSO uses browser origin. **0.8.2+:** F/G bake `NEXT_PUBLIC_CSS_AUTH_MODE=hybrid` against css-next.
 
 ## Dependent peers (minimum)
 
