@@ -15,6 +15,7 @@ import { PromoteView } from "./modules/promote";
 import { PulseView } from "./modules/pulse";
 import { RunbooksView } from "./modules/runbooks";
 import { YardView } from "./modules/yard";
+import { WatchOpsView } from "./modules/watch";
 
 export const OS_MODULE_VIEWS: Record<OsModuleId, ComponentType> = {
   pulse: PulseView,
@@ -30,4 +31,5 @@ export const OS_MODULE_VIEWS: Record<OsModuleId, ComponentType> = {
   appliances: AppliancesView,
   "drive-guard": DriveGuardView,
   filebridge: FileBridgeView,
+  "watch-ops": WatchOpsView,
 };

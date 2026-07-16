@@ -85,12 +85,20 @@ export function AppliancesView() {
                 </span>
               </div>
               <a
-                href={a.openUrl}
+                href={
+                  a.returnPlace
+                    ? `${a.openUrl.replace(/\/$/, "")}/?return=${encodeURIComponent(
+                        typeof window !== "undefined"
+                          ? `${window.location.origin}/?osPlace=${a.returnPlace}`
+                          : `https://home.delena.buzz/?osPlace=${a.returnPlace}`,
+                      )}`
+                    : a.openUrl
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 flex min-h-11 items-center justify-center rounded-md bg-[var(--pd-lime)] px-3 text-sm font-semibold text-[var(--pd-ink)]"
               >
-                Open
+                {a.id === "stack-pilot" ? "Open + return" : "Open"}
               </a>
             </li>
           );

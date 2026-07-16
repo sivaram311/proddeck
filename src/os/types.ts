@@ -25,7 +25,8 @@ export type OsModuleId =
   | "runbooks"
   | "appliances"
   | "drive-guard"
-  | "filebridge";
+  | "filebridge"
+  | "watch-ops";
 
 export type OsModuleFlags = Record<OsModuleId, boolean>;
 

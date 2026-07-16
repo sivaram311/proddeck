@@ -7,7 +7,8 @@ export type ApplianceId =
   | "hdrive"
   | "filebridge"
   | "proddeck"
-  | "css";
+  | "css"
+  | "stack-pilot";
 
 export type ApplianceDef = {
   id: ApplianceId;
@@ -16,6 +17,8 @@ export type ApplianceDef = {
   openUrl: string;
   probeUrl?: string;
   probePort?: number;
+  /** Optional return deep-link back to a ProdDeck Place */
+  returnPlace?: string;
 };
 
 function envUrl(...keys: string[]): string {
@@ -94,5 +97,13 @@ export const APPLIANCES: ApplianceDef[] = [
     blurb: "Centralized Security System",
     openUrl: cssPublic,
     probeUrl: `${cssAuth}/.well-known/jwks.json`,
+  },
+  {
+    id: "stack-pilot",
+    label: "Stack Pilot",
+    blurb: "Control / stack surfaces — returns to Control Tower",
+    openUrl: "https://control.delena.buzz/",
+    probePort: 5000,
+    returnPlace: "control-tower",
   },
 ];

@@ -5,6 +5,8 @@ import { useRef, useState } from "react";
 import * as THREE from "three";
 import { GateLantern, ManifestHall, MemoryShed, WatchLoft } from "./Buildings";
 import { KeeperHumanoid } from "./Characters";
+import { FabricBuoys, PortBollards, TideGauges } from "./fx/OsEchoMeshes";
+import { useBeatBus, useQuayQuality } from "./hooks/useBeatBus";
 import { PierDeck, QuayWater } from "./PierWater";
 import type { QuaySceneProps } from "./types";
 
@@ -43,6 +45,10 @@ function FollowCam({ playerRef }: { playerRef: React.MutableRefObject<THREE.Vect
 function QuayWorld(props: QuaySceneProps) {
   const [walkTarget, setWalkTarget] = useState<THREE.Vector3 | null>(null);
   const playerRef = useRef(new THREE.Vector3(0, 0, 2.2));
+  useBeatBus();
+  const quality = useQuayQuality();
+  const echo = props.osEcho;
+  const showFx = quality !== "low" || Boolean(echo?.fabricLanes?.length || echo?.pulse);
 
   return (
     <>
@@ -55,7 +61,7 @@ function QuayWorld(props: QuaySceneProps) {
           props.onPlace("pier");
         }}
       />
-      <GateLantern acknowledge={props.gateAck} />
+      <GateLantern acknowledge={props.gateAck || echo?.cssFresh === true} />
       <ManifestHall
         apps={props.apps}
         active={props.place === "manifest"}
@@ -75,6 +81,13 @@ function QuayWorld(props: QuaySceneProps) {
         loftAck={props.loftAck}
         onEnter={() => props.onPlace("loft")}
       />
+      {showFx ? (
+        <>
+          <TideGauges pulse={echo?.pulse} />
+          <PortBollards ports={echo?.ports} />
+          <FabricBuoys lanes={echo?.fabricLanes} />
+        </>
+      ) : null}
       <KeeperHumanoid
         target={walkTarget}
         playerRef={playerRef}
@@ -99,7 +112,7 @@ export function QuayCanvas(props: QuaySceneProps) {
   return (
     <div className="absolute inset-0 z-0">
       <Canvas
-        shadows
+        shadows={false}
         dpr={[1, 1.5]}
         camera={{ fov: 45, near: 0.1, far: 80, position: [5, 5.5, 10] }}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}

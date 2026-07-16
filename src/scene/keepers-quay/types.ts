@@ -11,6 +11,16 @@ export type CrewToken = {
   watch: string;
 };
 
+/** Optional OS → scene echo props (Q3D read-only). */
+export type QuayOsEcho = {
+  pulse?: { e: number; f: number; g: number; h: number };
+  ports?: { port: number; state: "ok" | "mismatch" | "unknown" }[];
+  cssFresh?: boolean;
+  promoteDecision?: "GO" | "HOLD" | "NEED_EVIDENCE" | null;
+  fabricLanes?: { id: string; label: string; status: string }[];
+  beaconUp?: number;
+};
+
 export type QuaySceneProps = {
   apps: DeckApp[];
   crews: CrewToken[];
@@ -26,4 +36,6 @@ export type QuaySceneProps = {
   actionToken: number;
   loftAck: boolean;
   gateAck: boolean;
+  /** Cloud OS 1.0 — optional read-only echoes */
+  osEcho?: QuayOsEcho;
 };

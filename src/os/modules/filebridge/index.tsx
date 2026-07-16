@@ -241,7 +241,8 @@ export function FileBridgeView() {
 
       <div className="rounded-lg border border-[var(--pd-danger)]/30 bg-black/40 p-3">
         <p className="m-0 text-xs text-[var(--pd-mist)]">
-          Delete · blocked — CONSCIOUS #1. Typing DELETE only acknowledges policy; no API delete IO.
+          Delete · default blocked (OS_FILEBRIDGE_DELETE=0). Flag + EM GO + JWT + phrase
+          DELETE_RELEASE_FILE enables single-file delete under H:\releases only.
         </p>
         <input
           value={confirmDelete}

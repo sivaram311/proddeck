@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { FabricEventsTail } from "./FabricEventsTail";
 import { MISSION_TEMPLATES, initialLaneState } from "./mission-templates";
+import { publishQuayBeat } from "@/scene/keepers-quay/beats";
 import { SKILL_PACKS } from "./skill-packs";
 import { SkillRegistry } from "./SkillRegistry";
 import {
@@ -53,6 +54,7 @@ export function YardView() {
   const [hireBusyId, setHireBusyId] = useState<string | null>(null);
   const [hireFlash, setHireFlash] = useState<{ packId: string; state: HireFlash } | null>(null);
   const [eventsRefreshToken, setEventsRefreshToken] = useState(0);
+  const [runnerNote, setRunnerNote] = useState<string | null>(null);
 
   function selectMission(m: MissionTemplate) {
     setMissionId(m.id);
@@ -97,16 +99,46 @@ export function YardView() {
         eventOk = res.ok;
       } catch {
         eventOk = false;
-      } finally {
-        setHireBusyId(null);
       }
 
+      const liveRes = await fetch("/api/os/yard/spawn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          packId: pack.id,
+          skills: pack.skills,
+          brief: briefing,
+          env: "dev",
+          returnUrl:
+            typeof window !== "undefined"
+              ? `${window.location.origin}/?osPlace=watch`
+              : "https://home.delena.buzz/?osPlace=watch",
+        }),
+      });
+      const live = (await liveRes.json().catch(() => ({}))) as { message?: string };
+      setRunnerNote(live.message ?? "spawn checked");
+      publishQuayBeat({
+        type: "fabric.ignite",
+        lanes: pack.skills.map((skill, i) => ({ id: `${pack.id}-${i}`, skill })),
+      });
+
+      setHireBusyId(null);
       setHireFlash({ packId: pack.id, state: eventOk ? "ok" : "soft-fail" });
       if (eventOk) setEventsRefreshToken((n) => n + 1);
       window.setTimeout(() => setHireFlash(null), 2200);
     },
     [mission],
   );
+
+  const oneTapPromoteQ2 = useCallback(async () => {
+    const pack = SKILL_PACKS.find((p) => p.id === "promote-q2");
+    if (!pack) return;
+    const promoteMission =
+      MISSION_TEMPLATES.find((m) => m.packId === "promote-q2") ?? mission;
+    selectMission(promoteMission);
+    await hirePack(pack);
+    window.location.href = "/?osPlace=forge";
+  }, [hirePack, mission]);
 
   return (
     <section className="flex flex-col gap-4" aria-label="Yard · Crew Fabric">
@@ -118,9 +150,23 @@ export function YardView() {
           Yard · Crew Fabric
         </p>
         <p className="mt-1 m-0 text-sm text-[var(--pd-mist)]">
-          Hire skill packs from the phone — Wave 1 board is manual status only.
+          Hire skill packs from the phone — live Portal runners stay flag-gated OFF.
         </p>
       </header>
+
+      <button
+        type="button"
+        onClick={() => void oneTapPromoteQ2()}
+        className="min-h-11 rounded-lg border border-[var(--pd-lime)]/50 bg-[var(--pd-lime)]/15 px-4 text-sm font-semibold text-[var(--pd-lime)]"
+      >
+        One-tap Promote Q2 → Yard hire + Promote place
+      </button>
+
+      {runnerNote ? (
+        <p className="m-0 text-xs text-[var(--pd-mist)]" role="status">
+          {runnerNote}
+        </p>
+      ) : null}
 
       <div
         className="rounded-md border border-[var(--pd-lime)]/35 bg-[var(--pd-lime)]/8 px-3 py-2 text-xs text-[var(--pd-mist)]"

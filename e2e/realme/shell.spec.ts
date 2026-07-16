@@ -2,19 +2,23 @@ import { test, expect } from "@playwright/test";
 
 test.describe("ProdDeck Realme P2 Pro (360Ã—780)", () => {
   test("home shell loads", async ({ page }) => {
-    const res = await page.goto("/");
+    const res = await page.goto("/", { waitUntil: "domcontentloaded" });
     expect(res?.ok()).toBeTruthy();
     await expect(page.locator("body")).not.toBeEmpty();
+    // Auth gate or Quay shell — wait for any Keeper chrome / login CTA
+    await expect(
+      page.getByText(/Sign in|Keeper|Quay|ProdDeck|Lighting the Gate|Places/i).first(),
+    ).toBeVisible({ timeout: 15000 });
     const text = await page.locator("body").innerText();
-    expect(text.length).toBeGreaterThan(20);
+    expect(text.trim().length).toBeGreaterThan(8);
   });
 
-  test("pack is 0.8.4 with os enabled", async ({ request }) => {
+  test("pack is 1.0.0 with os enabled", async ({ request }) => {
     const res = await request.get("/api/pack");
     expect(res.ok()).toBeTruthy();
     const pack = await res.json();
     expect(pack.appId).toBe("proddeck");
-    expect(pack.version).toBe("0.8.4");
+    expect(pack.version).toBe("1.0.0");
     expect(pack.os?.enabled).toBe(true);
   });
 

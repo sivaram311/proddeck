@@ -3,7 +3,15 @@ import path from "path";
 import type { ActivityQueueResponse, ActivityQueueRow, ActivityQueueInput } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), ".data");
-export const ACTIVITY_QUEUE_PATH = path.join(DATA_DIR, "activity-queue.jsonl");
+
+/** Optional override for F/G staging queues — default `{cwd}/.data/activity-queue.jsonl`. */
+export function resolveActivityQueuePath(): string {
+  const fromEnv = (process.env.ACTIVITY_QUEUE_PATH ?? "").trim();
+  if (fromEnv) return path.resolve(fromEnv);
+  return path.join(DATA_DIR, "activity-queue.jsonl");
+}
+
+export const ACTIVITY_QUEUE_PATH = resolveActivityQueuePath();
 
 const QUEUE_TAIL_LIMIT = 80;
 
@@ -31,8 +39,9 @@ export async function appendActivityQueueRow(
     throw new Error("action_required");
   }
 
-  await mkdir(DATA_DIR, { recursive: true });
-  await appendFile(ACTIVITY_QUEUE_PATH, `${JSON.stringify(row)}\n`, "utf8");
+  const queuePath = resolveActivityQueuePath();
+  await mkdir(path.dirname(queuePath), { recursive: true });
+  await appendFile(queuePath, `${JSON.stringify(row)}\n`, "utf8");
   return row;
 }
 

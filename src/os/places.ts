@@ -44,7 +44,7 @@ export const OS_PLACES: PlaceDef[] = [
     id: "watch",
     label: "Watch",
     short: "Watch",
-    modules: ["activity-log"],
+    modules: ["watch-ops", "activity-log"],
   },
   {
     id: "remember",

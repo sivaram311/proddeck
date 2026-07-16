@@ -68,6 +68,7 @@ export function DeckHome({ username, onLogout }: Props) {
     appliances: true,
     "drive-guard": true,
     filebridge: true,
+    "watch-ops": true,
   };
   const showQuayUi = !osEnabled || osPlace === "quay";
 
