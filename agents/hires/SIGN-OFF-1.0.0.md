@@ -32,3 +32,5 @@
 ## Verdict
 
 **GO** for git / DEV release 1.0.0 ship (flags OFF, no F/G promote).
+
+**Post-merge tip:** `32ba037` · tag `v1.0.0` · `release/1.0.0` pushed.

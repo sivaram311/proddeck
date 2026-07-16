@@ -1,6 +1,6 @@
 # Ops — ProdDeck
 
-**Versions:** git tip **1.0.0** · F/G live **0.8.4** until promote · IdP **css-next** `v0.2.1` hybrid · tag `v1.0.0`
+**Versions:** DEV / F / G **1.0.0** · IdP **css-next** `v0.2.1` hybrid · tag `v1.0.0`
 
 | Env | Host | Port | CSS_AUTH_URL | Issuer | Mode |
 |-----|------|------|--------------|--------|------|
