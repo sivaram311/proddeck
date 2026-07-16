@@ -5,8 +5,8 @@
 **Operator client:** Realme P2 Pro (~360×800), AI-agent-first machine ops  
 **Session:** `proddeck-keepers-quay-2026-07-14`  
 **External strategy:** Grok 4.5 deep-dive 2026-07-14  
-**Status:** Live through **0.8.0 Wave A** · remaining hard outs + peer Device Labs on roadmap  
-**Live pin:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) · next slice: [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md)
+**Status:** **1.0.0 stable rails** (git) · hard outs code present **flags OFF** · F/G live pin remains **0.8.4** until promote  
+**Live pin:** [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) · implement brief: [CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md](./CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md) · Quay 3D: [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md)
 
 This document captures the full idea set for evolving **home** into a **phone-first cloud operating system for this VPS**, while AgentVerse remains the inhabitable crew workplace. It also invents how **parallel skill-hired subagents / crews** become a first-class OS capability (matching how we already work in MyAgent workflow).
 
@@ -344,51 +344,32 @@ Activity queue · Drive Guard CSS freshness · Ports request-stop (event) · Yar
 ### 0.8 Wave A — Confirm / dry-run rails — **SHIPPED (LIVE)**
 Lead activity-queue drain (`DRAIN_TO_MYAGENT`) · Ports stop **dry-run** (deny-list; no kill) · Playwright Device Lab (Realme / desktop / tablet) · CONSCIOUS **#14** E2E hire mandate.
 
-### 0.8 Wave B / 0.9 — Hard outs (EM GO each) — **ROADMAPPED**
-See §10. Destructive or cross-fleet power only after explicit confirm gates.
+### 0.8 Wave B / 0.9 — Hard outs (EM GO each) — **CODE IN 1.0.0 · FLAGS OFF**
+APIs/UI present behind `OS_FILEBRIDGE_DELETE` / `OS_DRIVE_GUARD_MUTATE` / `OS_PORTS_STOP_KILL` / `OS_YARD_LIVE_RUNNERS` (default **0**). Enable only with EM GO per env.
 
-### 1.0 — Cloud OS v1 — **ROADMAPPED**
-Stable Home ↔ AgentVerse contract · Drive Guard hard gates on G/H · Ports reserve/stop via job with allowlist · Stack Pilot bridge return · Watch as real ops · Crew Fabric live lanes + skill registry.
+### 1.0 — Cloud OS v1 — **SHIPPED (git tag `v1.0.0`)** · F/G promote pending
+Stable Dispatch contract tests · Watch ops aggregate · Stack Pilot return · Yard promote-q2 one-tap · Q3D-0..3 beat bus + read-only echoes · hard-out rails flag-gated.
 
 **Cloud OS v1 means:** A phone-only operator can **observe the VPS, decide promote, dispatch/hire skill crews in parallel, and browse releases** without RDP — destructive power gated; AgentVerse remains the work habitat.
 
 ---
 
-## 10. Build-next backlog (parked on roadmap — pick with EM GO)
+## 10. Build-next backlog (after 1.0.0 tag)
 
-Kept from post-0.8.0 “now what” (2026-07-15). Detail: [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md).
-
-### A. Close the loop (low blast)
+### Enable / promote (EM GO)
 
 | ID | Item | Notes |
 |----|------|-------|
-| A1 | Drain leftover F/G activity staging queues | Lead-only · confirm `DRAIN_TO_MYAGENT` · never blind bulk without preview |
-| A2 | Mirror E2E SUMMARY onto `main` / keep [E2E.md](./E2E.md) current | Evidence already under `H:\releases\proddeck-0.8.0\evidence\e2e\` |
+| P1 | Q1→F: / Q2→G: promote of **1.0.0** | Separate promote crew — not this git ship |
+| B* | Flip hard-out `OS_*` flags | Per-env EM GO; never silent |
+| C1/C2 | Peer Device Labs | Portal + AV classic — other repos |
+| Q3D-4/5 | Beacon/Archive densify + particles | Post-1.0 visual |
 
-### B. Hard outs (each needs EM GO)
-
-| ID | Item | Why hard |
-|----|------|----------|
-| B1 | FileBridge H: delete IO | CONSCIOUS #1 — today 403 |
-| B2 | Drive Guard real G:/H: mutations | Writes outside sandbox |
-| B3 | Ports actual stop/kill | Builds on dry-run allowlist; never CSS/DB/Portal/AV/ProdDeck deny-list |
-| B4 | Live Portal runners | Cross-app spawn |
-| B5 | Quay densify mega | Stay on densify line; side fleet if diverged |
-
-### C. Fleet E2E under CONSCIOUS #14
-
-| ID | Item | Notes |
-|----|------|-------|
-| C1 | Agent Portal Device Lab | Realme 360×780 · desktop 1280×800 · tablet 800×1280 |
-| C2 | AgentVerse classic Device Lab | Same three viewports; do not disturb v2 `4311/5311` |
-| C3 | Keep ProdDeck Device Lab green on every UI ship | Hire `e2e-*` lanes per `E:\MyAgent\workflow\testing\E2E-HIRE.md` |
-
-### D. Park / ops hygiene
+### Still parked
 
 | ID | Item |
 |----|------|
-| D1 | No further Cloud OS coding until EM picks A/B/C |
-| D2 | Preserve peer pins: Portal ≥0.1.8 · AV ≥0.3.17 · CSS `v0.1.0` |
+| C3 | Keep ProdDeck Device Lab green on every UI ship |
 
 ---
 
@@ -401,6 +382,8 @@ Kept from post-0.8.0 “now what” (2026-07-15). Detail: [CLOUD-OS-0.8-PLAN.md]
 | [HANDOFF.md](./HANDOFF.md) | Live hosts |
 | [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) | Fleet pin matrix |
 | [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) | Wave A live + hard-out backlog |
+| [CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md](./CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md) | Cursor AI brief — phased backlog |
+| [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md) | 3D story bible + Q3D trains |
 | [E2E.md](./E2E.md) | Device Lab Playwright |
 | [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md) | **N subagents · git branches/worktrees · singleshot swarm** |
 | `E:\MyAgent\workflow\CONSCIOUS.md` | Standing orders (#14 E2E hire) |
@@ -414,6 +397,7 @@ Kept from post-0.8.0 “now what” (2026-07-15). Detail: [CLOUD-OS-0.8-PLAN.md]
 
 | Date | Note |
 |------|------|
+| 2026-07-17 | **1.0.0** git stable — combined roadmap ship; hard outs flags OFF; Q3D-0..3 echoes; Watch ops; no F/G promote this turn |
 | 2026-07-15 | **0.8.0 LIVE** Wave A + Device Lab 24/24; “now what” items parked in §10 |
 | 2026-07-15 | **0.7.0 LIVE** safe subset; AV classic 0.3.17 peer |
 | 2026-07-14 | **0.5.0 LIVE** PREPROD+PROD — Places shell + Wave 1 modules; JWT issuer bake required on build |

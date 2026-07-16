@@ -1,7 +1,7 @@
 {
   "appId": "proddeck",
   "displayName": "ProdDeck",
-  "version": "0.8.4",
+  "version": "1.0.0",
   "modules": {
     "catalog": true,
     "helpdesk": true,
@@ -24,7 +24,8 @@
       "runbooks": true,
       "appliances": true,
       "drive-guard": true,
-      "filebridge": true
+      "filebridge": true,
+      "watch-ops": true
     }
   },
   "scene": { "pack": "keepers-quay", "defaultView": "scene" },

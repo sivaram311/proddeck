@@ -27,7 +27,8 @@ const OsModuleFlagsSchema = z.object({
   runbooks: z.boolean(),
   appliances: z.boolean(),
   "drive-guard": z.boolean(),
-  filebridge: z.boolean(),
+  "filebridge": z.boolean(),
+  "watch-ops": z.boolean().optional().default(true),
 });
 
 export const ProdDeckPackSchema = z.object({

@@ -2,7 +2,7 @@
 
 **Mandate:** CONSCIOUS #14 · `E:\MyAgent\workflow\testing\E2E-HIRE.md`  
 **Hire:** [agents/hires/2026-07-15-e2e-device-lab.md](../agents/hires/2026-07-15-e2e-device-lab.md)  
-**App version:** 0.8.0 Wave A  
+**App version:** **1.0.0** Cloud OS v1  
 **Preferred base (tag gate):** DEV `http://127.0.0.1:3320` (`PRODDECK_URL`) — CONSCIOUS **#16**  
 **Optional cutover check:** `https://home-staging.delena.buzz`
 
@@ -16,23 +16,19 @@
 
 ## Commands
 
-**Machine rule (CONSCIOUS #15):** claim the Playwright slot before any run; release after — see `E:\MyAgent\workflow\testing\PLAYWRIGHT-SLOT.md`. Do not start a second Playwright while the slot is held.
+**Machine rule (CONSCIOUS #15):** claim the Playwright slot before any run; release after — see `E:\MyAgent\workflow\testing\PLAYWRIGHT-SLOT.md`.
 
 ```powershell
-# claim
-powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\claim-playwright-slot.ps1 -SessionId "proddeck-keepers-quay-2026-07-14" -AppId proddeck -Project all -AgentRole e2e-lead
-# run against DEV (tag gate)
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\claim-playwright-slot.ps1 -SessionId "proddeck-cloud-os-1.0-2026-07-17" -AppId proddeck -Project all -AgentRole e2e-lead
 $env:PRODDECK_URL = "http://127.0.0.1:3320"
 npm run test:e2e
-# release / confirm
-powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\release-playwright-slot.ps1 -SessionId "proddeck-keepers-quay-2026-07-14" -Result pass
-# then hire git-release for v* tag (CONSCIOUS #16)
+powershell -NoProfile -ExecutionPolicy Bypass -File E:\MyAgent\workflow\testing\scripts\release-playwright-slot.ps1 -SessionId "proddeck-cloud-os-1.0-2026-07-17" -Result pass
 ```
 
-Override: `PRODDECK_URL=https://home-staging.delena.buzz` only for post-tag cutover checks.
+Also: `npm run test:unit` (Dispatch deep-link contract).
 
 ## Evidence
 
-`H:\releases\proddeck-0.8.0\evidence\e2e\` (per-lane markdown from hired testers).
+`H:\releases\proddeck-1.0.0\evidence\e2e\` (create on promote pack cut). Until then: session notes under `agents/hires/`.
 
 Devices SoT: `E:\MyAgent\workflow\devices\` — do not web-search sizes.

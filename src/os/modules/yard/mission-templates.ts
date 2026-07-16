@@ -49,6 +49,52 @@ export const MISSION_TEMPLATES: MissionTemplate[] = [
     ],
   },
   {
+    id: "promote-q2-proddeck",
+    title: "Promote Q2 · ProdDeck",
+    env: "prod",
+    goal: "Qualify PREPROD→PROD — evidence under H:\\releases\\proddeck-*\\evidence\\q2\\",
+    linkedApp: "proddeck",
+    packId: "promote-q2",
+    lanes: [
+      {
+        id: "em",
+        skillId: "promote-em",
+        label: "promote-em",
+        job: "Orchestrate checklist; only lane that may set GO/HOLD.",
+      },
+      {
+        id: "qa",
+        skillId: "promote-qa",
+        label: "promote-qa",
+        job: "Smoke matrix + destination smoke notes.",
+      },
+      {
+        id: "security",
+        skillId: "promote-security",
+        label: "promote-security",
+        job: "CSS / JWT / secrets scan notes.",
+      },
+      {
+        id: "review",
+        skillId: "promote-review",
+        label: "promote-review",
+        job: "Ports, DB, drive, diff compliance.",
+      },
+      {
+        id: "field-ops",
+        skillId: "promote-field-ops",
+        label: "promote-field-ops",
+        job: "Bind race, CF cache, PS traps, serial ACTIVITY-LOG.",
+      },
+      {
+        id: "ops",
+        skillId: "promote-ops",
+        label: "promote-ops",
+        job: "Deploy only — blocked until EM GO.",
+      },
+    ],
+  },
+  {
     id: "quay-bugfix",
     title: "Quay bugfix · pier overlay",
     env: "dev",
