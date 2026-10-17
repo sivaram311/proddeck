@@ -378,11 +378,12 @@ Stable Dispatch contract tests · Watch ops aggregate · Stack Pilot return · Y
 | Doc | Role |
 |-----|------|
 | [WORLD.md](./WORLD.md) | Keepers’ Quay mythos + cast |
+| [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md) | 3D narrative + Three.js future densify / beats |
 | [OPS.md](./OPS.md) | Ports / smoke / promote ops |
 | [HANDOFF.md](./HANDOFF.md) | Live hosts |
 | [SUPPORTED-VERSIONS.md](./SUPPORTED-VERSIONS.md) | Fleet pin matrix |
 | [CLOUD-OS-0.8-PLAN.md](./CLOUD-OS-0.8-PLAN.md) | Wave A live + hard-out backlog |
-| [CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md](./CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md) | Cursor AI brief — phased backlog |
+| [CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md](./CURSOR-IMPLEMENT-CLOUD-OS-NEXT.md) | **Cursor AI brief** — phased backlog, paths, acceptance, EM gates |
 | [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md) | 3D story bible + Q3D trains |
 | [E2E.md](./E2E.md) | Device Lab Playwright |
 | [PARALLEL-EXECUTION-PLAN.md](./PARALLEL-EXECUTION-PLAN.md) | **N subagents · git branches/worktrees · singleshot swarm** |

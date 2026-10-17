@@ -60,3 +60,7 @@ Further Cloud OS epics: [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
 ## Next direction
 
 Promote **1.0.0** to F/G (separate crew). Enable hard-out flags only with EM GO. Q3D-4/5 densify: [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md).
+
+Further Cloud OS epics (Beacon, Appliances, FileBridge, live Yard hire): [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
+
+**3D story + Three.js future implement (densify, beats, Fabric Ignition):** [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md).
