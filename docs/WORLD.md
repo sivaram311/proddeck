@@ -57,3 +57,5 @@ The 3D world exists to make those three verbs **legible and memorable**. If a me
 ## Next direction
 
 Further Cloud OS epics (Beacon, Appliances, FileBridge, live Yard hire): [CLOUD-OS-ROADMAP.md](./CLOUD-OS-ROADMAP.md).
+
+**3D story + Three.js future implement (densify, beats, Fabric Ignition):** [QUAY-3D-STORY-FUTURE.md](./QUAY-3D-STORY-FUTURE.md).
